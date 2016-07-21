@@ -7,7 +7,7 @@
 node_modules
 bower_components
 .DS_Store
-npm-debug.log
+.tmp
 # Ignore bundler config.
 /.bundle
 
@@ -20,3 +20,4 @@ npm-debug.log
 !/log/.keep
 /tmp
 .idea
+npm-debug.log
