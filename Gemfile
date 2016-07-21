@@ -9,6 +9,8 @@ gem 'spring', :group => :development
 
 gem 'pg'
 
+gem 'jwt'
+
 #gem 'sqlite3'
 
 

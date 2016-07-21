@@ -1,0 +1,33 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  firstName: 
+  firstSurname: MyString
+  secondSurname: MyString
+  currentSalary: 1.5
+  birthDate: 2016-07-21
+  personalId: MyString
+  rif: MyString
+  jobTittle: MyString
+  admissionDate: 2016-07-21
+  phone: MyString
+  cellphone: MyString
+  address: MyText
+  email: MyString
+  email2: MyString
+
+two:
+  firstName: 
+  firstSurname: MyString
+  secondSurname: MyString
+  currentSalary: 1.5
+  birthDate: 2016-07-21
+  personalId: MyString
+  rif: MyString
+  jobTittle: MyString
+  admissionDate: 2016-07-21
+  phone: MyString
+  cellphone: MyString
+  address: MyText
+  email: MyString
+  email2: MyString
