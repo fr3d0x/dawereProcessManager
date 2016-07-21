@@ -1,5 +1,8 @@
 class UsersController < ApplicationController
+  require 'jwt'
+  before_action :authenticate, :except => [:login]
   before_action :set_user, only: [:show, :update, :destroy]
+
 
   # GET /users
   # GET /users.json
@@ -45,6 +48,26 @@ class UsersController < ApplicationController
     @user.destroy
 
     head :no_content
+  end
+
+  def login
+    parameters = ActiveSupport::JSON.decode(request.raw_post)
+    user = User.find_by_username(parameters["username"])
+    if user
+      if user.password == parameters["password"]
+        secretKey = "d@w3r3's_$3cr3t_k3y"
+        payload = {
+            username: user.username,
+            password: user.password
+        }
+        token = JWT.encode(payload, secretKey, "HS256")
+        render :json => { data: token, status: "AUTHORIZED"}
+      else
+        render :json => { data: "el password del usuario no es correcto"}
+      end
+    else
+      render :json => { data: "usuario no encontrado"}
+    end
   end
 
   private
