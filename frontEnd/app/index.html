@@ -1,0 +1,83 @@
+<!doctype html>
+<html ng-app="app" ng-controller="MainCtrl" class="html">
+
+<head>
+  <meta charset="utf-8">
+  <!-- ============================================
+  ================== Application =================
+  ============================================= -->
+  <title> Dawere Process Manager </title>
+  <!-- ============================================-->
+
+
+
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <link rel="icon" type="image/ico" href="favicon.png" />
+  <!-- build:css(.) styles/vendor.css -->
+
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css">
+
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="styles/style.css">
+  <!-- -->
+
+  <!-- JS includes -->
+
+  <!-- bower:js -->
+
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../bower_components/angular-base64/angular-base64.js"></script>
+  <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="../bower_components/angular-filter/dist/angular-filter.min.js"></script>
+  <script src="../bower_components/angular-fontawesome/dist/angular-fontawesome.js"></script>
+  <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="../bower_components/angular-translate/angular-translate.js"></script>
+  <script src="../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"></script>
+  <script src="../bower_components/angular-route/angular-route.js"></script>
+  <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="../bower_components/angular-ui-select/dist/select.js"></script>
+  <script src="../bower_components/checklist-model/checklist-model.js"></script>
+  <script src="../bower_components/json3/lib/json3.js"></script>
+  <script src="../bower_components/angular-base64/angular-base64.js"></script>
+  <script src="../bower_components/sweetalert/dist/sweetalert.min.js"></script>
+  <script src="../bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
+  <script src="../bower_components/angular-translate-storage-local/angular-translate-storage-local.js"></script>
+  <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+
+  <!--ngConstantFile-->
+  <script src="scripts/config.js"></script>
+  <!--Controllers-->
+  <script src="scripts/app.js"></script>
+  <script src="scripts/controllers/main.js"></script>
+
+
+  <!--services-->
+
+
+
+</head>
+<body id="appBody">
+
+  <!--[if lt IE 7]-->
+  <!--<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>-->
+  <!--[endif]-->
+
+  <!-- Application content-->
+  <div id="wrap" ui-view autoscroll="false"></div>
+
+  <!-- Page Loader -->
+  <div id="pageloader" page-loader></div>
+
+</body>
+</html>
