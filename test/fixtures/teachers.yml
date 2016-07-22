@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  cvLong: MyText
+  cvShort: MyText
+  firstName: MyString
+  middleName: MyString
+  lastName: MyString
+  personalId: MyString
+
+two:
+  cvLong: MyText
+  cvShort: MyText
+  firstName: MyString
+  middleName: MyString
+  lastName: MyString
+  personalId: MyString

@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :vdm_changes, except: [:new, :edit]
+  resources :vdms, except: [:new, :edit]
+  resources :classes_planifications, except: [:new, :edit]
+  resources :subject_planifications, except: [:new, :edit]
+  resources :subjects, except: [:new, :edit]
+  resources :teachers, except: [:new, :edit]
   resources :users do
     collection do
       post :login

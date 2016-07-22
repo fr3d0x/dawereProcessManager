@@ -11,10 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722133354) do
+ActiveRecord::Schema.define(version: 20160722202424) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "classes_planifications", force: :cascade do |t|
+    t.string   "meGeneralObjective"
+    t.string   "meSpecificObjective"
+    t.text     "meSpeficicObjDesc"
+    t.string   "topicName"
+    t.string   "videos"
+    t.integer  "subject_planification_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "classes_planifications", ["subject_planification_id"], name: "index_classes_planifications_on_subject_planification_id", using: :btree
 
   create_table "employees", force: :cascade do |t|
     t.string   "firstName"
@@ -37,18 +50,86 @@ ActiveRecord::Schema.define(version: 20160722133354) do
     t.string   "gender"
   end
 
+  create_table "subject_planifications", force: :cascade do |t|
+    t.string   "status"
+    t.integer  "teacher_id"
+    t.integer  "subject_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "subject_planifications", ["subject_id"], name: "index_subject_planifications_on_subject_id", using: :btree
+  add_index "subject_planifications", ["teacher_id"], name: "index_subject_planifications_on_teacher_id", using: :btree
+
+  create_table "subjects", force: :cascade do |t|
+    t.string   "name"
+    t.text     "shortDescription"
+    t.text     "longDescription"
+    t.string   "grade"
+    t.text     "firstPeriodDesc"
+    t.text     "secondPeriodDesc"
+    t.text     "thirdPeriodDesc"
+    t.text     "goal"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  create_table "teachers", force: :cascade do |t|
+    t.text     "cvLong"
+    t.text     "cvShort"
+    t.string   "firstName"
+    t.string   "middleName"
+    t.string   "lastName"
+    t.string   "personalId"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string   "username"
     t.string   "password"
     t.string   "profilePicture"
     t.string   "status"
+    t.integer  "employee_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
-    t.integer  "employee_id"
-    t.integer  "employees_id"
   end
 
-  add_index "users", ["employees_id"], name: "index_users_on_employees_id", using: :btree
+  add_index "users", ["employee_id"], name: "index_users_on_employee_id", using: :btree
 
+  create_table "vdm_changes", force: :cascade do |t|
+    t.date     "changeDate"
+    t.text     "changeDetail"
+    t.string   "changedFrom"
+    t.string   "changedTo"
+    t.integer  "vdm_id"
+    t.integer  "user_id"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "vdm_changes", ["user_id"], name: "index_vdm_changes_on_user_id", using: :btree
+  add_index "vdm_changes", ["vdm_id"], name: "index_vdm_changes_on_vdm_id", using: :btree
+
+  create_table "vdms", force: :cascade do |t|
+    t.string   "videoId"
+    t.string   "videoTittle"
+    t.text     "videoContent"
+    t.string   "status"
+    t.text     "coments"
+    t.text     "Description"
+    t.integer  "classes_planification_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
+
+  add_foreign_key "classes_planifications", "subject_planifications"
+  add_foreign_key "subject_planifications", "subjects"
+  add_foreign_key "subject_planifications", "teachers"
   add_foreign_key "users", "employees"
+  add_foreign_key "vdm_changes", "users"
+  add_foreign_key "vdm_changes", "vdms"
+  add_foreign_key "vdms", "classes_planifications"
 end

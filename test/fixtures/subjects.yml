@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  shortDescription: MyText
+  longDescription: MyText
+  grade: MyString
+  firstPeriodDesc: MyText
+  secondPeriodDesc: MyText
+  thirdPeriodDesc: MyText
+  goal: MyText
+
+two:
+  name: MyString
+  shortDescription: MyText
+  longDescription: MyText
+  grade: MyString
+  firstPeriodDesc: MyText
+  secondPeriodDesc: MyText
+  thirdPeriodDesc: MyText
+  goal: MyText
