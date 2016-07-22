@@ -3,6 +3,9 @@ class ApplicationController < ActionController::API
   before_filter :add_allow_credentials_headers
   require 'jwt'
 
+  $secretKey = "d@w3r3's_$3cr3t_k3y"
+
+
   def add_allow_credentials_headers
     # https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#section_5
     #
@@ -18,9 +21,9 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate
-    secretKey = "d@w3r3's_$3cr3t_k3y"
-    authenticate_or_request_with_http_token do |token, options|
-      decoded_token = JWT.decode token, secretKey, true, { :algorithm => 'HS256' }
-    end
+    token = request.headers["AUTHORIZATION"]
+    JWT.decode(token, $secretKey, true, { :algorithm => 'HS256' })
+    rescue JWT::DecodeError
+      render :json => { status: "UNAUTHORIZED", msg: "No Autorizado"}, :status => :unauthorized
   end
 end

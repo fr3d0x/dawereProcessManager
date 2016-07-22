@@ -51,23 +51,28 @@ class UsersController < ApplicationController
   end
 
   def login
-    parameters = ActiveSupport::JSON.decode(request.raw_post)
-    user = User.find_by_username(parameters["username"])
-    if user
-      if user.password == parameters["password"]
-        secretKey = "d@w3r3's_$3cr3t_k3y"
-        payload = {
-            username: user.username,
-            password: user.password
-        }
-        token = JWT.encode(payload, secretKey, "HS256")
-        render :json => { data: token, status: "AUTHORIZED"}
+    if request.raw_post != ""
+      parameters = ActiveSupport::JSON.decode(request.raw_post)
+      user = User.find_by_username(parameters["username"])
+      if user
+        if user.password == parameters["password"]
+          payload = {
+              username: user.username,
+              password: user.password
+          }
+          token = JWT.encode(payload, $secretKey, "HS256")
+          render :json => { data: token, status: "AUTHORIZED"}
+        else
+          render :json => { data: "el password del usuario no es correcto"}
+        end
       else
-        render :json => { data: "el password del usuario no es correcto"}
+        render :json => { data: "usuario no encontrado"}
       end
     else
-      render :json => { data: "usuario no encontrado"}
+    render :json => { status: "UNAUTHORIZED", msg: "No Autorizado"}, :status => :unauthorized
     end
+
+
   end
 
   private
