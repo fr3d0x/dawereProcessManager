@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  subjectPlanificationId: 1
+  meGeneralObjective: MyString
+  meSpecificObjective: MyString
+  meSpeficicObjDesc: MyText
+  topicName: MyString
+  videos: MyString
+
+two:
+  subjectPlanificationId: 1
+  meGeneralObjective: MyString
+  meSpecificObjective: MyString
+  meSpeficicObjDesc: MyText
+  topicName: MyString
+  videos: MyString

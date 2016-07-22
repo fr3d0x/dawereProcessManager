@@ -5,6 +5,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :password
       t.string :profilePicture
       t.string :status
+      t.references :employee, index: true
 
       t.timestamps null: false
     end
