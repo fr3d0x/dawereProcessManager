@@ -63,10 +63,10 @@ class UsersController < ApplicationController
           token = JWT.encode(payload, $secretKey, "HS256")
           render :json => { data: token, status: "AUTHORIZED"}
         else
-          render :json => { data: "el password del usuario no es correcto"}
+          render :json => { data: "El password del usuario no es correcto."}
         end
       else
-        render :json => { data: "usuario no encontrado"}
+        render :json => { data: "Usuario no encontrado."}
       end
     else
     render :json => { status: "UNAUTHORIZED", msg: "No Autorizado"}, :status => :unauthorized
