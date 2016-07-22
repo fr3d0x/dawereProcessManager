@@ -69,5 +69,20 @@ var app = angular.module('app', [
         templateUrl: 'views/app.html'
       })
 
+      //app core pages
+        .state('core', {
+          abstract: true,
+          url: '/core',
+          template: '<div ui-view></div>'
+        })
+        //login
+        .state('core.login', {
+          url: '/login',
+          controller: 'loginController',
+          templateUrl: 'views/user/login.html'
+        })
+
+
+
   }]);
 
