@@ -58,7 +58,11 @@ class UsersController < ApplicationController
         if user.password == parameters["password"]
           payload = {
               username: user.username,
-              password: user.password
+              name: user.employee.firstName,
+              email: user.employee.email,
+              cedula: user.employee.personalId,
+              profile_picture: user.profilePicture,
+              roles: user.roles.as_json
           }
           token = JWT.encode(payload, $secretKey, "HS256")
           render :json => { data: token, status: "SUCCESS"}, :status => 200

@@ -4,11 +4,13 @@
 app.controller("appViewController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', '$rootScope',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, $rootScope){
 
-
-
+        
         if(localStorageService.get('encodedToken')){
             if($rootScope.currentUser == null){
                 $rootScope.currentUser = localStorageService.get('currentUser');
+            }
+            if(localStorageService.get('currentRole') != null){
+                $rootScope.currentRole = localStorageService.get('currentRole')
             }
         }else{
             $state.go('core.login');

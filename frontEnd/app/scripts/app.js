@@ -64,7 +64,6 @@ var app = angular.module('app', [
     $stateProvider
 
     .state('app', {
-    abstract: true,
         url: '/app',
         controller: 'appViewController',
         templateUrl: 'views/app.html'
@@ -86,7 +85,7 @@ var app = angular.module('app', [
     .state('app.dashboard', {
         url: '/dashboard',
         controller: 'dashboardController',
-        templateUrl: 'views/dashboard.html'
+        templateUrl: 'views/dashboard/dashboard.html'
     })
 
 

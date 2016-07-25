@@ -1,6 +1,7 @@
 class EmployeesController < ApplicationController
   before_action :set_employee, only: [:show, :update, :destroy]
   before_action :authenticate
+  append_before_action :only => [:index] {validateRole(['ADMIN', 'ContentLeader'],$currentPetitionUser)}
   # GET /employees
   # GET /employees.json
   def index

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722202424) do
+ActiveRecord::Schema.define(version: 20160725154344) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,16 @@ ActiveRecord::Schema.define(version: 20160722202424) do
     t.datetime "updated_at",    null: false
     t.string   "gender"
   end
+
+  create_table "roles", force: :cascade do |t|
+    t.string   "role"
+    t.integer  "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "primary"
+  end
+
+  add_index "roles", ["user_id"], name: "index_roles_on_user_id", using: :btree
 
   create_table "subject_planifications", force: :cascade do |t|
     t.string   "status"
@@ -126,6 +136,7 @@ ActiveRecord::Schema.define(version: 20160722202424) do
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
 
   add_foreign_key "classes_planifications", "subject_planifications"
+  add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects"
   add_foreign_key "subject_planifications", "teachers"
   add_foreign_key "users", "employees"
