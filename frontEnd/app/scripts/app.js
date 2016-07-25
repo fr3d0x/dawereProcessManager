@@ -63,31 +63,31 @@ var app = angular.module('app', [
 
     $stateProvider
 
-      .state('app', {
-        abstract: true,
+    .state('app', {
+    abstract: true,
         url: '/app',
         controller: 'appViewController',
         templateUrl: 'views/app.html'
-      })
-
-      //app core pages
-        .state('core', {
-          abstract: true,
-          url: '/core',
-          template: '<div ui-view></div>'
-        })
-        //login
-        .state('core.login', {
-          url: '/login',
-          controller: 'loginController',
-          templateUrl: 'views/login.html'
-        })
-
-        .state('app.dashboard', {
-            url: '/dashboard',
-            controller: 'dashboardController',
-            templateUrl: 'views/dashboard.html'
-        })
+    })
+    
+    //app core pages
+    .state('core', {
+        abstract: true,
+        url: '/core',
+        template: '<div ui-view></div>'
+    })
+    //login
+    .state('core.login', {
+        url: '/login',
+        controller: 'loginController',
+        templateUrl: 'views/login.html'
+    })
+    
+    .state('app.dashboard', {
+        url: '/dashboard',
+        controller: 'dashboardController',
+        templateUrl: 'views/dashboard.html'
+    })
 
 
 
