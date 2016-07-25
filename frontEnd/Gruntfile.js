@@ -481,6 +481,6 @@ module.exports = function (grunt) {
     'ngmin'
   ]);
   grunt.registerTask('development', [
-    'ngconstant:development', //Agregado para las variables globales
+    'ngconstant:development' //Agregado para las variables globales
   ]);
 };

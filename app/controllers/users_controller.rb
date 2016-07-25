@@ -61,7 +61,7 @@ class UsersController < ApplicationController
               password: user.password
           }
           token = JWT.encode(payload, $secretKey, "HS256")
-          render :json => { data: token, status: "AUTHORIZED"}
+          render :json => { data: token, status: "SUCCESS"}, :status => 200
         else
           render :json => { data: "El password del usuario no es correcto."}
         end
@@ -71,8 +71,6 @@ class UsersController < ApplicationController
     else
     render :json => { status: "UNAUTHORIZED", msg: "No Autorizado"}, :status => :unauthorized
     end
-
-
   end
 
   private

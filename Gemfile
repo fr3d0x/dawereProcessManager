@@ -11,6 +11,8 @@ gem 'pg'
 
 gem 'jwt'
 
+gem 'rack-cors', :require => 'rack/cors'
+
 #gem 'sqlite3'
 
 

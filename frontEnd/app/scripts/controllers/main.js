@@ -7,15 +7,10 @@
  * Controller of the app
  */
 
-  app.controller('MainCtrl',['$scope','$http', '$translate', 'localStorageService', function ($scope, $http, $translate, localStorageService) {
+  app.controller('MainCtrl',['$scope','$http', 'localStorageService', '$window', '$state', '$rootScope', function ($scope, $http, localStorageService, $window, $state, $rootScope) {
+    
 
-    $scope.changeLanguage = function (langKey) {
-      $translate.use(langKey);
-      $scope.currentLanguage = langKey;
-    };
-    $scope.currentLanguage = $translate.proposedLanguage() || $translate.use();
-
-    if(localStorageService.get('token')){
+    if(localStorageService.get('encodedToken')){
       if($rootScope.currentUser == null){
         $rootScope.currentUser = localStorageService.get('currentUser');
       }

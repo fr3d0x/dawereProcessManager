@@ -19,7 +19,8 @@ var app = angular.module('app', [
   'angular.filter',
   'base64',
   'ngRoute',
-  'config'
+  'config',
+  'LocalStorageModule'
 ])
   .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
     $rootScope.$state = $state;
@@ -58,7 +59,7 @@ var app = angular.module('app', [
 
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/app/home');
+    $urlRouterProvider.otherwise('/app');
 
     $stateProvider
 
@@ -79,7 +80,13 @@ var app = angular.module('app', [
         .state('core.login', {
           url: '/login',
           controller: 'loginController',
-          templateUrl: 'views/user/login.html'
+          templateUrl: 'views/login.html'
+        })
+
+        .state('app.dashboard', {
+            url: '/dashboard',
+            controller: 'dashboardController',
+            templateUrl: 'views/dashboard.html'
         })
 
 

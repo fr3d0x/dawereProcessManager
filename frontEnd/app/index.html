@@ -27,7 +27,13 @@
   <link rel="stylesheet" href="styles/main.css">
   <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,300,700' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" type="text/css" href="styles/style.css">
+
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/sweetalert/dist/sweetalert.css">
+
   <!-- -->
+  <!-- -->
+
 
   <!-- JS includes -->
 
@@ -54,15 +60,24 @@
   <script src="../bower_components/angular-translate-storage-cookie/angular-translate-storage-cookie.js"></script>
   <script src="../bower_components/angular-translate-storage-local/angular-translate-storage-local.js"></script>
   <script src="../bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="../bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
 
   <!--ngConstantFile-->
   <script src="scripts/config.js"></script>
   <!--Controllers-->
   <script src="scripts/app.js"></script>
   <script src="scripts/controllers/main.js"></script>
+  <script src="scripts/controllers/loginController.js"></script>
+  <script src="scripts/controllers/dashboardController.js"></script>
+  <script src="scripts/controllers/appViewController.js"></script>
 
 
   <!--services-->
+  <script src="scripts/services/dawProcessManager.js"></script>
+  <script src="scripts/services/responseHandlingService.js"></script>
+  <script src="scripts/services/interceptor.js"></script>
+
+
 
 
 
@@ -74,9 +89,7 @@
   <!--[endif]-->
 
   <!-- Application content-->
-  <div id="wrap" ui-view autoscroll="false">
-    Hola Mundo
-  </div>
+  <div id="wrap" ui-view autoscroll="false"></div>
 
   <!-- Page Loader -->
   <div id="pageloader" page-loader></div>
