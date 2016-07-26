@@ -1,7 +1,7 @@
 /**
  * Created by fr3d0 on 7/25/16.
  */
-
+'use strict';
 app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
         var getClassesPlan = function(){

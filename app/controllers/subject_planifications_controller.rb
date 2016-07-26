@@ -1,5 +1,6 @@
 class SubjectPlanificationsController < ApplicationController
   before_action :set_subject_planification, only: [:show, :update, :destroy]
+  before_action :authenticate
 
   # GET /subject_planifications
   # GET /subject_planifications.json
@@ -49,10 +50,23 @@ class SubjectPlanificationsController < ApplicationController
 
   def getSubjectsPlanning
     if $currentPetitionUser['id'] != nil
-      @subjectPLanings = SubjectPlanification.where
+      subjectPlanings = SubjectPlanification.where(:user_id => $currentPetitionUser['id'])
+      i = 0
+      payload = []
+      subjectPlanings.each do |sp|
+        payload[i] = {
+            teacher: sp.teacher,
+            subject: sp.subject,
+            status: sp.status
+        }
+        i += 1
+      end
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
   end
-  def getWholeSubkectPlanning
+
+  def getWholeSubjectPlanning
+
     if params[:id] != nil
       subject_planification = SubjectPlanification.find(params[:id])
       payload = {

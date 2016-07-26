@@ -1,19 +1,26 @@
 Rails.application.routes.draw do
 
+  resources :global_progresses, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit]
     resources :vdms, except: [:new, :edit]
     resources :classes_planifications, except: [:new, :edit]
     resources :subject_planifications do
       collection do
-        get :getWholeSubkectPlanning
+        get :getSubjectsPlanning
+        get :getWholeSubjectPlanning
       end
     end
-    resources :subjects, except: [:new, :edit]
+    resources :subjects, except: [:new, :edit] do
+      collection do
+        get :getSubjectByGrade
+      end
+    end
     resources :teachers, except: [:new, :edit]
-    resources :users do
+    resources :users, except: [:new, :edit] do
       collection do
         post :login
+        get :globalProgress
       end
     end
     resources :employees, except: [:new, :edit]

@@ -9,6 +9,5 @@ class CreateSubjectPlanifications < ActiveRecord::Migration
     end
     add_foreign_key :subject_planifications, :teachers
     add_foreign_key :subject_planifications, :subjects
-
   end
 end

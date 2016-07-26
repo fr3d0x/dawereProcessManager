@@ -78,6 +78,36 @@ class UsersController < ApplicationController
     end
   end
 
+  def globalProgress
+    if $currentPetitionUser['id'] != nil
+      subjectPlannings = SubjectPlanification.where(:user_id => $currentPetitionUser['id']).all
+      payload = []
+      i = 0
+      subjectPlannings.each do |sp|
+        totalVideos = 0
+        returned = 0
+        processed = 0
+        received = 0
+        sp.classes_planifications.each do |cp|
+        totalVideos = totalVideos + cp.vdms.count
+        returned = returned + cp.vdms.where(:status => 'returned').count
+        processed = processed + cp.vdms.where(:status => 'processed').count
+        received = received + cp.vdms.where(:status => 'received').count
+        end
+        payload[i] ={
+            subject: sp.subject,
+            teacher: sp.teacher,
+            totalVideos: totalVideos,
+            received: received,
+            returnedWithComments: returned,
+            processed: processed
+        }
+        i += 1
+      end
+      render :json => { data: payload.as_json, status: 'SUCCESS'}, :status => 200
+    end
+  end
+
   private
 
     def set_user

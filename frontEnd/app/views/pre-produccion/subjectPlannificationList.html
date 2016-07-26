@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="tittleWrap">
-                <p><i class="fa fa-chevron-left " aria-hidden="true" style="font-size:48px; cursor: pointer;" ng-click="activateAssignments()"></i>Asignaciónes</p>
+                <p><i class="fa fa-chevron-left " aria-hidden="true" style="font-size:48px; cursor: pointer;"></i>Lista de planificaciones de materia</p>
             </div>
         </div>
         <div class="pull-right"></div>
@@ -18,14 +18,14 @@
 
             <div class="clearfix"></div>
 
-            <div ng-repeat="item in assignments">
+            <div ng-repeat="item in spList">
                 <div  class="listItemWrapper">
                     <div class="col-md-6 col-md-offset-3 col-sm-4" >
                         <div class="listItemInnerWrap"></div>
                         <div  class="listItem"  style="position: relative">
-                            <a class="nonblock nontext Button rounded-corners clearfix listItemInnerStyle" ng-click="activateAssignmentInfo(item)">
+                            <a class="nonblock nontext Button rounded-corners clearfix" ng-click="activateAssignmentInfo(item)">
                                 <div class="listItemDescription">
-                                    <p align="center">{{item.description}}</p>
+                                    <p align="center">{{item.subject.name}} {{item.subject.grade}}</p>
                                 </div>
                             </a>
                         </div>

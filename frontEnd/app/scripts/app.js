@@ -95,6 +95,13 @@ var app = angular.module('app', [
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
 
+        .state('app.subjectsPlaning', {
+            url: '/subjectsPlanification',
+            controller: 'subjectPlannificationListController',
+            templateUrl: 'views/pre-produccion/subjectPlannificationList.html'
+        })
+      
+
 
 
   }]);

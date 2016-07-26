@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725154344) do
+ActiveRecord::Schema.define(version: 20160726193123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,10 +66,12 @@ ActiveRecord::Schema.define(version: 20160725154344) do
     t.integer  "subject_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "user_id"
   end
 
   add_index "subject_planifications", ["subject_id"], name: "index_subject_planifications_on_subject_id", using: :btree
   add_index "subject_planifications", ["teacher_id"], name: "index_subject_planifications_on_teacher_id", using: :btree
+  add_index "subject_planifications", ["user_id"], name: "index_subject_planifications_on_user_id", using: :btree
 
   create_table "subjects", force: :cascade do |t|
     t.string   "name"
@@ -139,6 +141,7 @@ ActiveRecord::Schema.define(version: 20160725154344) do
   add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects"
   add_foreign_key "subject_planifications", "teachers"
+  add_foreign_key "subject_planifications", "users"
   add_foreign_key "users", "employees"
   add_foreign_key "vdm_changes", "users"
   add_foreign_key "vdm_changes", "vdms"

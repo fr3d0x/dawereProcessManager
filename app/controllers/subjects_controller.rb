@@ -9,6 +9,11 @@ class SubjectsController < ApplicationController
     render json: @subjects
   end
 
+  def getSubjectByGrade(grade)
+    @subjects = Subject.find_by_grade(grade)
+    render json: @subjects
+  end
+
   # GET /subjects/1
   # GET /subjects/1.json
   def show
