@@ -24,4 +24,8 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.get(baseUrl + '/api/subject_planifications/getWholeSubkectPlanning?id='+id ).success(succes).error(error);
 
     };
+    
+    this.getGlobalProgress = function (id, success, error){
+        $http.get(baseUrl +'/api/user/globalProgress').success(success).error(error);
+    }
 }]);

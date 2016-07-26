@@ -47,7 +47,7 @@ class SubjectPlanificationsController < ApplicationController
     head :no_content
   end
 
-  def getWholeSubkectPlanning
+  def getWholeSubjectPlanning
     if params[:id] != nil
       subject_planification = SubjectPlanification.find(params[:id])
       payload = {
