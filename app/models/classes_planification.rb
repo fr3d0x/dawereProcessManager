@@ -1,4 +1,4 @@
 class ClassesPlanification < ActiveRecord::Base
-  belong_to :subject_planification
+  belongs_to :subject_planification
   has_many :vdms
 end

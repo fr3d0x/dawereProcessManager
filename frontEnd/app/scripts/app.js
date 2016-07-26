@@ -20,7 +20,8 @@ var app = angular.module('app', [
   'base64',
   'ngRoute',
   'config',
-  'LocalStorageModule'
+  'LocalStorageModule',
+  'ngTable'
 ])
   .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
     $rootScope.$state = $state;
@@ -63,30 +64,36 @@ var app = angular.module('app', [
 
     $stateProvider
 
-    .state('app', {
-        url: '/app',
-        controller: 'appViewController',
-        templateUrl: 'views/app.html'
-    })
+        .state('app', {
+            url: '/app',
+            controller: 'appViewController',
+            templateUrl: 'views/app.html'
+        })
+        
+        //app core pages
+        .state('core', {
+            abstract: true,
+            url: '/core',
+            template: '<div ui-view></div>'
+        })
+        //login
+        .state('core.login', {
+            url: '/login',
+            controller: 'loginController',
+            templateUrl: 'views/login.html'
+        })
+        
+        .state('app.dashboard', {
+            url: '/dashboard',
+            controller: 'dashboardController',
+            templateUrl: 'views/dashboard/dashboard.html'
+        })
     
-    //app core pages
-    .state('core', {
-        abstract: true,
-        url: '/core',
-        template: '<div ui-view></div>'
-    })
-    //login
-    .state('core.login', {
-        url: '/login',
-        controller: 'loginController',
-        templateUrl: 'views/login.html'
-    })
-    
-    .state('app.dashboard', {
-        url: '/dashboard',
-        controller: 'dashboardController',
-        templateUrl: 'views/dashboard/dashboard.html'
-    })
+        .state('app.classesPlanification', {
+            url: '/classesPlanification?id',
+            controller: 'classesPlanificationController',
+            templateUrl: 'views/pre-produccion/classesPlanification.html'
+        })
 
 
 

@@ -47,6 +47,19 @@ class SubjectPlanificationsController < ApplicationController
     head :no_content
   end
 
+  def getWholeSubkectPlanning
+    if params[:id] != nil
+      subject_planification = SubjectPlanification.find(params[:id])
+      payload = {
+          id: subject_planification.id,
+          status: subject_planification.status,
+          subject: subject_planification.subject,
+          classesPlaning: subject_planification.classes_planifications.as_json
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  end
+
   private
 
     def set_subject_planification

@@ -19,4 +19,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.countRoles = function (user, succes, error) {
 
     };
+
+    this.getClassesPlaning = function (id, succes, error) {
+        $http.get(baseUrl + '/api/subject_planifications/getWholeSubkectPlanning?id='+id ).success(succes).error(error);
+
+    };
 }]);

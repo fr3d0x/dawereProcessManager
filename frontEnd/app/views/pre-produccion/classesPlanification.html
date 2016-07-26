@@ -1,0 +1,75 @@
+<!-- tile -->
+<section class="tile" fullscreen="isFullscreen02">
+
+    <!-- tile header -->
+    <div class="tile-header dvd dvd-btm">
+        <h1 class="custom-font"><strong>Lista  </strong>de planes de clase de la materia {{subject.name}}</h1>
+        <ul class="controls">
+            <li class="dropdown" dropdown on-toggle="toggled(open)">
+
+                <a href dropdown-toggle class="dropdown-toggle settings"><i class="fa fa-cog"></i></a>
+
+                <ul class="dropdown-menu pull-right with-arrow animated littleFadeInUp">
+                    <li>
+                        <a href tile-control-toggle>
+                            <span class="minimize"><fa name="angle-down"></fa>&nbsp;&nbsp;&nbsp;Minimizar</span>
+                            <span class="expand"><fa name="angle-up"></fa>&nbsp;&nbsp;&nbsp;Expandir</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href tile-control-refresh ng-click="ajaxFaker()">
+                            <fa name="refresh"></fa> Recargar
+                        </a>
+                    </li>
+                    <li>
+                        <a href tile-control-fullscreen ng-click="isFullscreen02 = !isFullscreen02">
+                            <fa name="expand"></fa> Pantalla Completa
+                        </a>
+                    </li>
+
+                </ul>
+
+            </li>
+            <!--<li class="remove"><a href tile-control-close><i class="fa fa-times"></i></a></li>-->
+        </ul>
+    </div>
+    <!-- /tile header -->
+
+    <!-- tile body -->
+    <div class="tile-body">
+
+        <button ng-click="tableParams.sorting({})" class="btn btn-default pull-right">Limpiar Ordenamiento</button>
+        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right">Limpiar Filtrado</button>
+        <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+         <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
+
+        <table ng-table="tableParams" show-filter="true" class="table table-custom">
+            <tr ng-repeat="x in $data">
+                <td data-title="'Codigo'" sortable="'id'" filter="{ 'id': 'text' }">
+                    {{x.id}}
+                </td>
+                <td data-title="'Nombre'" sortable="'name'" filter="{ 'name': 'text' }">
+                    {{x.name}}
+                </td>
+                <td data-title="'Apellido'" sortable="'lastName'" filter="{ 'lastName': 'text' }">
+                    {{x.lastName}}
+                </td>
+                <td data-title="'Username'" sortable="'username'" filter="{ 'username': 'text' }">
+                    {{x.username}}
+                </td>
+                <td data-title="'Email'" sortable="'email'" filter="{ 'email': 'text' }">
+                    {{x.email}}
+                </td>
+                <td data-title="'Role'" sortable="'role'" filter="{ 'role': 'text' }">
+                    {{x.role}}
+                </td>
+                <td><button ui-sref="app.user.info({id:x.id})" class="btn btn-primary btn-rounded btn-ef btn-ef-5 btn-ef-5b mb-10"><i class="fa fa-pencil"></i><span>Ver</span></button></td>
+                <!--    <td><button ui-sref="app.user.updateUserWithRole({id:x.id})" class="btn btn-success btn-rounded btn-ef btn-ef-5 btn-ef-5b mb-10"><i class="fa fa-pencil"></i><span>{{ 'Menu.UPDATE' | translate }}</span></button></td>
+                -->  </tr>
+        </table>
+
+    </div>
+    <!-- /tile body -->
+
+</section>
+<!-- /tile -->
