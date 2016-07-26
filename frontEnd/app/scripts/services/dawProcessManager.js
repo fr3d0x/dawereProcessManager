@@ -12,16 +12,19 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     };
 
-    this.login = function (user, succes, error) {
-        $http.post(baseUrl + '/api/users/login', user).success(succes).error(error);
+    this.login = function (user, success, error) {
+        $http.post(baseUrl + '/api/users/login', user).success(success).error(error);
     };
 
-    this.countRoles = function (user, succes, error) {
+    this.countRoles = function (user, success, error) {
 
     };
 
-    this.getClassesPlaning = function (id, succes, error) {
-        $http.get(baseUrl + '/api/subject_planifications/getWholeSubkectPlanning?id='+id ).success(succes).error(error);
+    this.getClassesPlaning = function (id, success, error) {
+        $http.get(baseUrl + '/api/subject_planifications/getWholeSubjectPlanning?id='+id ).success(success).error(error);
+    };
 
+    this.getSubjectsPlaning = function (id, success, error) {
+        $http.get(baseUrl + '/api/subject_planifications/getSubjectsPlanning').success(success).error(error);
     };
 }]);

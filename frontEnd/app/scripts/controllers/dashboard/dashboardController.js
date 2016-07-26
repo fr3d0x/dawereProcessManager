@@ -10,7 +10,7 @@ app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService
             if(localStorageService.get('currentRole') == null){
                 for(var i=0; i< user.roles.length; i++){
                     if(user.roles[i].primary){
-                        localStorageService.set('currentRole', user.roles[i].primary);
+                        localStorageService.set('currentRole', user.roles[i].role);
                         $scope.currentRole = user.roles[i].role;
                     }
                 } 

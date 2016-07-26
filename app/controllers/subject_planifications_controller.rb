@@ -47,6 +47,11 @@ class SubjectPlanificationsController < ApplicationController
     head :no_content
   end
 
+  def getSubjectsPlanning
+    if $currentPetitionUser['id'] != nil
+      @subjectPLanings = SubjectPlanification.where
+    end
+  end
   def getWholeSubkectPlanning
     if params[:id] != nil
       subject_planification = SubjectPlanification.find(params[:id])
@@ -58,6 +63,8 @@ class SubjectPlanificationsController < ApplicationController
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
   private
