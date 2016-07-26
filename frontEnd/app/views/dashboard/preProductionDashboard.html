@@ -1,11 +1,12 @@
 <!-- tile body -->
-<div class="tile-body">
 
-    <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+<div class="tile-body col-lg-8 col-md-8 col-md-offset-2">
+
+    <table ng-table="tableParams" class="table table-condensed table-bordered table-striped col-lg-8">
         <tr ng-repeat="row in $data">
-            <td data-title="'Materia'">{{row.subject}}</td>
-            <td data-title="'Profesor'" >{{row.teacher}}</td>
-            <td data-title="'Video Clases'">{{row.videos}}</td>
+            <td data-title="'Materia'">{{row.subject.name}}</td>
+            <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+            <td data-title="'Video Clases'">{{row.totalVideos}}</td>
             <td data-title="'Recibido (Cantidad)'">{{row.received}}</td>
             <td data-title="'Devueltos (Cantidad)'">{{row.returned}}</td>
             <td data-title="'Procesado'">{{row.processed}}</td>
@@ -13,5 +14,15 @@
         </tr>
     </table>
 
+</div>
+<!-- /tile body -->
+<!-- tile body -->
+<div class="tile-body">
+    <!--<div ng-repeat tuitions in $grade>-->
+    <button title="1er año" name="1er año"></button>
+    <button title="2do año" name="2do año"></button>
+    <button title="3er año" name="3er año"></button>
+    <button title="4to año" name="4to año"></button>
+    <button title="5to año" name="15to año"></button>
 </div>
 <!-- /tile body -->
