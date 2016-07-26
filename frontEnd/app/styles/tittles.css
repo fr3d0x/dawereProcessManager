@@ -1,0 +1,36 @@
+.tittleWrap{
+    line-height: 60px;
+    font-size: 50px;
+    color: #E7E8E9;
+    font-family: ubuntu, sans-serif;
+    font-weight: 300;
+}
+
+.underlining1 {
+    width: 125px;
+    height: 5px;
+    background-color: #ADDBD8;
+}
+
+.underlining2 {
+    width: 125px;
+    height: 5px;
+    background-color: #369291;
+    margin-left: 125px;
+    margin-top: -5px;
+}
+
+.underlining3 {
+    width: 125px;
+    height: 5px;
+    background-color: #135C60;
+    margin-left: 250px;
+    margin-top: -5px;
+}
+
+.underliningWrapper {
+    width: 100%;
+    background-color: #E6E7E8;
+    height: 5px;
+    margin-bottom: 5px;
+}

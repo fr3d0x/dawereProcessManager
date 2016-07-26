@@ -1,0 +1,41 @@
+.listItem{
+    margin: 15px
+}
+
+.listItemInnerWrap {
+    width: 614px;
+    border: 0 transparent;
+    background-color: transparent;
+}
+
+.listItemWrapper {
+    border: 0 transparent;
+    background-color: transparent;
+    padding-bottom: 1px;
+}
+
+
+.listItemInnerStyle {
+    border-color: #787878;
+    background-color: #E6E7E8;
+    border-radius: 10px;
+    padding: 17px;
+}
+
+.listItemInnerStyle:hover {
+    background-color: #ADDBD8;
+}
+
+.listItemDescription {
+    min-height: 29px;
+    background-color: transparent;
+    line-height: 29px;
+    font-size: 24px;
+    color: #58595B;
+    font-family: ubuntu,sans-serif;
+    font-weight: 700;
+    border-color: #787878;
+    background-color: #E6E7E8;
+    border-radius: 10px;
+    padding: 17px;
+}

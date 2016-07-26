@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :classes_planifications, except: [:new, :edit]
     resources :subject_planifications do
       collection do
+        get :getSubjectsPlanning
         get :getWholeSubjectPlanning
       end
     end
