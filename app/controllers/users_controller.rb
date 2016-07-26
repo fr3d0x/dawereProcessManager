@@ -99,7 +99,7 @@ class UsersController < ApplicationController
             teacher: sp.teacher,
             totalVideos: totalVideos,
             received: received,
-            returnedWithComments: returned,
+            returned: returned,
             processed: processed
         }
         i += 1
