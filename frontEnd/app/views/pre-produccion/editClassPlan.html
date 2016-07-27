@@ -1,0 +1,58 @@
+<div class="container-fluid" >
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tittleWrap">
+                <p><i class="fa fa-chevron-left " aria-hidden="true" style="font-size:48px; cursor: pointer;"></i>Planificacion de la clase del objetivo {{cp.primaryObj}}</p>
+            </div>
+        </div>
+        <div class="pull-right"></div>
+        <div class="clearfix"></div>
+        <div class="col-md-12">
+            <div class="underliningWrapper">
+                <div class="underlining1"></div>
+                <div class="underlining2"></div>
+                <div class="underlining3"></div>
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1">
+
+            <div class="clearfix"></div>
+
+            <div class="tile-body">
+                <div class="col-md-12">
+                    <label>Tema:</label> <p>cp.topicName</p>
+                    <label>Objetivo especifico:</label> <p>{{cp.specificObj}}</p>
+                    <h2>MDT'S</h2>
+                </div>
+                <div class="row">
+                    <span ng-repeat="vdm in cp.vdms" >
+                        <div  class="listItemWrapper">
+                            <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3" >
+                                <div  class="listItem">
+                                    <a class="nonblock nontext Button rounded-corners clearfix">
+                                        <div class="listItemDescriptionSmall">
+                                            <div class="row">
+                                                <span ng-if="cp.vdms.length > 1">
+                                                    <a ng-click="remove(vdm, cp.vdms)" class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pull-right removeBtn"><i class="fa fa-minus-circle" aria-hidden="true"></i></a>
+                                                </span>
+                                            </div>
+                                            <p>Id video: {{vdm.videoId}}</p>
+                                            <p>Estatus: {{vdm.status}}</p>
+                                            <p ng-if="vdm.videoTittle != null && vdm.videoTittle != ''">Titulo: {{vdm.videoTittle}}</p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </span>
+                    <div class="clearfix"></div>
+                    <div class="row">
+                        <a ng-click="add(cp.vdms)" class="col-xs-2 col-sm-2 col-md-2 col-lg-2 col-xs-offset-5 col-sm-offset-5 col-md-offset-5 col-lg-offset-5"><i class="fa fa-plus-circle addBtn" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>

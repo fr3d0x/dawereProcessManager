@@ -1,5 +1,6 @@
 .listItem{
-    margin: 15px
+    margin: 15px;
+    min-height: 230px;
 }
 
 .listItemInnerWrap {
@@ -28,7 +29,6 @@
 
 .listItemDescription {
     min-height: 29px;
-    background-color: transparent;
     line-height: 29px;
     font-size: 24px;
     color: #58595B;
@@ -38,4 +38,50 @@
     background-color: #E6E7E8;
     border-radius: 10px;
     padding: 17px;
+}
+
+.listItemInnerWrapSmall {
+    border: 0 transparent;
+    background-color: transparent;
+}
+
+.listItemDescriptionSmall {
+    line-height: 29px;
+    font-size: 15px;
+    color: #58595B;
+    font-family: ubuntu,sans-serif;
+    font-weight: 700;
+    border-color: #787878;
+    background-color: #E6E7E8;
+    border-radius: 10px;
+    padding: 17px;
+
+}
+.removeBtn{
+    background-color: transparent;
+    margin-top: -17px;
+    position: relative;
+    color: lightskyblue;
+}
+
+.removeBtn:hover{
+    color: red;
+}
+
+.addBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 46px;
+    color: #3b3b3b;
+}
+
+.addBtn:hover{
+    color: lightskyblue;
+}
+
+.title_body{
+    font-size: 15px;
+    color: #58595B;
+    font-family: ubuntu,sans-serif;
+    font-weight: 700;
 }
