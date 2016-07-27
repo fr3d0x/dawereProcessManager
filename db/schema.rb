@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726193123) do
+ActiveRecord::Schema.define(version: 20160727130247) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,13 @@ ActiveRecord::Schema.define(version: 20160726193123) do
     t.string   "gender"
   end
 
+  create_table "grades", force: :cascade do |t|
+    t.string   "name"
+    t.text     "description"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string   "role"
     t.integer  "user_id"
@@ -77,14 +84,16 @@ ActiveRecord::Schema.define(version: 20160726193123) do
     t.string   "name"
     t.text     "shortDescription"
     t.text     "longDescription"
-    t.string   "grade"
     t.text     "firstPeriodDesc"
     t.text     "secondPeriodDesc"
     t.text     "thirdPeriodDesc"
     t.text     "goal"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.integer  "grade_id"
   end
+
+  add_index "subjects", ["grade_id"], name: "index_subjects_on_grade_id", using: :btree
 
   create_table "teachers", force: :cascade do |t|
     t.text     "cvLong"
@@ -142,6 +151,7 @@ ActiveRecord::Schema.define(version: 20160726193123) do
   add_foreign_key "subject_planifications", "subjects"
   add_foreign_key "subject_planifications", "teachers"
   add_foreign_key "subject_planifications", "users"
+  add_foreign_key "subjects", "grades"
   add_foreign_key "users", "employees"
   add_foreign_key "vdm_changes", "users"
   add_foreign_key "vdm_changes", "vdms"

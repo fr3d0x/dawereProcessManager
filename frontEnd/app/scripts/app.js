@@ -60,7 +60,7 @@ var app = angular.module('app', [
 
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('/app');
+    $urlRouterProvider.otherwise('/app/dashboard');
 
     $stateProvider
 
@@ -88,20 +88,30 @@ var app = angular.module('app', [
             controller: 'dashboardController',
             templateUrl: 'views/dashboard/dashboard.html'
         })
-    
-        .state('app.classesPlanification', {
+
+        //pre-produccion
+        .state('app.preProduction', {
+            url: '/preProduction',
+            template: '<div ui-view></div>'
+        })
+
+        .state('app.preProduction.classesPlanification', {
             url: '/classesPlanification?id',
             controller: 'classesPlanificationController',
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
 
-        .state('app.subjectsPlaning', {
+        .state('app.preProduction.subjectsPlaning', {
             url: '/subjectsPlanification',
             controller: 'subjectPlannificationListController',
             templateUrl: 'views/pre-produccion/subjectPlannificationList.html'
         })
-      
 
+        .state('app.preProduction.editClassPlan', {
+            url: '/editClassPlan?id',
+            controller: 'editClassPlanController',
+            templateUrl: 'views/pre-produccion/editClassPlan.html'
+        })
 
 
   }]);

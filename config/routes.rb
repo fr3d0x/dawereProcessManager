@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :grades, except: [:new, :edit]
   resources :global_progresses, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit]
