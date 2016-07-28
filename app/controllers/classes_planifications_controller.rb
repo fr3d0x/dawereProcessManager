@@ -72,6 +72,6 @@ class ClassesPlanificationsController < ApplicationController
     end
 
     def classes_planification_params
-      params.require(:classes_planification).permit(:subjectPlanification_id, :meGeneralObjective, :meSpecificObjective, :meSpeficicObjDesc, :topicName, :videos)
+      params.require(:classes_planification).permit(:subjectPlanification_id, :meGeneralObjective, :meSpecificObjective, :meSpecificObjective, :topicName, :videos)
     end
 end

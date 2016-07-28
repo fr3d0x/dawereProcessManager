@@ -19,7 +19,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                         title: "Esta seguro",
                         text: "Seguro desea eliminar el MDT del video " + element.videoId,
                         type: "warning",
-                        showCancelButton: false,
+                        showCancelButton: true,
                         confirmButtonText: "OK",
                         closeOnConfirm: false,
                         closeOnCancel: true
@@ -52,7 +52,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                     videoTittle: null,
                     videoContent: null,
                     status: null,
-                    coments: null,
+                    comments: null,
                     description: null,
                     writable: true,
                     fkClass: $scope.cp.id

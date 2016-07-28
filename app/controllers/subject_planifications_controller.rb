@@ -68,7 +68,7 @@ class SubjectPlanificationsController < ApplicationController
   def getWholeSubjectPlanning
 
     if params[:id] != nil
-      subject_planification = SubjectPlanification.find(params[:id])
+      subject_planification = SubjectPlanification.find_by_subject_id(params[:id])
       payload = {
           id: subject_planification.id,
           status: subject_planification.status,

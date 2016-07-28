@@ -5,13 +5,13 @@ one:
   videoTittle: MyString
   videoContent: MyText
   status: MyString
-  coments: MyText
-  Description: MyText
+  comments: MyText
+  description: MyText
 
 two:
   videoId: MyString
   videoTittle: MyString
   videoContent: MyText
   status: MyString
-  coments: MyText
-  Description: MyText
+  comments: MyText
+  description: MyText

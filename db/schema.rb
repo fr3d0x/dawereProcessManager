@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160728031716) do
+ActiveRecord::Schema.define(version: 20160728192223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20160728031716) do
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective"
     t.string   "meSpecificObjective"
-    t.text     "meSpeficicObjDesc"
+    t.text     "meSpecificObjDesc"
     t.string   "topicName"
     t.string   "videos"
     t.integer  "subject_planification_id"
@@ -137,8 +137,8 @@ ActiveRecord::Schema.define(version: 20160728031716) do
     t.string   "videoTittle"
     t.text     "videoContent"
     t.string   "status"
-    t.text     "coments"
-    t.text     "Description"
+    t.text     "comments"
+    t.text     "description"
     t.integer  "classes_planification_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
