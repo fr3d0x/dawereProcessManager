@@ -13,8 +13,10 @@ class SubjectsController < ApplicationController
     if (params[:id]) != nil
       @subjects = Subject.where(:grade_id => params[:id])
       render json: {data: @subjects, status: "SUCCESS"}, :status => 200
+    else
+      render json: {status: "NOT FOUND", msg: "No existe ID de Grado seleccionado"}, :status => 404
     end
-    render json: {status: "NOT FOUND", msg: "No existe ID de Grado seleccionado"}, :status => 404
+
   end
 
   # GET /subjects/1
