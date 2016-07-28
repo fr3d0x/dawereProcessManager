@@ -19,7 +19,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                         title: "Esta seguro",
                         text: "Seguro desea eliminar el MDT del video " + element.videoId,
                         type: "warning",
-                        showCancelButton: false,
+                        showCancelButton: true,
                         confirmButtonText: "OK",
                         closeOnConfirm: false,
                         closeOnCancel: true
