@@ -1,16 +1,20 @@
-<!-- tile -->
-<section class="tile" fullscreen="isFullscreen02">
 
-    <!-- tile header -->
-    <div class="tile-header dvd dvd-btm">
-        <h1 class="custom-font"><strong>Lista  </strong>de planes de clase de la materia {{subject.name}}</h1>
-    </div>
-    <!-- /tile header -->
 
-    <!-- tile body -->
-    <div class="tile-body">
+<section class="container-fluid">
+    <div class="row col-md-10 col-md-offset-1">
 
-        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right">Limpiar Filtrado</button>
+        <div class="tittle">
+            <p>Lista de planes de clase de la materia {{subject.name}}</p>
+        </div>
+        <p style="border-bottom: 5px solid #E6E7E8;">
+            <span id="border-total-width"  style="color:rgb(231, 232, 233);"></span>
+        </p>
+        <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -5px;"></div>
+        <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -10px;left:100px;"></div>
+        <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -15px; left:200px;"></div>
+        <div class="clearfix"></div>
+
+        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
         <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
          <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
 
@@ -22,12 +26,26 @@
                 <td data-title="'Nombre de tema'" filter="{topicName: 'text'}">{{row.topicName}}</td>
                 <td data-title="'Videos'" filter="{videos: 'text'}">{{row.videos}}</td>
                 <td data-title="'Actualizar'"><a ui-sref="app.preProduction.editClassPlan({id: row.id})"><i class="fa fa-pencil"></i></a></td>
+            </table>
 
-            </tr>
-        </table>
-
+        </div>
     </div>
-    <!-- /tile body -->
-
 </section>
-<!-- /tile -->
+
+
+
+<script>
+    setTimeout(function(){
+        var total_width = document.getElementById("border-total-width");
+        var color_width = total_width.offsetWidth/3;
+        var first = document.getElementById("fbrdr");
+        first.style.width = color_width + "px";
+        first.style.left = "0";
+        var second = document.getElementById("sbrdr");
+        second.style.width = color_width + "px";
+        second.style.left = color_width + "px";
+        var third = document.getElementById("tbrdr");
+        third.style.width = color_width + "px";
+        third.style.left = (2*color_width) + "px";
+    }, 2000);
+</script>
