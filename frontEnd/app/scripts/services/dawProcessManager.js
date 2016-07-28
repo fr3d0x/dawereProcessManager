@@ -32,5 +32,15 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.get(baseUrl +'/api/users/globalProgress').success(success).error(error);
     };
     
-    
+    this.getClassPlan = function (id, success, error) {
+        $http.get(baseUrl + '/api/classes_planifications/getClassPlan?id='+id ).success(success).error(error);
+    };
+
+    this.deleteVdm = function (id, success, error) {
+        $http.delete(baseUrl + '/api/vdms/'+id ).success(success).error(error);
+    };
+
+    this.addVdm = function (vdm, success, error) {
+        $http.post(baseUrl + '/api/vdms/addVdm', vdm).success(success).error(error);
+    };
 }]);

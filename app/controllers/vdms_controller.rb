@@ -1,5 +1,8 @@
 class VdmsController < ApplicationController
   before_action :set_vdm, only: [:show, :update, :destroy]
+  before_action :authenticate
+  before_action :only => [:addVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
+  include ActionView::Helpers::TextHelper
 
   # GET /vdms
   # GET /vdms.json
@@ -47,6 +50,48 @@ class VdmsController < ApplicationController
     head :no_content
   end
 
+  def addVdm
+    if request.raw_post != ""
+      parameters = ActiveSupport::JSON.decode(request.raw_post)
+      vdm = Vdm.new
+      classPlan = ClassesPlanification.find(parameters['fkClass'])
+      subject = Subject.find(classPlan.subject_planification.subject_id)
+      vdm.status = parameters['status']
+      vdm.classes_planification_id = parameters['fkClass']
+      vdm.coments = parameters['coments']
+      vdm.Description = parameters['description']
+      vdm.videoContent = parameters['videoContent']
+      vdm.videoTittle = parameters['videoTittle']
+      lastVid = classPlan.vdms.last
+      if lastVid != nil
+        vdmCount = lastVid.number + 1
+      else
+        vdmCount = 1
+      end
+      vdm.videoId = generateVideoId(subject, vdmCount)
+      vdm.number = vdmCount
+      vdm.save!
+      render :json => { data: vdm, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def getVdmsBySubject
+    if params[:id] != nil
+      sql = "Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.subject_id = "+params[:id]+" and cp.subject_planification_id = sp.id and v.classes_planification_id = cp.id"
+      vdms = ActiveRecord::Base.connection.execute(sql)
+
+      render :json => { data: vdms, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def generateVideoId(subject, vdmCount)
+    videoId = (subject.name[0, 3] +"v"+ vdmCount.to_s).upcase
+    return videoId
+  end
   private
 
     def set_vdm

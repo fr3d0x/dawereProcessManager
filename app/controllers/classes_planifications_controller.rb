@@ -1,5 +1,7 @@
 class ClassesPlanificationsController < ApplicationController
   before_action :set_classes_planification, only: [:show, :update, :destroy]
+  before_action :authenticate
+  before_action {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
 
   # GET /classes_planifications
   # GET /classes_planifications.json
@@ -45,6 +47,22 @@ class ClassesPlanificationsController < ApplicationController
     @classes_planification.destroy
 
     head :no_content
+  end
+
+  def getClassPlan
+    if params[:id] != nil
+      classPlan = ClassesPlanification.find(params[:id])
+      payload = {
+          id: classPlan.id,
+          primaryObj: classPlan.meGeneralObjective,
+          specificObj: classPlan.meSpecificObjective,
+          topicName: classPlan.topicName,
+          vdms: classPlan.vdms.as_json
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
   private
