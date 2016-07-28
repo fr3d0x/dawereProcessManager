@@ -9,9 +9,12 @@ class SubjectsController < ApplicationController
     render json: @subjects
   end
 
-  def getSubjectByGrade(grade)
-    @subjects = Subject.find_by_grade(grade)
-    render json: @subjects
+  def getSubjectByGrade
+    if (params[:id]) != nil
+      @subjects = Subject.where(:grade_id => params[:id])
+      render json: {data: @subjects, status: "SUCCESS"}, :status => 200
+    end
+    render json: {status: "NOT FOUND", msg: "No existe ID de Grado seleccionado"}, :status => 404
   end
 
   # GET /subjects/1

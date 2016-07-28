@@ -89,6 +89,12 @@ var app = angular.module('app', [
             templateUrl: 'views/dashboard/dashboard.html'
         })
 
+        .state('app.subjects', {
+            url: '/subjects?id',
+            controller: 'subjectListController',
+            templateUrl: 'views/sharedNavigation/subjectList.html'
+        })
+
         //pre-produccion
         .state('app.preProduction', {
             url: '/preProduction',
@@ -101,11 +107,7 @@ var app = angular.module('app', [
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
 
-        .state('app.preProduction.subjectsPlaning', {
-            url: '/subjectsPlanification',
-            controller: 'subjectPlannificationListController',
-            templateUrl: 'views/pre-produccion/subjectPlannificationList.html'
-        })
+
 
         .state('app.preProduction.editClassPlan', {
             url: '/editClassPlan?id',

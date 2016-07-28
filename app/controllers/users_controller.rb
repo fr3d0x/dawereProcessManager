@@ -83,6 +83,7 @@ class UsersController < ApplicationController
       subjectPlannings = SubjectPlanification.where(:user_id => $currentPetitionUser['id']).all
       payload = []
       i = 0
+      grades = Grade.all.as_json
       subjectPlannings.each do |sp|
         totalVideos = 0
         returned = 0
@@ -100,11 +101,13 @@ class UsersController < ApplicationController
             totalVideos: totalVideos,
             received: received,
             returned: returned,
-            processed: processed
+            processed: processed,
+
         }
         i += 1
       end
-      render :json => { data: payload.as_json, status: 'SUCCESS'}, :status => 200
+
+      render :json => { data: payload.as_json, grades: grades, status: 'SUCCESS'}, :status => 200
     end
   end
 

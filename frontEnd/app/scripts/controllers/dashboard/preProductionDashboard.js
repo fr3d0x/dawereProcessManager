@@ -9,6 +9,7 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
         var getGlobalProgress = function(){
             dawProcessManagerService.getGlobalProgress(function (response)  {
                 var data = response.data;
+                $scope.grades = response.grades;
                 $scope.tableParams = new NgTableParams({},{
                     filterOptions: { filterLayout: "horizontal" },
                     dataset: data
@@ -17,7 +18,6 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
                 alert(error);
             })
         };
-
 
         getGlobalProgress();
         

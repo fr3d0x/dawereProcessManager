@@ -30,5 +30,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     
     this.getGlobalProgress = function (success, error){
         $http.get(baseUrl +'/api/users/globalProgress').success(success).error(error);
-    }
+    };
+    
+    
 }]);

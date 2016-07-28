@@ -1,28 +1,39 @@
-<!-- tile body -->
+<div class="container-fluid" >
+    <div class="row">
+        <!-- tile body -->
+        <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
 
-<div class="tile-body col-lg-8 col-md-8 col-md-offset-2">
+            <table ng-table="tableParams" align="center" class="table table-condensed table-bordered table-striped col-lg-8">
+                <tr ng-repeat="row in $data">
+                    <td data-title="'Materia'">{{row.subject.name}}</td>
+                    <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+                    <td data-title="'Video Clases'">{{row.totalVideos}}</td>
+                    <td data-title="'Recibido (Cantidad)'">{{row.received}}</td>
+                    <td data-title="'Devueltos (Cantidad)'">{{row.returned}}</td>
+                    <td data-title="'Procesado'">{{row.processed}}</td>
+                    <td data-title="'Efectividad'">{{row.effectiveness}}</td>
+                </tr>
+            </table>
 
-    <table ng-table="tableParams" class="table table-condensed table-bordered table-striped col-lg-8">
-        <tr ng-repeat="row in $data">
-            <td data-title="'Materia'">{{row.subject.name}}</td>
-            <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
-            <td data-title="'Video Clases'">{{row.totalVideos}}</td>
-            <td data-title="'Recibido (Cantidad)'">{{row.received}}</td>
-            <td data-title="'Devueltos (Cantidad)'">{{row.returned}}</td>
-            <td data-title="'Procesado'">{{row.processed}}</td>
-            <td data-title="'Efectividad'">{{row.effectiveness}}</td>
-        </tr>
-    </table>
+        </div>
+        <!-- /tile body -->
+    </div>
 
+    <div class="row center-block">
+        <!-- tile body -->
+        <div class="col-lg-6 col-md-6 col-sm-8 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-xs-offset-3">
+            <!--<div ng-repeat tuitions in $grade>-->
+            <div align="center" class="yearButtonContainer">
+                <span ng-repeat="grade in grades">
+                    <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
+                </span>
+                <!--<button class="yearButton yearButtonContainer" title="1er año" name="1er año">1er año</button>
+                <button class="yearButton yearButtonContainer" title="2do año" name="2do año">2do año</button>
+                <button class="yearButton yearButtonContainer" title="3er año" name="3er año">3er año</button>
+                <button class="yearButton yearButtonContainer" title="4to año" name="4to año">4to año</button>
+                <button class="yearButton yearButtonContainer" title="5to año" name="5to año">5to año</button>-->
+            </div>
+        </div>
+    <!-- /tile body -->
+    </div>
 </div>
-<!-- /tile body -->
-<!-- tile body -->
-<div class="tile-body">
-    <!--<div ng-repeat tuitions in $grade>-->
-    <button title="1er año" name="1er año"></button>
-    <button title="2do año" name="2do año"></button>
-    <button title="3er año" name="3er año"></button>
-    <button title="4to año" name="4to año"></button>
-    <button title="5to año" name="15to año"></button>
-</div>
-<!-- /tile body -->
