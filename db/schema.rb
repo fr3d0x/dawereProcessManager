@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160727130247) do
+ActiveRecord::Schema.define(version: 20160728031716) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,6 +142,7 @@ ActiveRecord::Schema.define(version: 20160727130247) do
     t.integer  "classes_planification_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.integer  "number"
   end
 
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree

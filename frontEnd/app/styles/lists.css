@@ -73,11 +73,25 @@
     position: relative;
     font-size: 46px;
     color: #3b3b3b;
+    cursor:pointer;
 }
 
 .addBtn:hover{
     color: lightskyblue;
 }
+
+.saveBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.saveBtn:hover{
+    color: lightskyblue;
+}
+
 
 .title_body{
     font-size: 15px;

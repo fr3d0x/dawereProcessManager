@@ -2,7 +2,12 @@ Rails.application.routes.draw do
 
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit]
-    resources :vdms, except: [:new, :edit]
+    resources :vdms, except: [:new, :edit] do
+      collection do
+        post :addVdm
+        get :getVdmsBySubject
+      end
+    end
     resources :classes_planifications, except: [:new, :edit] do
       collection do
         get :getClassPlan

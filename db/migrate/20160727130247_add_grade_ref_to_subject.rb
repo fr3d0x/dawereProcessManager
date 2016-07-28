@@ -1,4 +1,4 @@
-class AddGradeToSubject < ActiveRecord::Migration
+class AddGradeRefToSubject < ActiveRecord::Migration
   def change
     add_reference :subjects, :grade, index: true, foreign_key: true
   end
