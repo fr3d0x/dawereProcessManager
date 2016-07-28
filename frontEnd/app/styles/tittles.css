@@ -34,3 +34,26 @@
     height: 5px;
     margin-bottom: 5px;
 }
+.tittle {
+    color: #58595B;
+    font-size: 36px;
+    line-height: 60px;
+    font-family: ubuntu,sans-serif;
+    font-weight: 500;/*
+        margin-bottom: 50px;*/
+}
+
+
+.withoutOver {
+    text-decoration: none;
+    color: #787878;
+    font-weight: 200;
+    cursor:default;
+}
+
+.withoutOver a:hover{
+    text-decoration: none;
+    color: #787878;
+    font-weight: 200;
+    cursor:default;
+}

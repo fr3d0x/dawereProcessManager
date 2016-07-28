@@ -1,22 +1,13 @@
-<style>
-    .tittle {
-        color: #58595B;
-        font-size: 36px;
-        line-height: 60px;
-        font-family: ubuntu,sans-serif;
-        font-weight: 500;/*
-        margin-bottom: 50px;*/
-    }
-</style>
 
 <div class="container-fluid" >
+
     <div class="row col-md-11 col-md-offset-1">
         <div class="col-md-12">
             <div class="tittle">
                 <span id="border-total-width"  style="color:rgb(231, 232, 233);">
-                    <a style="text-decoration: none;" ui-sref="app.dashboard" class="">D</a>
-                    <a id="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
-                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 28px;" class=""><b><span style="color:#135C60"> Lista de planificaciones de materia</span></b></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Materias</b></span></a>
                 </span>
             </div>
             <p style="border-bottom: 5px solid #E6E7E8;">
@@ -32,19 +23,18 @@
 
             <div class="clearfix"></div>
 
-            <div ng-repeat="item in spList">
-                <div  class="listItemWrapper">
-                    <div class="col-md-6 col-md-offset-3 col-sm-4" >
-                        <div class="listItemInnerWrap"></div>
-                        <div  class="listItem"  style="position: relative">
-                            <a class="nonblock nontext Button rounded-corners clearfix" ng-click="activateAssignmentInfo(item)">
-                                <div class="listItemDescription">
-                                    <p align="center">{{item.subject.name}} {{item.subject.grade}}</p>
-                                </div>
-                            </a>
+            <div ng-repeat="subject in subjects" style="margin-bottom: 30px">
+                <a class="nonblock nontext Button rounded-corners clearfix" ng-click="activateAssignmentInfo(item)">
+                    <div class="listItemDescription col-md-6 col-md-offset-3 col-sm-4">
+                        <p align="center">{{subject.name}} </p>
+                        <div class="subjectOptions">
+                            <button class="col-md-3 col-md-offset-1 subjectButton">Plan de clases</button>
+                            <button class="col-md-3 subjectButton">MDT</button>
+                            <button class="col-md-3 subjectButton">Consolidación</button>
                         </div>
                     </div>
-                </div>
+                </a>
+
             </div>
         </div>
     </div>
