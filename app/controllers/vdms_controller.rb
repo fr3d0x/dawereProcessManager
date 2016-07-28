@@ -58,8 +58,8 @@ class VdmsController < ApplicationController
       subject = Subject.find(classPlan.subject_planification.subject_id)
       vdm.status = parameters['status']
       vdm.classes_planification_id = parameters['fkClass']
-      vdm.coments = parameters['coments']
-      vdm.Description = parameters['description']
+      vdm.comments = parameters['comments']
+      vdm.description = parameters['description']
       vdm.videoContent = parameters['videoContent']
       vdm.videoTittle = parameters['videoTittle']
       lastVid = classPlan.vdms.last
@@ -79,10 +79,25 @@ class VdmsController < ApplicationController
 
   def getVdmsBySubject
     if params[:id] != nil
-      sql = "Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.subject_id = "+params[:id]+" and cp.subject_planification_id = sp.id and v.classes_planification_id = cp.id"
-      vdms = ActiveRecord::Base.connection.execute(sql)
+      sp = SubjectPlanification.find_by_subject_id(params[:id])
+      i = 0
+      payload = []
+      sp.classes_planifications.each do |cp|
+        cp.vdms.each do |vdm|
+          payload[i] = {
+              videoId: vdm.videoId,
+              videoTittle: vdm.videoTittle,
+              videoContent: vdm.videoContent,
+              status: vdm.status,
+              comments: vdm.comments,
+              description: vdm.description,
+              cp: cp.as_json
+          }
 
-      render :json => { data: vdms, status: 'SUCCESS'}, :status => 200
+          i++1
+        end
+      end
+      render :json => { data: payload, subject: sp.subject, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -99,6 +114,6 @@ class VdmsController < ApplicationController
     end
 
     def vdm_params
-      params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :coments, :Description)
+      params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :comments, :description)
     end
 end

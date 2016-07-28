@@ -106,15 +106,24 @@ var app = angular.module('app', [
             controller: 'classesPlanificationController',
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
-
-
-
+        
         .state('app.preProduction.editClassPlan', {
             url: '/editClassPlan?id',
             controller: 'editClassPlanController',
             templateUrl: 'views/pre-produccion/editClassPlan.html'
         })
 
+        //VDM
+        .state('app.vdm', {
+            url: '/vdm',
+            template: '<div ui-view></div>'
+        })
+        
+        .state('app.vdm.vdmList', {
+            url: '/vdmBySubject?id',
+            controller: 'vdmsController',
+            templateUrl: 'views/VDM/vdms.html'
+        })
 
   }]);
 

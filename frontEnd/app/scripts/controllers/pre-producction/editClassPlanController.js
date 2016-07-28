@@ -52,7 +52,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                     videoTittle: null,
                     videoContent: null,
                     status: null,
-                    coments: null,
+                    comments: null,
                     description: null,
                     writable: true,
                     fkClass: $scope.cp.id

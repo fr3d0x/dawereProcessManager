@@ -13,7 +13,7 @@ class VdmsControllerTest < ActionController::TestCase
 
   test "should create vdm" do
     assert_difference('Vdm.count') do
-      post :create, vdm: { Description: @vdm.Description, coments: @vdm.coments, status: @vdm.status, videoContent: @vdm.videoContent, videoId: @vdm.videoId, videoTittle: @vdm.videoTittle }
+      post :create, vdm: { description: @vdm.description, comments: @vdm.comments, status: @vdm.status, videoContent: @vdm.videoContent, videoId: @vdm.videoId, videoTittle: @vdm.videoTittle }
     end
 
     assert_response 201
@@ -25,7 +25,7 @@ class VdmsControllerTest < ActionController::TestCase
   end
 
   test "should update vdm" do
-    put :update, id: @vdm, vdm: { Description: @vdm.Description, coments: @vdm.coments, status: @vdm.status, videoContent: @vdm.videoContent, videoId: @vdm.videoId, videoTittle: @vdm.videoTittle }
+    put :update, id: @vdm, vdm: { description: @vdm.description, comments: @vdm.comments, status: @vdm.status, videoContent: @vdm.videoContent, videoId: @vdm.videoId, videoTittle: @vdm.videoTittle }
     assert_response 204
   end
 
