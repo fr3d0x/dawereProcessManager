@@ -78,6 +78,24 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                 })
             }
         };
+        
+        $scope.editClassPlan = function(cp){
+            if (cp != null && cp.id != null){
+                dawProcessManagerService.editCP(cp, function(response){
+                    if(response.status == 'SUCCES'){
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha guardado el Plan del tema " + response.data.topicName,
+                            type: "success",
+                            confirmButtonText: "OK",
+                            closeOnConfirm: true
+                        });
+                    }
+                }, function(error){
+                    console.log(error)
+                })
+            }
+        };
 
         getClassesPlan();
 
