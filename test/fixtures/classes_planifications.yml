@@ -4,7 +4,7 @@ one:
   subjectPlanificationId: 1
   meGeneralObjective: MyString
   meSpecificObjective: MyString
-  meSpeficicObjDesc: MyText
+  meSpecificObjDesc: MyText
   topicName: MyString
   videos: MyString
 
@@ -12,6 +12,6 @@ two:
   subjectPlanificationId: 1
   meGeneralObjective: MyString
   meSpecificObjective: MyString
-  meSpeficicObjDesc: MyText
+  meSpecificObjDesc: MyText
   topicName: MyString
   videos: MyString

@@ -24,6 +24,20 @@
     margin: 0.5em;
 }
 
+.createButton {
+    font-family: ubuntu,sans-serif;
+    border: 0 transparent;
+    color: #58595B;
+    font-size: 1em;
+    bottom: 2em;
+    background: #E6E7E8;
+    text-decoration: none;
+}
+.createButton:hover {
+    background-color: #787878;
+    text-decoration: none;
+    color: #ffffff;
+}
 
 .subjectButton {
     font-family: ubuntu,sans-serif;
@@ -42,3 +56,11 @@
     text-decoration: none;
     color: #ffffff;
 }
+
+.buttonsContainer{
+    padding-bottom: 0.5em;
+    margin-bottom: auto;
+    position: relative;
+}
+
+

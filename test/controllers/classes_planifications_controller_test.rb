@@ -13,7 +13,7 @@ class ClassesPlanificationsControllerTest < ActionController::TestCase
 
   test "should create classes_planification" do
     assert_difference('ClassesPlanification.count') do
-      post :create, classes_planification: {meGeneralObjective: @classes_planification.meGeneralObjective, meSpecificObjective: @classes_planification.meSpecificObjective, meSpeficicObjDesc: @classes_planification.meSpeficicObjDesc, subjectPlanification_id: @classes_planification.subjectPlanificationId, topicName: @classes_planification.topicName, videos: @classes_planification.videos }
+      post :create, classes_planification: {meGeneralObjective: @classes_planification.meGeneralObjective, meSpecificObjective: @classes_planification.meSpecificObjective, meSpecificObjDesc: @classes_planification.meSpecificObjDesc, subjectPlanification_id: @classes_planification.subjectPlanificationId, topicName: @classes_planification.topicName, videos: @classes_planification.videos }
     end
 
     assert_response 201
@@ -25,7 +25,7 @@ class ClassesPlanificationsControllerTest < ActionController::TestCase
   end
 
   test "should update classes_planification" do
-    put :update, id: @classes_planification, classes_planification: {meGeneralObjective: @classes_planification.meGeneralObjective, meSpecificObjective: @classes_planification.meSpecificObjective, meSpeficicObjDesc: @classes_planification.meSpeficicObjDesc, subjectPlanification_id: @classes_planification.subjectPlanificationId, topicName: @classes_planification.topicName, videos: @classes_planification.videos }
+    put :update, id: @classes_planification, classes_planification: {meGeneralObjective: @classes_planification.meGeneralObjective, meSpecificObjective: @classes_planification.meSpecificObjective, meSpecificObjDesc: @classes_planification.meSpecificObjDesc, subjectPlanification_id: @classes_planification.subjectPlanificationId, topicName: @classes_planification.topicName, videos: @classes_planification.videos }
     assert_response 204
   end
 

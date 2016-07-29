@@ -5,8 +5,9 @@
 app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService){
 
-        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-        if(user != null){
+        var token = localStorageService.get('encodedToken');
+        if(token != null){
+            var user = JSON.parse(atob(token.split(".")[1]));
             if(localStorageService.get('currentRole') == null){
                 for(var i=0; i< user.roles.length; i++){
                     if(user.roles[i].primary){

@@ -3,54 +3,34 @@
 <section class="container-fluid">
     <div class="row col-md-10 col-md-offset-1">
 
-        <div class="tittle">
-            <p>Lista de planes de clase de la materia {{subject.name}}</p>
+        <div class="col-md-12">
+            <div class="tittle">
+                <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.subjects({id:subject.grade_id})" class="">Materias</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Planificacion de clases</b></span></a>
+                    <underlining></underlining>
+                </span>
+            </div>
         </div>
-        <p style="border-bottom: 5px solid #E6E7E8;">
-            <span id="border-total-width"  style="color:rgb(231, 232, 233);"></span>
-        </p>
-        <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -5px;"></div>
-        <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -10px;left:100px;"></div>
-        <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -15px; left:200px;"></div>
         <div class="clearfix"></div>
 
+        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-        <div class="tile-body">
 
-            <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
-            <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
-             <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
-
-            <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-                <tr ng-repeat="row in $data">
-                    <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}">{{row.meGeneralObjective}}</td>
-                    <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}">{{row.meSpecificObjective}}</td>
-                    <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpeficicObjDesc: 'text'}">{{row.meSpeficicObjDesc}}</td>
-                    <td data-title="'Nombre de tema'" filter="{topicName: 'text'}">{{row.topicName}}</td>
-                    <td data-title="'Videos'" filter="{videos: 'text'}">{{row.videos}}</td>
-                    <td data-title="'Actualizar'"><a ui-sref="app.preProduction.editClassPlan({id: row.id})"><i class="fa fa-pencil"></i></a></td>
-
-                </tr>
-            </table>
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+                <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}">{{row.meGeneralObjective}}</td>
+                <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}">{{row.meSpecificObjective}}</td>
+                <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}">{{row.meSpecificObjDesc}}</td>
+                <td data-title="'Nombre de tema'" filter="{topicName: 'text'}">{{row.topicName}}</td>
+                <td data-title="'Videos'" filter="{videos: 'text'}">{{row.videos}}</td>
+                <td data-title="'Actualizar'"><a ui-sref="app.preProduction.editClassPlan({id: row.id})"><i class="fa fa-pencil"></i></a></td>
+        </table>
 
         </div>
     </div>
 </section>
 
-
-
-<script>
-    setTimeout(function(){
-        var total_width = document.getElementById("border-total-width");
-        var color_width = total_width.offsetWidth/3;
-        var first = document.getElementById("fbrdr");
-        first.style.width = color_width + "px";
-        first.style.left = "0";
-        var second = document.getElementById("sbrdr");
-        second.style.width = color_width + "px";
-        second.style.left = color_width + "px";
-        var third = document.getElementById("tbrdr");
-        third.style.width = color_width + "px";
-        third.style.left = (2*color_width) + "px";
-    }, 2000);
-</script>

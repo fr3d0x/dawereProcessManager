@@ -19,7 +19,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                         title: "Esta seguro",
                         text: "Seguro desea eliminar el MDT del video " + element.videoId,
                         type: "warning",
-                        showCancelButton: false,
+                        showCancelButton: true,
                         confirmButtonText: "OK",
                         closeOnConfirm: false,
                         closeOnCancel: true
@@ -52,7 +52,7 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                     videoTittle: null,
                     videoContent: null,
                     status: null,
-                    coments: null,
+                    comments: null,
                     description: null,
                     writable: true,
                     fkClass: $scope.cp.id
@@ -73,6 +73,24 @@ app.controller("editClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                     vdm.id = response.data.id;
                     vdm.videoId = response.data.videoId;
                     vdm.writable = false
+                }, function(error){
+                    console.log(error)
+                })
+            }
+        };
+        
+        $scope.editClassPlan = function(cp){
+            if (cp != null && cp.id != null){
+                dawProcessManagerService.editCP(cp, function(response){
+                    if(response.status == 'SUCCES'){
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha guardado el Plan del tema " + response.data.topicName,
+                            type: "success",
+                            confirmButtonText: "OK",
+                            closeOnConfirm: true
+                        });
+                    }
                 }, function(error){
                     console.log(error)
                 })

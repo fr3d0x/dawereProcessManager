@@ -65,7 +65,7 @@
 }
 
 .removeBtn:hover{
-    color: red;
+    color: lightcoral;
 }
 
 .addBtn{
@@ -90,6 +90,41 @@
 
 .saveBtn:hover{
     color: lightskyblue;
+}
+
+.showBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.showBtn:hover{
+    color: lightskyblue;
+}
+
+.editBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.editBtn:hover{
+    color: lightskyblue;
+}
+
+.closeBtn{
+    background-color: transparent;
+    position: relative;
+    color: #c9302c;
+    cursor:pointer;
+}
+
+.closeBtn:hover{
+    color: lightcoral;
 }
 
 

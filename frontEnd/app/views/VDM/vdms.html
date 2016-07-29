@@ -1,0 +1,111 @@
+<section class="container-fluid">
+    <div class="row col-md-10 col-md-offset-1">
+
+        <div class="col-md-12">
+            <div class="tittle">
+                <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.subjects({id:subject.grade_id})" class="">Materias</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>MDT'S</b></span></a>
+                    <underlining></underlining>
+                </span>
+            </div>
+        </div>
+
+
+        <div class="tile-body">
+
+            <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+            <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+             <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
+
+            <div class="row">
+                <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data">
+                        <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.meGeneralObjective}}</td>
+                        <td data-title="'N Objetivo Especifico ME'" filter="{meSpecificObjective: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.meSpecificObjective}}</td>
+                        <td data-title="'Objetivo Especifico ME'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                {{row.cp.meSpecificObjDesc | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
+                        <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
+                        <td data-title="'Titulo'" ng-if="row.writable != true" class="row" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div class="col-lg-10  col-md-10 col-sm-10  col-xs-10 ">
+                                {{row.videoTittle | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                {{row.videoContent | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status}}</td>
+                        <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                {{row.comments | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Descripcion'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                {{row.description | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div align="center">
+                                <a ng-click="editRow(row)">
+                                    <i class="fa fa-pencil editBtn" style="font-size: 13px"></i>
+                                </a><span style="font-size: 18px">|</span>
+
+                                <a ng-click="add(row, $data)" >
+                                    <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 13px"></i>
+                                </a><span style="font-size: 18px">|</span>
+
+                                <a ng-click="add(row, $data)" >
+                                    <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 13px"></i>
+                                </a>
+
+                            </div>
+                        </td>
+
+                        <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.meGeneralObjective}}</td>
+                        <td data-title="'N Objetivo Especifico ME'" filter="{meSpecificObjective: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.meSpecificObjective}}</td>
+                        <td data-title="'Objetivo Especifico ME'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                                {{row.cp.meSpecificObjDesc | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
+                        <td data-title="'Id video'" ng-if="row.writable == true">{{row.videoId}}</td>
+                        <td data-title="'Titulo'" ng-if="row.writable == true" ><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
+                        <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
+                        <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select id="municipio" ng-model="row.status" ng-options="state.statusIng as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
+                            <option value="null">No especifico</option>
+                        </select>
+                        </td>
+                        <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
+                        <td data-title="'Descripcion'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.description"></textarea></td>
+                        <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
+                            <div align="center">
+                                <a ng-click="saveVdm(row)" >
+                                    <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 13px"></i>
+                                </a><span style="font-size: 18px">|</span>
+                                <a ng-click="remove(row, $data)">
+                                    <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 13px"></i>
+                                </a><span style="font-size: 18px">|</span>
+                                <a ng-click="close(row, $data)" >
+                                    <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 13px"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+    </div>
+
+</section>

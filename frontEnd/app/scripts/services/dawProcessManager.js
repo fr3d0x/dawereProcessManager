@@ -16,10 +16,6 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.post(baseUrl + '/api/users/login', user).success(success).error(error);
     };
 
-    this.countRoles = function (user, success, error) {
-
-    };
-
     this.getClassesPlaning = function (id, success, error) {
         $http.get(baseUrl + '/api/subject_planifications/getWholeSubjectPlanning?id='+id ).success(success).error(error);
     };
@@ -47,5 +43,13 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     this.addVdm = function (vdm, success, error) {
         $http.post(baseUrl + '/api/vdms/addVdm', vdm).success(success).error(error);
+    };
+
+    this.getVdmsBySubject = function (id, success, error) {
+        $http.get(baseUrl + '/api/vdms/getVdmsBySubject?id='+id ).success(success).error(error);
+    };
+
+    this.editCP = function (cp, success, error) {
+        $http.put(baseUrl + '/api/classes_planifications/editCp?id='+cp.id, cp ).success(success).error(error);
     };
 }]);
