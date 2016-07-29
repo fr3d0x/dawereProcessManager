@@ -1,30 +1,25 @@
-<div class="row">
-    <div align="center" class="buttonsContainer col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2">
-        <button class="createButton">Crear plan de clases</button>
-        <button class="createButton">Crear MDT</button>
-        <button class="createButton">Crear Consolidacion</button>
-    </div>
-</div>
-
 <div class="container-fluid" >
     <div class="row " >
         <div class="col-md-10 col-md-offset-1">
             <div class="tittle">
                 <span id="border-total-width"  style="color:rgb(231, 232, 233);">
                      <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Inicio</b></span></a>
+                    <underlining></underlining>
                 </span>
             </div>
-            <p style="border-bottom: 5px solid #E6E7E8;">
-                <span  style="color:rgb(231, 232, 233);"></span>
-            </p>
-            <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -15px;"></div>
-            <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -20px;left:100px;"></div>
-            <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -25px; left:200px;"></div>
-            <div class="clearfix"></div>
+        </div>
+
+        <div class="row">
+            <div align="center" class="buttonsContainer col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2">
+                <button class="createButton">Crear plan de clases</button>
+
+                <button class="createButton">Crear Consolidacion</button>
+
+            </div>
         </div>
         <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
 
-            <table ng-table="tableParams" align="center" class="table table-condensed table-bordered table-striped col-lg-8">
+            <table ng-table="tableParams" align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
                 <tr ng-repeat="row in $data">
                     <td data-title="'Materia'">{{row.subject.name}}</td>
                     <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
@@ -54,18 +49,3 @@
     </div>
 </div>
 
-<script>
-    setTimeout(function(){
-        var total_width = document.getElementById("border-total-width");
-        var color_width = total_width.offsetWidth/3;
-        var first = document.getElementById("fbrdr");
-        first.style.width = color_width + "px";
-        first.style.left = "0";
-        var second = document.getElementById("sbrdr");
-        second.style.width = color_width + "px";
-        second.style.left = color_width + "px";
-        var third = document.getElementById("tbrdr");
-        third.style.width = color_width + "px";
-        third.style.left = (2*color_width) + "px";
-    }, 2000);
-</script>

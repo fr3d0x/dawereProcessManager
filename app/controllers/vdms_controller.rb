@@ -94,7 +94,7 @@ class VdmsController < ApplicationController
               cp: cp.as_json
           }
 
-          i++1
+          i+=1
         end
       end
       render :json => { data: payload, subject: sp.subject, status: 'SUCCESS'}, :status => 200

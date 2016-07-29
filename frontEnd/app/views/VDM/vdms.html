@@ -1,28 +1,18 @@
-<style>
-
-    #tittle {
-        color: #58595B;
-        font-size: 36px;
-        line-height: 60px;
-        font-family: ubuntu,sans-serif;
-        font-weight: 500;
-        margin-bottom: 50px;
-    }
-</style>
-
 <section class="container-fluid">
     <div class="row col-md-10 col-md-offset-1">
 
-        <div class="tittle">
-            <p>Lista de planes de MDT de la materia {{subject.name}}</p>
+        <div class="col-md-12">
+            <div class="tittle">
+                <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.subjects({id:subject.grade_id})" class="">Materias</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>MDT'S</b></span></a>
+                    <underlining></underlining>
+                </span>
+            </div>
         </div>
-        <p style="border-bottom: 5px solid #E6E7E8;">
-            <span id="border-total-width"  style="color:rgb(231, 232, 233);"></span>
-        </p>
-        <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -5px;"></div>
-        <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -10px;left:100px;"></div>
-        <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -15px; left:200px;"></div>
-        <div class="clearfix"></div>
 
 
         <div class="tile-body">
@@ -50,21 +40,3 @@
         </div>
     </div>
 </section>
-
-
-
-<script>
-    setTimeout(function(){
-        var total_width = document.getElementById("border-total-width");
-        var color_width = total_width.offsetWidth/3;
-        var first = document.getElementById("fbrdr");
-        first.style.width = color_width + "px";
-        first.style.left = "0";
-        var second = document.getElementById("sbrdr");
-        second.style.width = color_width + "px";
-        second.style.left = color_width + "px";
-        var third = document.getElementById("tbrdr");
-        third.style.width = color_width + "px";
-        third.style.left = (2*color_width) + "px";
-    }, 2000);
-</script>
