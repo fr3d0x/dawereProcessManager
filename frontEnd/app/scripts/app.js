@@ -107,6 +107,13 @@ var app = angular.module('app', [
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
         
+        .state('app.preProduction.createPlanification',{
+            url: '/createPlanification',
+            /*controller: 'createClassesPlanification',*/
+            templateUrl: 'views/pre-produccion/createPlanificationForm.html'
+        })
+            
+        
         .state('app.preProduction.editClassPlan', {
             url: '/editClassPlan?id',
             controller: 'editClassPlanController',

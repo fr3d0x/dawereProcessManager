@@ -1,0 +1,66 @@
+<section class="container-fluid">
+    <div class="row col-md-10 col-md-offset-1">
+
+        <div class="tittle">
+            <p>Crear plan de clase </p>
+        </div>
+        <p style="border-bottom: 5px solid #E6E7E8;">
+            <span id="border-total-width"  style="color:rgb(231, 232, 233);"></span>
+        </p>
+        <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -5px;"></div>
+        <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -10px;left:100px;"></div>
+        <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -15px; left:200px;"></div>
+        <div class="clearfix"></div>
+
+        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+        <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+         <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
+
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+                <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}">{{row.meGeneralObjective}}</td>
+                <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}">{{row.meSpecificObjective}}</td>
+                <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}">{{row.meSpecificObjDesc}}</td>
+                <td data-title="'Nombre de tema'" filter="{topicName: 'text'}">{{row.topicName}}</td>
+                <td data-title="'Videos'" filter="{videos: 'text'}">{{row.videos}}</td>
+                <td data-title="'Actualizar'"><a ui-sref="app.preProduction.editClassPlan({id: row.id})"><i class="fa fa-pencil"></i></a></td>
+        </table>
+
+    </div>
+    </div>
+</section>
+<div class="container-fluid" >
+    <form class="form-container">
+        <div class="form-title"><h1>Plan de clases</h1></div>
+        <div class="form-title"><h4>Datos del profesor</h4></div>
+        <div class="form-title">Primer nombre del profesor</div>
+        <input class="form-field" type="text" name="firstName" /><br/>
+        <div class="form-title">Segundo nombre del profesor</div>
+        <input class="form-field" type="text" name="middleName" /><br/>
+        <div class="form-title">Apellido del profesor</div>
+        <input class="form-field" type="text" name="lastName" /><br/>
+    <!--    <div class="form-title">Segundo apellido del profesor</div>
+        <input class="form-field" type="text" name="secondLastName" /><br/>-->
+        <div class="form-title">Cedula del profesor</div>
+        <input class="form-field" type="text" name="personalId" /><br/>
+        <div class="form-title">Curriculum Largo </div>
+        <textarea class="form-field" type="text" name="cvLong" /><br/>
+        <div class="form-title">Curriculum Corto</div>
+        <textarea class="form-field" type="text" name="cvShort"></textarea><br/>
+
+        <div class="form-title">Numero Objetivo General</div>
+        <input class="form-field" type="text" name="meGeneralObjetive" /><br/>
+        <div class="form-title">Numero Objetivo Especifico</div>
+        <input class="form-field" type="text" name="meSpecificObjetive" /><br/>
+        <div class="form-title">Enunciado Objetivo Especifico ME</div>
+        <input class="form-field" type="text" name="meSpeficicObjDesc" /><br/>
+        <div class="form-title">Nombre del tema MDT</div>
+        <input class="form-field" type="" name="topicName" /><br/>
+        <div class="form-title">Numero de videos</div>
+        <input class="form-field" type="text" name="videos" /><br/>
+
+        <div class="submit-container">
+            <input class="submit-button" type="submit" value="Crear" />
+        </div>
+    </form>
+</div>

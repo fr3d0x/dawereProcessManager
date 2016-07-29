@@ -1,24 +1,24 @@
 .form-container {
-    border: 5px solid #e6e7e8;
-    background: #e6e7e8;
-    background: -webkit-gradient(linear, left top, left bottom, from(#e6e7e8), to(#e6e7e8));
+    /*border: 5px solid #e6e7e8;*/
+    /*background: #e6e7e8;*/
+    /*background: -webkit-gradient(linear, left top, left bottom, from(#e6e7e8), to(#e6e7e8));
     background: -webkit-linear-gradient(top, #e6e7e8, #e6e7e8);
     background: -moz-linear-gradient(top, #e6e7e8, #e6e7e8);
     background: -ms-linear-gradient(top, #e6e7e8, #e6e7e8);
     background: -o-linear-gradient(top, #e6e7e8, #e6e7e8);
-    background-image: -ms-linear-gradient(top, #e6e7e8 0%, #e6e7e8 100%);
-    -webkit-border-radius: 4px;
+    background-image: -ms-linear-gradient(top, #e6e7e8 0%, #e6e7e8 100%);*/
+    /*-webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
     -webkit-box-shadow: rgba(000,000,000,0.9) 0 0px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
     -moz-box-shadow: rgba(000,000,000,0.9) 0 0px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
-    box-shadow: rgba(000,000,000,0.9) 0 0px 2px, inset rgba(255,255,255,0.4) 0 0px 0;
-    font-family: 'Helvetica Neue',Helvetica,sans-serif;
+    box-shadow: rgba(000,000,000,0.9) 0 0px 2px, inset rgba(255,255,255,0.4) 0 0px 0;*/
+    font-family: ubuntu,sans-serif;
     text-decoration: none;
     vertical-align: middle;
-    min-width:300px;
+  /*  min-width:300px;
     padding:20px;
-    width:300px;
+    width:300px;*/
 }
 .form-field {
     border: 1px solid #919191;
@@ -38,7 +38,7 @@
     background: #bfffbf;
     color: #383838;
 }
-.form-container h2 {
+.form-container h2 h4 {
     text-shadow: #cadbce 0 1px 0;
     font-size:18px;
     margin: 0 0 10px 0;
