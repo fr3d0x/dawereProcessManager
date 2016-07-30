@@ -50,7 +50,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     };
 
     this.getGradesWithSubjects = function (success, error) {
-        $http.get(baseUrl + '/api/grades/getGradesWithSubjects').success(success),error(error);
+        $http.get(baseUrl + '/api/grades/getGradesWithSubjects').success(success).error(error);
     };
     
     this.editCP = function (cp, success, error) {
