@@ -1,30 +1,49 @@
 <section class="container-fluid">
     <div class="row col-md-10 col-md-offset-1">
 
-        <div class="tittle">
-            <p>Crear plan de clase </p>
+        <div class="col-md-12">
+            <div class="tittle">
+                <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Crear plan de clases</b></span></a>
+                    <underlining></underlining>
+                </span>
+            </div>
         </div>
-        <p style="border-bottom: 5px solid #E6E7E8;">
-            <span id="border-total-width"  style="color:rgb(231, 232, 233);"></span>
-        </p>
-        <div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:0px; position: relative ; top: -5px;"></div>
-        <div id="sbrdr" style="height: 5px; background-color: #369291; width:0px; position: relative; top: -10px;left:100px;"></div>
-        <div id="tbrdr" style="height: 5px; background-color: #135C60; width:0px; position: relative; top: -15px; left:200px;"></div>
         <div class="clearfix"></div>
 
-        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
-        <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
-         <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
+        <div class="row center-block" style=" margin-top: 50px;">
+           <select id="grades" ng-model="grades" ng-option="grade.name for grade in grades">
+                <option value="">-- Selecciona --</option>
+            </select>
+            <!--<div class="col-lg-6 col-md-6 col-sm-8 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-xs-offset-3">
+                &lt;!&ndash;<div ng-repeat tuitions in $grade>&ndash;&gt;
+                <div align="center" class="yearButtonContainer">
+                <span ng-repeat="grade in grades">
+                    <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
+                </span>
+                </div>
+            </div>-->
 
-        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-            <tr ng-repeat="row in $data">
-                <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}">{{row.meGeneralObjective}}</td>
-                <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}">{{row.meSpecificObjective}}</td>
-                <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}">{{row.meSpecificObjDesc}}</td>
-                <td data-title="'Nombre de tema'" filter="{topicName: 'text'}">{{row.topicName}}</td>
-                <td data-title="'Videos'" filter="{videos: 'text'}">{{row.videos}}</td>
-                <td data-title="'Actualizar'"><a ui-sref="app.preProduction.editClassPlan({id: row.id})"><i class="fa fa-pencil"></i></a></td>
-        </table>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 row" ng-if="toggle==true">
+            <table class="table table-condensed table-bordered table-striped col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <tr ng-repeat="cp in cps">
+                    <td data-title="'N Objetivo general ME'" ><input type="text" ng-model="cp.meGeneralObjective"></td>
+                    <td data-title="'N Objetivo especifico ME'"><input type="text" ng-model="cp.meSpecificObjective"></td>
+                    <td data-title="'Descripcion Objetivo especifico ME'"><input type="text" ng-model="cp.meSpecificObjDesc"></td>
+                    <td data-title="'Nombre de tema'"><input type="text" ng-model="cp.topicName"></td>
+                    <td data-title="'Videos'"><input type="number" ng-model="cp.videos"></td>
+            </table>
+            <div class="row">
+                <div align="center">
+                    <button>Guardar</button>
+                </div>
+            </div>
+        </div>
+
+
 
     </div>
     </div>

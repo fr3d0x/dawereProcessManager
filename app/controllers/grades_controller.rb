@@ -47,6 +47,20 @@ class GradesController < ApplicationController
     head :no_content
   end
 
+  def getGradesWithSubjects
+    grades = Grade.all
+    i =0
+    payload = []
+    grades.each do |grade|
+      payload[i] = {
+          grade: grade,
+          subjects: grade.subjects.as_json
+      }
+      i += 1
+    end
+    render json: {data: payload, status: "SUCCESS"}, :status => 200
+  end
+
   private
 
     def set_grade
