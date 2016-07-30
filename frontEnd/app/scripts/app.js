@@ -55,7 +55,7 @@ var app = angular.module('app', [
       suffix: '.json'
     });
     $translateProvider.useLocalStorage();
-    $translateProvider.preferredLanguage('en');
+    $translateProvider.preferredLanguage('es');
   }])
 
   .config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {

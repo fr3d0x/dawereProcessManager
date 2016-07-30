@@ -17,7 +17,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             })
         };
 
-        $scope.states = [{statusIng: 'not recieved', statusSpa: 'No recibido'}, {statusIng: 'recieved', statusSpa: 'Recibido'}, {statusIng: 'processed', statusSpa: 'Procesado'}];
+        $scope.states = [{statusIng: 'not received', statusSpa: 'No recibido'}, {statusIng: 'received', statusSpa: 'Recibido'}, {statusIng: 'processed', statusSpa: 'Procesado'}];
 
         $scope.add = function(vdm, data){
             data.splice(data.indexOf(vdm)+1, 0, {
@@ -44,24 +44,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             text: "Seguro desea eliminar el MDT del video " + element.videoId,
                             type: "warning",
                             showCancelButton: true,
-                            confirmButtonText: "OK",
-                            closeOnConfirm: false,
-                            closeOnCancel: true
-                        },
-                        function () {
+                            confirmButtonText: "OK"
+                        }).then(function () {
                             dawProcessManagerService.deleteVdm(element.id, function(response){
                                 array.splice(array.indexOf(element), 1);
                                 swal({
                                     title: "Exitoso",
                                     text: "Se ha eliminado el MDT del video" + element.videoId,
                                     type: "success",
-                                    confirmButtonText: "OK",
-                                    closeOnConfirm: true
+                                    confirmButtonText: "OK"
                                 })
                             }, function (error) {
                                 console.log(error)
                             })
-                        });
+                        }, function(){});
                 }else{
                     array.splice(array.indexOf(element), 1);
                 }
@@ -71,22 +67,41 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.saveVdm = function(vdm){
             if (vdm != null){
                 if(vdm.id != null){
-
-                }else{
-                    dawProcessManagerService.addVdm(vdm, function(response){
+                    dawProcessManagerService.updateVdm(vdm, function (response){
                         swal({
                             title: "Exitoso",
-                            text: "Se ha guardado el MDT del video " + response.data.videoId,
-                            type: "success",
+                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                            type: 'success',
                             confirmButtonText: "OK",
-                            closeOnConfirm: true
+                            confirmButtonColor: "lightskyblue"
                         });
-                        vdm.id = response.data.id;
-                        vdm.videoId = response.data.videoId;
-                        vdm.writable = false
+                        vdm.writable = false;
                     }, function(error){
                         console.log(error)
                     })
+                }else{
+                    swal({
+                        title: 'Justificar creacion',
+                        input: 'textarea',
+                        type: 'question',
+                        showCancelButton: true
+                    }).then(function(text) {
+                        vdm.justification = text;
+                        dawProcessManagerService.addVdm(vdm, function(response){
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha guardado el MDT del video " + response.data.videoId,
+                                type: 'success',
+                                confirmButtonText: "OK"
+                            });
+                            vdm.id = response.data.id;
+                            vdm.videoId = response.data.videoId;
+                            vdm.writable = false
+                        }, function(error){
+                            console.log(error)
+                        })
+                    }, function(){});
+
                 }
 
             }

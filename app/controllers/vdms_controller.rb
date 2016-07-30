@@ -50,6 +50,17 @@ class VdmsController < ApplicationController
     head :no_content
   end
 
+  def deleteVdm
+    if params[:id] != nil
+      vdm = Vdm.find(params[:id])
+      vdm.status = 'DESTROYED'
+      vdm.save
+      render :json => { status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
   def addVdm
     if request.raw_post != ""
       parameters = ActiveSupport::JSON.decode(request.raw_post)
@@ -59,7 +70,6 @@ class VdmsController < ApplicationController
       vdm.status = parameters['status']
       vdm.classes_planification_id = parameters['cp']['id']
       vdm.comments = parameters['comments']
-      vdm.description = parameters['description']
       vdm.videoContent = parameters['videoContent']
       vdm.videoTittle = parameters['videoTittle']
       lastVid = classPlan.vdms.last
@@ -71,6 +81,15 @@ class VdmsController < ApplicationController
       vdm.videoId = generateVideoId(subject, vdmCount)
       vdm.number = vdmCount
       vdm.save!
+      change = VdmChange.new
+      change.changeDetail = "Creacion"
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      if parameters['justification'] != nil
+        change.comments = parameters['justification']
+      end
+      change.changeDate = Time.now
+      change.save!
       render :json => { data: vdm, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
@@ -84,16 +103,17 @@ class VdmsController < ApplicationController
       payload = []
       sp.classes_planifications.each do |cp|
         cp.vdms.each do |vdm|
-          payload[i] = {
-              id: vdm.id,
-              videoId: vdm.videoId,
-              videoTittle: vdm.videoTittle,
-              videoContent: vdm.videoContent,
-              status: vdm.status,
-              comments: vdm.comments,
-              description: vdm.description,
-              cp: cp.as_json
-          }
+          if vdm.status != 'DESTROYED'
+            payload.push({
+                id: vdm.id,
+                videoId: vdm.videoId,
+                videoTittle: vdm.videoTittle,
+                videoContent: vdm.videoContent,
+                status: vdm.status,
+                comments: vdm.comments,
+                cp: cp.as_json
+            })
+          end
           i+=1
         end
       end
@@ -114,7 +134,71 @@ class VdmsController < ApplicationController
           videoContent: vdm.videoContent,
           status: vdm.status,
           comments: vdm.comments,
-          description: vdm.description,
+          subject: vdm.classes_planification.subject_planification.subject,
+          changes: vdm.vdm_changes
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def updateVdm
+    if request.raw_post != nil
+      newVdm = ActiveSupport::JSON.decode(request.raw_post)
+      vdm = Vdm.find(newVdm['id'])
+      if vdm.videoContent != newVdm['videoContent']
+        change = VdmChange.new
+        change.changeDetail = "Cambio de contenido"
+        change.changedFrom = "De "+vdm.videoContent
+        change.changedTo = "A "+ newVdm['videoContent']
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.changeDate = Time.now
+        change.save
+      end
+      if vdm.videoTittle != newVdm['videoTittle']
+        change = VdmChange.new
+        change.changeDetail = "Cambio de Titulo"
+        change.changedFrom = "De "+vdm.videoTittle
+        change.changedTo = "A "+ newVdm['videoTittle']
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.changeDate = Time.now
+        change.save
+      end
+      if vdm.status != newVdm['status']
+        change = VdmChange.new
+        change.changeDetail = "Cambio de estado"
+        change.changedFrom = "De "+vdm.status
+        change.changedTo = "A "+ newVdm['status']
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.changeDate = Time.now
+        change.save
+      end
+      if vdm.comments != newVdm['comments']
+        change = VdmChange.new
+        change.changeDetail = "Cambio de comentarios"
+        change.changedFrom = "De "+vdm.comments
+        change.changedTo = "A "+ newVdm['comments']
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.changeDate = Time.now
+        change.save
+      end
+      vdm.videoContent = newVdm['videoContent']
+      vdm.videoTittle = newVdm['videoTittle']
+      vdm.status = newVdm['status']
+      vdm.comments = newVdm['comments']
+      vdm.save
+      payload = {
+          cp: vdm.classes_planification,
+          videoId: vdm.videoId,
+          videoTittle: vdm.videoTittle,
+          videoContent: vdm.videoContent,
+          status: vdm.status,
+          comments: vdm.comments,
           subject: vdm.classes_planification.subject_planification.subject
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200

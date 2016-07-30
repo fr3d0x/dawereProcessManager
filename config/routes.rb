@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :gits, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit]
     resources :vdms, except: [:new, :edit] do
@@ -8,6 +7,8 @@ Rails.application.routes.draw do
         post :addVdm
         get :getVdmsBySubject
         get :getWholeVdm
+        post :updateVdm
+        get :deleteVdm
       end
     end
     resources :classes_planifications, except: [:new, :edit] do
@@ -35,7 +36,6 @@ Rails.application.routes.draw do
     end
     resources :employees, except: [:new, :edit]
     resources :grades, except: [:new, :edit]
-    resources :global_progresses, except: [:new, :edit]
   end
 
 

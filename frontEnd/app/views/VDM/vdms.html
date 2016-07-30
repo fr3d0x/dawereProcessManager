@@ -1,7 +1,7 @@
 <section class="container-fluid">
     <div class="row col-md-10 col-md-offset-1">
 
-        <div class="col-md-12">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
             <div class="tittle">
                 <span id="border-total-width"  style="color:rgb(231, 232, 233);">
                     <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
@@ -16,12 +16,10 @@
 
 
         <div class="tile-body">
-
-            <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
-            <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
-             <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
-
-            <div class="row">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+                <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+                 <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
                 <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
                     <tr ng-repeat="row in $data">
                         <!--<td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.meGeneralObjective}}</td>
@@ -33,38 +31,34 @@
                         </td>-->
                         <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
                         <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
-                        <td data-title="'Titulo'" ng-if="row.writable != true" class="row" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                            <div class="col-lg-10  col-md-10 col-sm-10  col-xs-10 ">
+                        <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
                                 {{row.videoTittle | limitTo : 300}}...
                             </div>
                         </td>
-                        <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row">
-                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                        <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
                                 {{row.videoContent | limitTo : 300}}...
                             </div>
                         </td>
-                        <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status}}</td>
-                        <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
+                        <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
+                        <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
                                 {{row.comments | limitTo : 300}}...
                             </div>
                         </td>
-                        <td data-title="'Descripcion'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                            <div class="col-lg-10 col-lg-offset-1 col-md-10 col-md-offset-1 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1">
-                                {{row.description | limitTo : 300}}...
-                            </div>
-                        </td>
+
                         <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
                             <div align="center">
-                                <a ng-click="editRow(row)">
+                                <a ng-click="editRow(row)" title='editar'>
                                     <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
                                 </a><span style="font-size: 20px">|</span>
 
-                                <a ng-click="add(row, $data)" >
+                                <a ng-click="add(row, $data)" title='agregar video a este tema'>
                                     <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a><span style="font-size: 20px">|</span>
 
-                                <a ui-sref="app.vdm.showVdm({id:row.id})" >
+                                <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                                     <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a>
 
@@ -87,16 +81,15 @@
                         </select>
                         </td>
                         <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
-                        <td data-title="'Descripcion'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.description"></textarea></td>
                         <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                             <div align="center">
-                                <a ng-click="saveVdm(row)" >
+                                <a ng-click="saveVdm(row)" title='guardar'>
                                     <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a><span style="font-size: 20px">|</span>
-                                <a ng-click="remove(row, $data)">
+                                <a ng-click="remove(row, $data)" title='eliminar'>
                                     <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a><span style="font-size: 20px">|</span>
-                                <a ng-click="close(row, $data)" >
+                                <a ng-click="close(row, $data)" title='cerrar'>
                                     <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a>
                             </div>

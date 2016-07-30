@@ -38,7 +38,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     };
 
     this.deleteVdm = function (id, success, error) {
-        $http.delete(baseUrl + '/api/vdms/'+id ).success(success).error(error);
+        $http.get(baseUrl + '/api/vdms/deleteVdm?id='+id ).success(success).error(error);
     };
 
     this.addVdm = function (vdm, success, error) {
@@ -55,5 +55,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     this.getVdm = function (id, success, error) {
         $http.get(baseUrl + '/api/vdms/getWholeVdm?id='+id ).success(success).error(error);
+    };
+
+    this.updateVdm = function (vdm, success, error) {
+        $http.post(baseUrl + '/api/vdms/updateVdm', vdm ).success(success).error(error);
     };
 }]);
