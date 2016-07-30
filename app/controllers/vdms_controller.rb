@@ -103,6 +103,26 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
+  def getWholeVdm
+    if params[:id] != nil
+      vdm = Vdm.find(params[:id])
+
+      payload = {
+          cp: vdm.classes_planification,
+          videoId: vdm.videoId,
+          videoTittle: vdm.videoTittle,
+          videoContent: vdm.videoContent,
+          status: vdm.status,
+          comments: vdm.comments,
+          description: vdm.description,
+          subject: vdm.classes_planification.subject_planification.subject
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
   def generateVideoId(subject, vdmCount)
     videoId = (subject.name[0, 3] +"v"+ vdmCount.to_s).upcase
     return videoId

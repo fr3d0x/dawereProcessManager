@@ -144,5 +144,11 @@ var app = angular.module('app', [
             templateUrl: 'views/VDM/vdms.html'
         })
 
+        .state('app.vdm.showVdm', {
+            url: '/vdm?id',
+            controller: 'showVdmController',
+            templateUrl: 'views/VDM/showVdm.html'
+        })
+
   }]);
 

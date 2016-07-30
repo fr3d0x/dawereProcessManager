@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       collection do
         post :addVdm
         get :getVdmsBySubject
+        get :getWholeVdm
       end
     end
     resources :classes_planifications, except: [:new, :edit] do

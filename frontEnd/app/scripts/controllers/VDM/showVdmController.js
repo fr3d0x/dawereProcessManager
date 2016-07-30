@@ -1,0 +1,17 @@
+/**
+ * Created by fr3d0 on 7/29/16.
+ */
+app.controller("showVdmController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
+        var getVdm = function(){
+            dawProcessManagerService.getVdm($stateParams.id, function (response)  {
+                
+                $scope.vdm = response.data;
+                
+            }, function(error) {
+                alert(error);
+            })
+        };
+
+        getVdm()
+    }]);
