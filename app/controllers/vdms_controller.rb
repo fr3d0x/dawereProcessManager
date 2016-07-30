@@ -54,10 +54,10 @@ class VdmsController < ApplicationController
     if request.raw_post != ""
       parameters = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.new
-      classPlan = ClassesPlanification.find(parameters['fkClass'])
+      classPlan = ClassesPlanification.find(parameters['cp']['id'])
       subject = Subject.find(classPlan.subject_planification.subject_id)
       vdm.status = parameters['status']
-      vdm.classes_planification_id = parameters['fkClass']
+      vdm.classes_planification_id = parameters['cp']['id']
       vdm.comments = parameters['comments']
       vdm.description = parameters['description']
       vdm.videoContent = parameters['videoContent']
@@ -85,6 +85,7 @@ class VdmsController < ApplicationController
       sp.classes_planifications.each do |cp|
         cp.vdms.each do |vdm|
           payload[i] = {
+              id: vdm.id,
               videoId: vdm.videoId,
               videoTittle: vdm.videoTittle,
               videoContent: vdm.videoContent,
@@ -93,11 +94,30 @@ class VdmsController < ApplicationController
               description: vdm.description,
               cp: cp.as_json
           }
-
           i+=1
         end
       end
       render :json => { data: payload, subject: sp.subject, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def getWholeVdm
+    if params[:id] != nil
+      vdm = Vdm.find(params[:id])
+
+      payload = {
+          cp: vdm.classes_planification,
+          videoId: vdm.videoId,
+          videoTittle: vdm.videoTittle,
+          videoContent: vdm.videoContent,
+          status: vdm.status,
+          comments: vdm.comments,
+          description: vdm.description,
+          subject: vdm.classes_planification.subject_planification.subject
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404

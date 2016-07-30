@@ -1,11 +1,13 @@
 Rails.application.routes.draw do
 
+  resources :gits, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit]
     resources :vdms, except: [:new, :edit] do
       collection do
         post :addVdm
         get :getVdmsBySubject
+        get :getWholeVdm
       end
     end
     resources :classes_planifications, except: [:new, :edit] do

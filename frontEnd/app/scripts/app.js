@@ -95,6 +95,18 @@ var app = angular.module('app', [
             templateUrl: 'views/sharedNavigation/subjectList.html'
         })
 
+        .state('app.createSubject', {
+            url: '/createSubject',
+            controller: 'createSubjectController',
+            templateUrl: 'views/sharedNavigation/createSubject.html'
+        })
+        
+        .state('app.createTeacher', {
+            url: '/createTeacher',
+            controller: 'createTeacherController',
+            templateUrl: 'views/sharedNavigation/createTeacher.html'
+        })
+
         //pre-produccion
         .state('app.preProduction', {
             url: '/preProduction',
@@ -112,7 +124,6 @@ var app = angular.module('app', [
             controller: 'createPlanificationController',
             templateUrl: 'views/pre-produccion/createPlanificationForm.html'
         })
-            
         
         .state('app.preProduction.editClassPlan', {
             url: '/editClassPlan?id',
@@ -130,6 +141,12 @@ var app = angular.module('app', [
             url: '/vdmBySubject?id',
             controller: 'vdmsController',
             templateUrl: 'views/VDM/vdms.html'
+        })
+
+        .state('app.vdm.showVdm', {
+            url: '/vdm?id',
+            controller: 'showVdmController',
+            templateUrl: 'views/VDM/showVdm.html'
         })
 
   }]);

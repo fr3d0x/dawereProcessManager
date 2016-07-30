@@ -1,0 +1,88 @@
+<style>
+    .u8384-4 {
+        z-index: auto;
+        width: 100%;
+        min-height: 20px;
+        border-width: 0px;
+        background-color: transparent;
+        line-height: 16px;
+        font-size: 16px;
+        text-align: left;
+        color: #58595B;
+        font-family: ubuntu, sans-serif;
+        font-weight: 700;
+        position: relative;
+        margin-top: 30px;
+    }
+
+    .form-control-N {
+        border-radius: 4px;
+        min-height: 30px;
+        background-color: transparent;
+        color: #58595B;
+        text-align: left;
+        line-height: 14px;
+        font-family: ubuntu,sans-serif;
+        font-weight: 700;
+
+    }
+
+    .input-wrap{
+        border-radius: 4px;
+        min-height: 30px;
+        border-style: none;
+        border-color: transparent;
+        margin-top: 0px;
+        background-color: #E6E7E8;
+
+    }
+
+
+
+</style>
+
+
+<div class="container-fluid" >
+    <div class="row col-md-10 col-md-offset-1 ">
+        <div class="tittle">
+            Formulario de Materia
+        </div>
+    </div>
+    <div class="row col-md-8 col-md-offset-3">
+        <div  data-required="true" style="margin-bottom: 20px">
+            <label class=" u8384-4" ><span >Nombre de la Materia:</span></label>
+
+            <select class="col-md-4 form-control-N" ng-model="grade" ng-options="grade for grade in grades" >
+                <option value="#">Seleccione</option>
+            </select>
+
+
+            <div  data-required="true" >
+                <label class=" u8384-4" ><span >Nombre de la Materia:</span></label>
+                <input  type="text" class="input-wrap col-md-4" ng-model="subject.name" />
+            </div>
+            <div data-required="true" >
+                <label class=" u8384-4" ><span >Descripción:</span></label>
+                <input  type="text" class="input-wrap col-md-4"  ng-model="subject.description" />
+            </div>
+            <div data-required="true" >
+                <label class=" u8384-4" ><span >Primer período:</span></label>
+                <input  type="text" class="input-wrap col-md-4" ng-model="subject.first_period" />
+            </div>
+            <div data-required="true" >
+                <label class=" u8384-4" ><span>Segundo período:</span></label>
+                <input  type="text" class="input-wrap col-md-4"  ng-model="subject.second_period" />
+            </div>
+            <div data-required="true" >
+                <label class=" u8384-4" ><span>Tercer período:</span></label>
+                <input  type="text" class="input-wrap col-md-4"  ng-model="subject.third_period" />
+            </div>
+            <div data-required="true" >
+                <label class=" u8384-4" ><span>Meta:</span></label>
+                <input  type="text" class="input-wrap col-md-4" ng-model="subject.goal" />
+            </div>
+
+        </div>
+    </div>
+
+</div>
