@@ -1,5 +1,6 @@
 {
-  "HEADER": {
-    "HOLAMUNDO": "hola mundo"
-  }
+  "received": "recibido",
+  "not recieved": "no recibido",
+  "processed": "procesado",
+  "DESTROYED": "borrado"
 }
