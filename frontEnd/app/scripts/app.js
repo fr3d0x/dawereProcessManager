@@ -69,7 +69,7 @@ var app = angular.module('app', [
             controller: 'appViewController',
             templateUrl: 'views/app.html'
         })
-        
+
         //app core pages
         .state('core', {
             abstract: true,
@@ -82,7 +82,7 @@ var app = angular.module('app', [
             controller: 'loginController',
             templateUrl: 'views/login.html'
         })
-        
+
         .state('app.dashboard', {
             url: '/dashboard',
             controller: 'dashboardController',
@@ -106,10 +106,10 @@ var app = angular.module('app', [
             controller: 'classesPlanificationController',
             templateUrl: 'views/pre-produccion/classesPlanification.html'
         })
-        
+
         .state('app.preProduction.createPlanification',{
             url: '/createPlanification',
-            /*controller: 'createClassesPlanification',*/
+            controller: 'createPlanificationController',
             templateUrl: 'views/pre-produccion/createPlanificationForm.html'
         })
             

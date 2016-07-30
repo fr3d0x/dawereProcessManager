@@ -32,7 +32,11 @@ Rails.application.routes.draw do
       end
     end
     resources :employees, except: [:new, :edit]
-    resources :grades, except: [:new, :edit]
+    resources :grades, except: [:new, :edit] do
+      collection do
+        get :getGradesWithSubjects
+      end
+    end
     resources :global_progresses, except: [:new, :edit]
   end
 

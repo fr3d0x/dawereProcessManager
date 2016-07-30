@@ -48,4 +48,8 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.getVdmsBySubject = function (id, success, error) {
         $http.get(baseUrl + '/api/vdms/getVdmsBySubject?id='+id ).success(success).error(error);
     };
+
+    this.getGradesWithSubjects = function (success, error) {
+        $http.get(baseUrl + '/api/grades/getGradesWithSubjects').success(success),error(error);
+    }
 }]);
