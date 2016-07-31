@@ -16,7 +16,5 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                 alert(error);
             })
         };
-
-
         getClassesPlan();
     }]);

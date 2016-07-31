@@ -13,28 +13,86 @@
         </div>
         <div class="clearfix"></div>
 
-        <div class="row center-block" style=" margin-top: 50px;">
-           <select id="grades" ng-model="grades" ng-option="grade.name for grade in grades">
-                <option value="">-- Selecciona --</option>
-            </select>
-            <!--<div class="col-lg-6 col-md-6 col-sm-8 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-xs-offset-3">
-                &lt;!&ndash;<div ng-repeat tuitions in $grade>&ndash;&gt;
-                <div align="center" class="yearButtonContainer">
-                <span ng-repeat="grade in grades">
-                    <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
-                </span>
+
+        <div class="col-md-8 col-sm-8 col-xs-8 col-lg-8 col-md-offset-2" style=" margin-top: 50px;">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <div class="form-title"><h4>Datos de la materia</h4></div>
+                <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Año escolar: </label>
+                <select id="grade" ng-model="grade" ng-options="completeGrade as completeGrade.grade.name for completeGrade in completeGrades" style="height:2.2em; margin-top: 6px;" class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                    <option value="">Selecciona</option>
+                </select>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Materia: </label>
+                <select id="subject" ng-model="subject" ng-options="subject as subject.name for subject in grade.subjects" style="height:2.2em; margin-top: 6px;" class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                    <option value="">Selecciona</option>
+                </select>
+            </div>
+            <div class="col-md-12 row">
+                <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Seleccione numero de temas: </label>
+                <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="number" ng-model="subjectTopics" />
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
+                <div class="form-title"><h4>Datos del profesor</h4></div>
+                <div class="col-md-12 row">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Primer nombre: </label>
+                    <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.firstName" />
                 </div>
-            </div>-->
+                <div class="col-md-12 row">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Segundo nombre: </label>
+                    <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.middleName" />
+                </div>
+                <div class="col-md-12 row">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Apellido: </label>
+                    <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.lastName" />
+                </div>
+                <!--<label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Segundo apellido: </label>
+                <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.secondLastName" />-->
+                <div class="col-md-12 row">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Cedula: </label>
+                    <input class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.personalId" />
+                </div>
+                <div class="col-md-12 row" style="margin-bottom: 15px;">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Curriculum corto: </label>
+                    <textarea class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.cvShort"></textarea>
+                </div>
+                <div class="col-md-12 row" style="margin-bottom: 15px;">
+                    <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Curriculum largo: </label>
+                    <textarea  class="col-lg-7 col-md-7 col-sm-7 col-xs-7 form-field" type="text" ng-model="teacher.cvLong"></textarea>
+                </div>
+            </div>
+
+            <div class="row">
+                <div align="center">
+                    <button ng-click="generateClassesPlanification(subjectTopics, cps)" ng-if="toggle != true">Generar plan de clases</button>
+                </div>
+            </div>
 
         </div>
+
         <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 row" ng-if="toggle==true">
-            <table class="table table-condensed table-bordered table-striped col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <table style="position: relative;" class="table table-condensed table-bordered table-striped col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <tr>
+                    <th>Item</th>
+                    <th>N° Objetivo general ME</th>
+                    <th>N° Objetivo especifico ME</th>
+                    <th>Descripcion Objetivo especifico ME</th>
+                    <th>Nombre de tema para MDT</th>
+                    <th>N° de videos</th>
+                    <th>Acciones</th>
+                </tr>
                 <tr ng-repeat="cp in cps">
-                    <td data-title="'N Objetivo general ME'" ><input type="text" ng-model="cp.meGeneralObjective"></td>
-                    <td data-title="'N Objetivo especifico ME'"><input type="text" ng-model="cp.meSpecificObjective"></td>
+                    <td>{{$index+1}}</td>
+                    <td data-title="'N° Objetivo general ME'" ><input type="text" ng-model="cp.meGeneralObjective"></td>
+                    <td data-title="'N° Objetivo especifico ME'"><input type="text" ng-model="cp.meSpecificObjective"></td>
                     <td data-title="'Descripcion Objetivo especifico ME'"><input type="text" ng-model="cp.meSpecificObjDesc"></td>
-                    <td data-title="'Nombre de tema'"><input type="text" ng-model="cp.topicName"></td>
-                    <td data-title="'Videos'"><input type="number" ng-model="cp.videos"></td>
+                    <td data-title="'Nombre de tema para MDT'"><input type="text" ng-model="cp.topicName"></td>
+                    <td data-title="'N° de videos'"><input type="number" ng-model="cp.videos"></td>
+                    <td><a ng-click="addCp(cp)" title='Agregar tema a este plan de clases'>
+                        <i class="fa fa-plus-circle" aria-hidden="true" ng-if="$index==(cps.length-1)"></i></a>
+                        </a><span>|</span>
+                    </td>
             </table>
             <div class="row">
                 <div align="center">
@@ -42,44 +100,5 @@
                 </div>
             </div>
         </div>
-
-
-
-    </div>
     </div>
 </section>
-<div class="container-fluid" >
-    <form class="form-container">
-        <div class="form-title"><h1>Plan de clases</h1></div>
-        <div class="form-title"><h4>Datos del profesor</h4></div>
-        <div class="form-title">Primer nombre del profesor</div>
-        <input class="form-field" type="text" name="firstName" /><br/>
-        <div class="form-title">Segundo nombre del profesor</div>
-        <input class="form-field" type="text" name="middleName" /><br/>
-        <div class="form-title">Apellido del profesor</div>
-        <input class="form-field" type="text" name="lastName" /><br/>
-    <!--    <div class="form-title">Segundo apellido del profesor</div>
-        <input class="form-field" type="text" name="secondLastName" /><br/>-->
-        <div class="form-title">Cedula del profesor</div>
-        <input class="form-field" type="text" name="personalId" /><br/>
-        <div class="form-title">Curriculum Largo </div>
-        <textarea class="form-field" type="text" name="cvLong" /><br/>
-        <div class="form-title">Curriculum Corto</div>
-        <textarea class="form-field" type="text" name="cvShort"></textarea><br/>
-
-        <div class="form-title">Numero Objetivo General</div>
-        <input class="form-field" type="text" name="meGeneralObjetive" /><br/>
-        <div class="form-title">Numero Objetivo Especifico</div>
-        <input class="form-field" type="text" name="meSpecificObjetive" /><br/>
-        <div class="form-title">Enunciado Objetivo Especifico ME</div>
-        <input class="form-field" type="text" name="meSpeficicObjDesc" /><br/>
-        <div class="form-title">Nombre del tema MDT</div>
-        <input class="form-field" type="" name="topicName" /><br/>
-        <div class="form-title">Numero de videos</div>
-        <input class="form-field" type="text" name="videos" /><br/>
-
-        <div class="submit-container">
-            <input class="submit-button" type="submit" value="Crear" />
-        </div>
-    </form>
-</div>
