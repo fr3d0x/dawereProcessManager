@@ -53,6 +53,10 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.get(baseUrl + '/api/grades/getGradesWithSubjects').success(success).error(error);
     };
     
+    this.getGrades = function (success, error) {
+        $http.get(baseUrl + '/api/grades').success(success).error(error);
+    };
+    
     this.editCP = function (cp, success, error) {
         $http.put(baseUrl + '/api/classes_planifications/editCp?id='+cp.id, cp ).success(success).error(error);
     };
@@ -64,7 +68,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.updateVdm = function (vdm, success, error) {
         $http.post(baseUrl + '/api/vdms/updateVdm', vdm ).success(success).error(error);
     };
-
+    
     this.getVdmsHistoryBySubject = function (id, success, error) {
         $http.get(baseUrl + '/api/vdm_changes/getVdmsChangesBySubject?id='+id ).success(success).error(error);
     };
@@ -73,4 +77,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.post(baseUrl + '/api/subject_planifications/saveSubjectPlanning', sp).success(success).error(error);
     };
     
+    this.createSubject = function (data, success, error) {
+        $http.post(baseUrl + '/api/subjects/createSubject', data).success(success).error(error);
+    }
 }]);

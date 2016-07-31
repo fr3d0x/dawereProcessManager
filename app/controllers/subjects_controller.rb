@@ -18,6 +18,27 @@ class SubjectsController < ApplicationController
       render json: {status: "NOT FOUND", msg: "No existe ID de Grado seleccionado"}, :status => 404
   end
 
+  def createSubject
+    if request.raw_post != ""
+      parameters = ActiveSupport::JSON.decode(request.raw_post)
+      subject = Subject.new
+      grade = Grade.find(parameters['grade']['id'])
+      subject.name = parameters['subject']['name']
+      subject.longDescription = parameters['subject']['longDescription']
+      subject.shortDescription = parameters['subject']['shortDescription']
+      subject.firstPeriodDesc = parameters['subject']['firstPeriodDesc']
+      subject.secondPeriodDesc = parameters['subject']['secondPeriodDesc']
+      subject.thirdPeriodDesc = parameters['subject']['thirdPeriodDesc']
+      subject.grade_id = grade.id
+
+      subject.save!
+
+      render :json => { data: nil, status: "SUCCESS"}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: "NOT FOUND"}, :status => 404
+  end
+
   # GET /subjects/1
   # GET /subjects/1.json
   def show

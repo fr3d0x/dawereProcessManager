@@ -1,12 +1,11 @@
 class GradesController < ApplicationController
   before_action :set_grade, only: [:show, :update, :destroy]
-
+  require 'json'
   # GET /grades
   # GET /grades.json
   def index
     @grades = Grade.all
-
-    render json: @grades
+    render json: {data: @grades, status: "SUCCESS"}, :status => 200
   end
 
   # GET /grades/1

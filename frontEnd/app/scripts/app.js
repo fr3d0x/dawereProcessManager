@@ -148,6 +148,15 @@ var app = angular.module('app', [
             controller: 'showVdmController',
             templateUrl: 'views/VDM/showVdm.html'
         })
+      
+        .state('app.subject',{
+            
+        })
+        .state('app.subject.createSubject',{
+            url: '/createSubject',
+            controller: 'createSubjectController',
+            template: "views/sharedNavigation/createSubject.html"
+        })
 
         .state('app.vdm.vdmsHistory', {
             url: '/vdmsHistorybySubject?id',
