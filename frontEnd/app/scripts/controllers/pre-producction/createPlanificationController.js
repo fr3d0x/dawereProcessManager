@@ -7,6 +7,7 @@ app.controller("createPlanificationController",['$scope', 'ENV', 'dawProcessMana
         $scope.completeGrades = [];
         $scope.toggle = false;
         $scope.cps = [];
+        $scope.toggleAdd = false;
         var getGradeWithSubjects = function() {
             dawProcessManagerService.getGradesWithSubjects(function (response) {
                 $scope.completeGrades = response.data;
@@ -25,13 +26,32 @@ app.controller("createPlanificationController",['$scope', 'ENV', 'dawProcessMana
                         topicName:'',
                         videos:''
                     });
-
+                    if (i == numberOfTopics){
+                        $scope.toggleAdd = true;
+                    }else {
+                        $scope.toggleAdd = false;
+                    }
+                }
+                if (i == numberOfTopics){
+                    $scope.toggleAdd = true;
+                }else {
+                    $scope.toggleAdd = false;
                 }
                 $scope.toggle = true;
             }else{
-                swal("Dato invalido","Debe agreagar mas de 1 tema.")
+                swal({
+                    title: "Numero de videos invalidos",
+                    text: "Coloque el numero de videos mayor a 0 (cero).",
+                    type: "warning",
+                    confirmButtonText: "OK"
+                })
             }
-
+        };
+        $scope.addCp = function () {
+            
+        };
+        $scope.removeCp = function () {
+            
         };
 
         getGradeWithSubjects();

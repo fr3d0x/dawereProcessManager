@@ -22,8 +22,6 @@
 }
 .form-field {
     border: 1px solid #919191;
-    background: #edfff5;
-    border-radius: 4px;
     color: #4a4a4a;
 }
 .form-field:focus {
@@ -47,50 +45,4 @@
     margin:8px 0;
     text-align:right;
 }
-.submit-button {
-    border: 0px solid #447314;
-    background: #6aa436;
-    background: -webkit-gradient(linear, left top, left bottom, from(#8dc059), to(#6aa436));
-    background: -webkit-linear-gradient(top, #8dc059, #6aa436);
-    background: -moz-linear-gradient(top, #8dc059, #6aa436);
-    background: -ms-linear-gradient(top, #8dc059, #6aa436);
-    background: -o-linear-gradient(top, #8dc059, #6aa436);
-    background-image: -ms-linear-gradient(top, #8dc059 0%, #6aa436 100%);
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    -webkit-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-    -moz-box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-    box-shadow: rgba(255,255,255,0.4) 0 0px 0, inset rgba(255,255,255,0.4) 0 0px 0;
-    text-shadow: #addc7e 0 1px 0;
-    color: #0c520f;
-    font-family: helvetica, serif;
-    padding: 8.5px 18px;
-    font-size: 14px;
-    text-decoration: none;
-    vertical-align: middle;
-}
-.submit-button:hover {
-    border: 0px solid #447314;
-    text-shadow: #31540c 0 1px 0;
-    background: #6aa436;
-    background: -webkit-gradient(linear, left top, left bottom, from(#8dc059), to(#6aa436));
-    background: -webkit-linear-gradient(top, #8dc059, #6aa436);
-    background: -moz-linear-gradient(top, #8dc059, #6aa436);
-    background: -ms-linear-gradient(top, #8dc059, #6aa436);
-    background: -o-linear-gradient(top, #8dc059, #6aa436);
-    background-image: -ms-linear-gradient(top, #8dc059 0%, #6aa436 100%);
-    color: #b3f5b7;
-}
-.submit-button:active {
-    text-shadow: #31540c 0 1px 0;
-    border: 0px solid #447314;
-    background: #8dc059;
-    background: -webkit-gradient(linear, left top, left bottom, from(#6aa436), to(#6aa436));
-    background: -webkit-linear-gradient(top, #6aa436, #8dc059);
-    background: -moz-linear-gradient(top, #6aa436, #8dc059);
-    background: -ms-linear-gradient(top, #6aa436, #8dc059);
-    background: -o-linear-gradient(top, #6aa436, #8dc059);
-    background-image: -ms-linear-gradient(top, #6aa436 0%, #8dc059 100%);
-    color: #fff;
-}
+
