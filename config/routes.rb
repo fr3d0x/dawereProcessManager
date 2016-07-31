@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :subjects, except: [:new, :edit] do
       collection do
         get :getSubjectByGrade
+        post :createSubject
       end
     end
     resources :teachers, except: [:new, :edit]
