@@ -83,7 +83,7 @@ class VdmsController < ApplicationController
       vdm.comments = parameters['comments']
       vdm.videoContent = parameters['videoContent']
       vdm.videoTittle = parameters['videoTittle']
-      lastVid = classPlan.vdms.last
+      lastVid = classPlan.subject_planification.classes_planifications.last.vdms.last
       if lastVid != nil
         vdmCount = lastVid.number + 1
       else
@@ -228,10 +228,6 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
-  def generateVideoId(subject, vdmCount)
-    videoId = (subject.name[0, 3] +"v"+ vdmCount.to_s).upcase
-    return videoId
-  end
   private
 
     def set_vdm

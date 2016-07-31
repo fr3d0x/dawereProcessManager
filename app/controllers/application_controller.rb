@@ -46,4 +46,9 @@ class ApplicationController < ActionController::API
     render :json => { status: 'UNAUTHORIZED', msg: 'No Autorizado'}, :status => :unauthorized
   end
 
+  def generateVideoId(subject, vdmCount)
+    videoId = (subject.name[0, 3] +'v'+ vdmCount.to_s).upcase
+    return videoId
+  end
+
 end

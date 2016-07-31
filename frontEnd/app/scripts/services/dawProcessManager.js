@@ -68,5 +68,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.getVdmsHistoryBySubject = function (id, success, error) {
         $http.get(baseUrl + '/api/vdm_changes/getVdmsChangesBySubject?id='+id ).success(success).error(error);
     };
+
+    this.saveSubjectPlaning = function (sp, success, error) {
+        $http.post(baseUrl + '/api/subject_planifications/saveSubjectPlanning', sp).success(success).error(error);
+    };
     
 }]);

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       collection do
         get :getSubjectsPlanning
         get :getWholeSubjectPlanning
+        post :saveSubjectPlanning
       end
     end
     resources :subjects, except: [:new, :edit] do

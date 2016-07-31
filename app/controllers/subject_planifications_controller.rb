@@ -66,16 +66,89 @@ class SubjectPlanificationsController < ApplicationController
   end
 
   def getWholeSubjectPlanning
-
     if params[:id] != nil
       subject_planification = SubjectPlanification.find_by_subject_id(params[:id])
+      cps = []
+      subject_planification.classes_planifications.each do |classPlan|
+        cp = {
+            meGeneralObjective: classPlan.meGeneralObjective,
+            meSpecificObjective: classPlan.meSpecificObjective,
+            meSpecificObjDesc: classPlan.meSpecificObjDesc,
+            topicName: classPlan.topicName,
+            vdms: classPlan.vdms.as_json,
+            vdmsString: classPlan.vdms.as_json.to_s
+
+        }
+        cps.push(cp)
+      end
       payload = {
           id: subject_planification.id,
           status: subject_planification.status,
           subject: subject_planification.subject,
-          classesPlaning: subject_planification.classes_planifications.as_json
+          classesPlaning: cps
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def saveSubjectPlanning
+    if request.raw_post != ""
+      parameters = ActiveSupport::JSON.decode(request.raw_post)
+      subject = Subject.find(parameters['subjectId'])
+      teacher = Teacher.new
+      subjectPlan = SubjectPlanification.new
+      cps = []
+      vdms = []
+      teacher.firstName = parameters['teacher']['firstName']
+      teacher.middleName = parameters['teacher']['middleName']
+      teacher.lastName = parameters['teacher']['lastName']
+      teacher.personalId = parameters['teacher']['personalId']
+      teacher.cvLong = parameters['teacher']['cvLong']
+      teacher.cvShort = parameters['teacher']['cvShort']
+      teacher.save!
+      subjectPlan.status = 'active'
+      subjectPlan.teacher_id = teacher.id
+      subjectPlan.subject_id = parameters['subjectId']
+      subjectPlan.user_id = $currentPetitionUser['id']
+      subjectPlan.save!
+      array = parameters['cps']
+      for i in 0..array.count - 1
+        cp = ClassesPlanification.new
+        cp.meGeneralObjective = array[i]['meGeneralObjective']
+        cp.meSpecificObjective = array[i]['meSpecificObjective']
+        cp.meSpecificObjDesc = array[i]['meSpecificObjDesc']
+        cp.topicName = array[i]['topicName']
+        cp.videos = array[i]['videos']
+        cp.subject_planification_id = subjectPlan.id
+        cps.push(cp)
+      end
+      ClassesPlanification.transaction do
+        cps.each(&:save!)
+      end
+
+      vdmCounter = 0
+      cps.each do |cp|
+        for i in 1..cp.videos.to_i
+          vdm = Vdm.new
+          vdm.classes_planification_id = cp.id
+          lastVid = subjectPlan.classes_planifications.last.vdms.last
+          if lastVid != nil
+            vdmCounter = lastVid.number + 1
+          else
+            vdmCounter = vdmCounter + 1
+          end
+          vdm.videoId = generateVideoId(subject, vdmCounter)
+          vdm.status = 'not received'
+          vdm.number = vdmCounter
+          vdms.push(vdm)
+        end
+      end
+      Vdm.transaction do
+        vdms.each(&:save!)
+      end
+      render :json => { data: nil, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
