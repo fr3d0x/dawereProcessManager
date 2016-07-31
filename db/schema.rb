@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160730203314) do
+ActiveRecord::Schema.define(version: 20160730222345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,8 @@ ActiveRecord::Schema.define(version: 20160730203314) do
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
     t.text     "comments"
+    t.string   "uname"
+    t.string   "videoId"
   end
 
   add_index "vdm_changes", ["user_id"], name: "index_vdm_changes_on_user_id", using: :btree

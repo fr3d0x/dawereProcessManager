@@ -55,6 +55,17 @@ class VdmsController < ApplicationController
       vdm = Vdm.find(params[:id])
       vdm.status = 'DESTROYED'
       vdm.save
+      change = VdmChange.new
+      change.changeDetail = "Eliminacion"
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      if parameters['justification'] != nil
+        change.comments = parameters['justification']
+      end
+      change.changeDate = Time.now
+      change.save!
       render :json => { status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
@@ -85,6 +96,8 @@ class VdmsController < ApplicationController
       change.changeDetail = "Creacion"
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
       if parameters['justification'] != nil
         change.comments = parameters['justification']
       end
@@ -154,6 +167,8 @@ class VdmsController < ApplicationController
         change.changedTo = "A "+ newVdm['videoContent']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
         change.changeDate = Time.now
         change.save
       end
@@ -164,6 +179,8 @@ class VdmsController < ApplicationController
         change.changedTo = "A "+ newVdm['videoTittle']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
         change.changeDate = Time.now
         change.save
       end
@@ -174,6 +191,8 @@ class VdmsController < ApplicationController
         change.changedTo = "A "+ newVdm['status']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
         change.changeDate = Time.now
         change.save
       end
@@ -184,6 +203,8 @@ class VdmsController < ApplicationController
         change.changedTo = "A "+ newVdm['comments']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
         change.changeDate = Time.now
         change.save
       end

@@ -64,4 +64,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.updateVdm = function (vdm, success, error) {
         $http.post(baseUrl + '/api/vdms/updateVdm', vdm ).success(success).error(error);
     };
+
+    this.getVdmsHistoryBySubject = function (id, success, error) {
+        $http.get(baseUrl + '/api/vdm_changes/getVdmsChangesBySubject?id='+id ).success(success).error(error);
+    };
+    
 }]);

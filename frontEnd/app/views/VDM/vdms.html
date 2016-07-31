@@ -15,8 +15,8 @@
         </div>
 
 
-        <div class="tile-body">
-            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
                 <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
                 <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
                  <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
@@ -97,7 +97,9 @@
                     </tr>
                 </table>
             </div>
-
+        </div>
+        <div class="col-md-3 col-md-offset-4 col-sm-3 col-sm-offset-4 col-xs-3 col-xs-offset-4 col-lg-3 col-lg-offset-4" style="margin-top: 20px;">
+            <a class="prettyLinkBig" ui-sref="app.vdm.vdmsHistory({id: subject.id})">ver historial completo <i class="fa fa-clock-o" aria-hidden="true" style="font-size: 30px"></i></a>
         </div>
     </div>
 

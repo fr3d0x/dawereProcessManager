@@ -47,6 +47,20 @@ class VdmChangesController < ApplicationController
     head :no_content
   end
 
+  def getVdmsChangesBySubject
+    if params[:id] != nil
+      subject = Subject.find(params[:id])
+      history = VdmChange.find_by_sql('Select vdh.* from vdm_changes vdh, vdms vd, classes_planifications cp, subject_planifications sp where sp.subject_id =' + params[:id] + ' and cp.subject_planification_id = sp.id and vd.classes_planification_id = cp.id and vdh.vdm_id = vd.id')
+      payload = {
+          subject: subject,
+          history: history
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
   private
 
     def set_vdm_change

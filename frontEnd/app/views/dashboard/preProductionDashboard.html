@@ -23,11 +23,12 @@
                 <tr ng-repeat="row in $data">
                     <td data-title="'Materia'">{{row.subject.name}}</td>
                     <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
-                    <td data-title="'Video Clases'">{{row.totalVideos}}</td>
+                    <td data-title="'No recibido'">{{row.notReceived}}</td>
                     <td data-title="'Recibido (Cantidad)'">{{row.received}}</td>
                     <td data-title="'Devueltos (Cantidad)'">{{row.returned}}</td>
                     <td data-title="'Procesado'">{{row.processed}}</td>
-                    <td data-title="'Efectividad'">{{row.effectiveness}}</td>
+                    <td data-title="'Video Clases'">{{row.totalVideos}}</td>
+                    <td data-title="'Efectividad'">{{row.effectiveness}}%</td>
                 </tr>
             </table>
 

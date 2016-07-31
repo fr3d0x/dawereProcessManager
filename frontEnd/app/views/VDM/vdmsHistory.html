@@ -1,0 +1,56 @@
+<section class="container-fluid">
+    <div class="row col-md-10 col-md-offset-1">
+
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="tittle">
+                <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.dashboard" class="">Inicio</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.subjects({id:subject.grade_id})" class="">Materias</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.vdm.vdmList({id: subject.id})" class="">MDT'S</a>
+                    <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
+                    <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Historial MDT</b></span></a>
+                    <underlining></underlining>
+                </span>
+            </div>
+        </div>
+
+
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+                <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+                <!-- <p><strong>Sorting:</strong> {{tableParams.sorting()|json}}
+                 <p><strong>Filter:</strong> {{tableParams.filter()|json}}-->
+                <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data">
+                        <td data-title="'Id de video'" filter="{videoId: 'text'}">{{row.videoId}}</td>
+                        <td data-title="'Usuario'" filter="{uname: 'text'}">{{row.uname}}</td>
+                        <td data-title="'Detalle'" filter="{changeDetail: 'text'}">{{row.changeDetail}}</td>
+                        <td data-title="'Cambio de'">
+                            <div>
+                                {{row.changedFrom | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Cambio a'">
+                            <div>
+                                {{row.changedTo | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Commentarios'">
+                            <div>
+                                {{row.comments | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Fecha'"filter="{changeDate: 'text'}" style="vertical-align:middle">
+                            <div align="center">
+                                {{row.changeDate}}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</section>

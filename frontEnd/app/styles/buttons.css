@@ -63,4 +63,15 @@
     position: relative;
 }
 
+.prettyLinkBig{
+    cursor: pointer;
+    color: #787878;
+    font-size: 25px;
+    font-weight: 300;
+}
 
+.prettyLinkBig:hover{
+    font-size: 23px;
+    color: lightskyblue;
+    font-weight: 600;
+}

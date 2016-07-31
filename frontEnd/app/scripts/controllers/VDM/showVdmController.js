@@ -7,7 +7,10 @@ app.controller("showVdmController",['$scope', 'ENV', 'dawProcessManagerService',
             dawProcessManagerService.getVdm($stateParams.id, function (response)  {
                 
                 $scope.vdm = response.data;
-                
+                $scope.tableParams = new NgTableParams({},{
+                    filterOptions: { filterLayout: "horizontal" },
+                    dataset: response.data.changes
+                });
             }, function(error) {
                 alert(error);
             })

@@ -149,5 +149,11 @@ var app = angular.module('app', [
             templateUrl: 'views/VDM/showVdm.html'
         })
 
+        .state('app.vdm.vdmsHistory', {
+            url: '/vdmsHistorybySubject?id',
+            controller: 'vdmsHistoryController',
+            templateUrl: 'views/VDM/vdmsHistory.html'
+        })
+
   }]);
 

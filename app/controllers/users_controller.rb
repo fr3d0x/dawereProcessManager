@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   require 'jwt'
   before_action :authenticate, :except => [:login]
   before_action :set_user, only: [:show, :update, :destroy]
-
+  include ActionView::Helpers::NumberHelper
 
   # GET /users
   # GET /users.json
@@ -89,12 +89,15 @@ class UsersController < ApplicationController
         returned = 0
         processed = 0
         received = 0
+        notReceived = 0
         sp.classes_planifications.each do |cp|
         totalVideos = totalVideos + cp.vdms.count
+        notReceived = notReceived + cp.vdms.where(:status => 'not received').count
         returned = returned + cp.vdms.where(:status => 'returned').count
         processed = processed + cp.vdms.where(:status => 'processed').count
         received = received + cp.vdms.where(:status => 'received').count
         end
+        effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
         payload[i] ={
             subject: sp.subject,
             teacher: sp.teacher,
@@ -102,7 +105,8 @@ class UsersController < ApplicationController
             received: received,
             returned: returned,
             processed: processed,
-
+            notReceived: notReceived,
+            effectiveness: effectiveness
         }
         i += 1
       end
