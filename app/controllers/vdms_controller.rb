@@ -51,7 +51,8 @@ class VdmsController < ApplicationController
   end
 
   def deleteVdm
-    if params[:id] != nil
+    if request.raw_post != ""
+      parameters = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.find(params[:id])
       vdm.status = 'DESTROYED'
       vdm.save
@@ -66,7 +67,7 @@ class VdmsController < ApplicationController
       end
       change.changeDate = Time.now
       change.save!
-      render :json => { status: 'SUCCESS'}, :status => 200
+      render :json => { data: vdm, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -163,7 +164,11 @@ class VdmsController < ApplicationController
       if vdm.videoContent != newVdm['videoContent']
         change = VdmChange.new
         change.changeDetail = "Cambio de contenido"
-        change.changedFrom = "De "+vdm.videoContent
+        if vdm.videoContent != nil
+          change.changedFrom = "De "+vdm.videoContent
+        else
+          change.changedFrom = "De vacio"
+        end
         change.changedTo = "A "+ newVdm['videoContent']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
@@ -175,7 +180,12 @@ class VdmsController < ApplicationController
       if vdm.videoTittle != newVdm['videoTittle']
         change = VdmChange.new
         change.changeDetail = "Cambio de Titulo"
-        change.changedFrom = "De "+vdm.videoTittle
+        if vdm.videoTittle != nil
+          change.changedFrom = "De "+vdm.videoTittle4
+        else
+          change.changedFrom = "De vacio"
+        end
+
         change.changedTo = "A "+ newVdm['videoTittle']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
@@ -199,7 +209,11 @@ class VdmsController < ApplicationController
       if vdm.comments != newVdm['comments']
         change = VdmChange.new
         change.changeDetail = "Cambio de comentarios"
-        change.changedFrom = "De "+vdm.comments
+        if vdm.videoTittle != nil
+          change.changedFrom = "De "+vdm.comments
+        else
+          change.changedFrom = "De vacio"
+        end
         change.changedTo = "A "+ newVdm['comments']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']

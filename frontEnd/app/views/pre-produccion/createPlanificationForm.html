@@ -14,7 +14,7 @@
         <div class="clearfix"></div>
 
 
-        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 col-md-offset-1" style=" margin-top: 50px;">
+        <div class="col-md-8 col-sm-8 col-xs-8 col-lg-8 col-md-offset-2 col-sm-offset-2 col-xs-offset-2 col-lg-offset-2" style=" margin-top: 50px;">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 row">
                 <div class="form-title"><h4>Seleccione Materia</h4></div>
                 <label class="col-lg-5 col-md-5 col-sm-5 col-xs-5" style="height:2.2em; margin-top: 6px;" >Año escolar: </label>
@@ -99,9 +99,9 @@
                         <div align="center">
                             <a ng-click="add(cps)" title='agregar video a este tema'>
                                 <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px" ng-if="$index==(cps.length-1)"></i>
-                            </a><span style="font-size: 20px" ng-if="$index==(cps.length-1)">|</span>
+                            </a><span style="font-size: 20px" ng-if="$index==(cps.length-1) && cps.length > 1">|</span>
 
-                            <a ng-click="remove(cp, cps)" title='eliminar'>
+                            <a ng-click="remove(cp, cps)" title='eliminar' ng-if="cps.length > 1">
                                 <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
                             </a>
                         </div>

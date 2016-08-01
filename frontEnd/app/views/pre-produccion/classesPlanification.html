@@ -17,64 +17,64 @@
         </div>
         <div class="clearfix"></div>
 
-        <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+            <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+                <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="row in $data">
+                        <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.meGeneralObjective}}</td>
+                        <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.meSpecificObjective}}</td>
+                        <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">{{row.meSpecificObjDesc}}</td>
+                        <td data-title="'Nombre de tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">{{row.topicName}}</td>
 
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
-
-            <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-                <tr ng-repeat="row in $data">
-                    <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.meGeneralObjective}}</td>
-                    <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.meSpecificObjective}}</td>
-                    <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}" ng-if="row.writable != true" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 row">{{row.meSpecificObjDesc}}</td>
-                    <td data-title="'Nombre de tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.topicName}}</td>
-                    <td data-title="'Videos'" filter="{vdmsString: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                        <span ng-repeat="vdm in row.vdms">
-                            <span ng-if="$index != row.vdms.length -1">
-                                {{vdm.videoId}},
+                        <!-- tabla writable -->
+                        <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="text"  style="font-weight: bold"  ng-model="row.meGeneralObjective"/></td>
+                        <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="text"  style="font-weight: bold"  ng-model="row.meSpecificObjective"/></td>
+                        <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.meSpecificObjDesc"></textarea></td>
+                        <td data-title="'Nombre de tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row"><input type="text"  style="font-weight: bold"  ng-model="row.topicName"/></td>
+                        <td data-title="'Videos'" filter="{vdmsString: 'text'}" ng-if="row.newRow != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                            <span ng-repeat="vdm in row.vdms">
+                                {{vdm.videoId}}<span ng-if="$index != row.vdms.length -1">, </span>
                             </span>
-                            <span ng-if="$index == row.vdms.length -1">
-                                {{vdm.videoId}}
-                            </span>
-                        </span>
+                        </td>
+                        <td data-title="'Videos'" ng-if="row.newRow == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="number"  style="font-weight: bold"  ng-model="row.videos"/></td>
+                        <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                            <div align="center">
+                                <a ng-click="editRow(row)" title='editar'>
+                                    <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                                </a>
+                                <span style="font-size: 20px">|</span>
+                                <a ui-sref="app.preProduction.showClassPlan({id:row.id})" title='ver detalle'>
+                                    <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <span style="font-size: 20px" ng-if="$index == ($data.length) - 1">|</span>
+                                <a ng-click="add(row, $data)" title='agregar plan de clases' ng-if="$index == ($data.length) - 1">
+                                    <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td data-title="'Acciones'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                            <div align="center">
+                                <a ng-click="save(row, subjectPlaning)" title='guardar'>
+                                    <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <span style="font-size: 20px">|</span>
+                                <a ng-click="remove(row, $data)" title='eliminar'>
+                                    <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <span style="font-size: 20px">|</span>
+                                <a ng-click="close(row, $data)" title='cerrar'>
+                                    <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <span style="font-size: 20px" ng-if="$index == ($data.length) - 1">|</span>
+                                <a ng-click="add(row, $data)" title='agregar video a este tema' ng-if="$index == ($data.length) - 1">
+                                    <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                            </div>
 
-                    </td>
-                    <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                        <div align="center">
-                            <a ui-sref="app.preProduction.editClassPlan({id: row.id})">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                            <span style="font-size: 20px">|</span>
-                            <a ng-click="remove(row, $data)" title='eliminar'>
-                                <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px" ></i>
-                            </a>
-                            <span style="font-size: 20px" ng-if="$index == ($data.length) - 1">|</span>
-                            <a ng-click="add(row, $data)" title='agregar video a este tema' ng-if="$index == ($data.length) - 1">
-                                <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
-                            </a>
-                        </div>
-                    </td>
-
-                    <!-- tabla writable -->
-                    <td data-title="'N Objetivo general ME'" filter="{meGeneralObjective: 'number'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="text"  style="font-weight: bold"  ng-model="row.meGeneralObjective"/></td>
-                    <td data-title="'N Objetivo especifico ME'" filter="{meSpecificObjective: 'number'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="text"  style="font-weight: bold"  ng-model="row.meSpecificObjective"/></td>
-                    <td data-title="'Descripcion Objetivo especifico ME'" filter="{meSpecificObjDesc: 'text'}" ng-if="row.writable == true" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 row"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.meSpecificObjDesc"></textarea></td>
-                    <td data-title="'Nombre de tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row"><input type="text"  style="font-weight: bold"  ng-model="row.topicName"/></td>
-                    <td data-title="'Acciones'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                        <a ng-click="saveVdm(row)" title='guardar'>
-                            <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a>
-                        <span style="font-size: 20px">|</span>
-                        <a ng-click="remove(row, $data)" title='eliminar'>
-                            <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a>
-                        <span style="font-size: 20px">|</span>
-                        <a ng-click="close(row, $data)" title='cerrar'>
-                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a>
-                    </td>
-            </table>
-        </div>
-
+                        </td>
+                </table>
+            </div>
         </div>
     </div>
 </section>

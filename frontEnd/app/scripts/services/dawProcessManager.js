@@ -38,7 +38,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     };
 
     this.deleteVdm = function (id, success, error) {
-        $http.get(baseUrl + '/api/vdms/deleteVdm?id='+id ).success(success).error(error);
+        $http.post(baseUrl + '/api/vdms/deleteVdm', id ).success(success).error(error);
     };
 
     this.addVdm = function (vdm, success, error) {
@@ -58,7 +58,11 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     };
     
     this.editCP = function (cp, success, error) {
-        $http.put(baseUrl + '/api/classes_planifications/editCp?id='+cp.id, cp ).success(success).error(error);
+        $http.post(baseUrl + '/api/classes_planifications/editCp?id='+cp.id, cp ).success(success).error(error);
+    };
+
+    this.saveCp = function (cp, success, error) {
+        $http.post(baseUrl + '/api/classes_planifications/saveCp?id='+cp.id, cp ).success(success).error(error);
     };
 
     this.getVdm = function (id, success, error) {
@@ -79,5 +83,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     
     this.createSubject = function (data, success, error) {
         $http.post(baseUrl + '/api/subjects/createSubject', data).success(success).error(error);
-    }
+    };
+
+    this.deleteCp = function (cp, success, error) {
+        $http.post(baseUrl + '/api/classes_planifications/deleteClassPlan', cp ).success(success).error(error);
+    };
 }]);

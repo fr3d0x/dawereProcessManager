@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160730222345) do
+ActiveRecord::Schema.define(version: 20160801011219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,9 +25,26 @@ ActiveRecord::Schema.define(version: 20160730222345) do
     t.integer  "subject_planification_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.string   "status"
   end
 
   add_index "classes_planifications", ["subject_planification_id"], name: "index_classes_planifications_on_subject_planification_id", using: :btree
+
+  create_table "cp_changes", force: :cascade do |t|
+    t.date     "changeDate"
+    t.string   "changeDetail"
+    t.text     "changedFrom"
+    t.text     "changedTo"
+    t.text     "comments"
+    t.string   "uname"
+    t.integer  "classes_planification_id"
+    t.integer  "user_id"
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "cp_changes", ["classes_planification_id"], name: "index_cp_changes_on_classes_planification_id", using: :btree
+  add_index "cp_changes", ["user_id"], name: "index_cp_changes_on_user_id", using: :btree
 
   create_table "employees", force: :cascade do |t|
     t.string   "firstName"
@@ -150,6 +167,8 @@ ActiveRecord::Schema.define(version: 20160730222345) do
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
 
   add_foreign_key "classes_planifications", "subject_planifications"
+  add_foreign_key "cp_changes", "classes_planifications"
+  add_foreign_key "cp_changes", "users"
   add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects"
   add_foreign_key "subject_planifications", "teachers"

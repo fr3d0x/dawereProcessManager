@@ -40,24 +40,30 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             if (element != null){
                 if(element.id != null){
                     swal({
-                            title: "Esta seguro",
-                            text: "Seguro desea eliminar el MDT del video " + element.videoId,
-                            type: "warning",
-                            showCancelButton: true,
-                            confirmButtonText: "OK"
-                        }).then(function () {
-                            dawProcessManagerService.deleteVdm(element.id, function(response){
-                                array.splice(array.indexOf(element), 1);
-                                swal({
-                                    title: "Exitoso",
-                                    text: "Se ha eliminado el MDT del video" + element.videoId,
-                                    type: "success",
-                                    confirmButtonText: "OK"
-                                })
-                            }, function (error) {
-                                console.log(error)
-                            })
-                        }, function(){});
+                        title: "Justifique",
+                        text: "Por que desea eliminar el mdt del video " + element.videoId,
+                        type: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "OK",
+                        input: 'textarea'
+
+                    }).then(function(text) {
+                        element.justification = text;
+                        dawProcessManagerService.deleteVdm(element, function(response){
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha eliminado el MDT del video " + response.data.videoId,
+                                type: 'success',
+                                confirmButtonText: "OK"
+                            });
+                            element.id = response.data.id;
+                            element.videoId = response.data.videoId;
+                            element.writable = false;
+                            array.splice(array.indexOf(element), 1);
+                        }, function(error){
+                            console.log(error)
+                        })
+                    }, function(){});
                 }else{
                     array.splice(array.indexOf(element), 1);
                 }

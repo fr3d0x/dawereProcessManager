@@ -1,28 +1,50 @@
 /**
- * Created by fr3d0 on 7/25/16.
+ * Created by fr3d0 on 7/31/16.
  */
 'use strict';
-app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
+app.controller("showClassPlanController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
         var getClassesPlan = function(){
-            dawProcessManagerService.getClassesPlaning($stateParams.id, function (response)  {
-                var data = response.data;
-                $scope.subjectPlaning = response.data;
-                $scope.subject = data.subject;
+            dawProcessManagerService.getClassPlan($stateParams.id, function (response)  {
+                $scope.cp = response.data;
                 $scope.tableParams = new NgTableParams({},{
                     filterOptions: { filterLayout: "horizontal" },
-                    dataset: data.classesPlaning
+                    dataset: response.data.vdms
+                });
+                $scope.historyTable = new NgTableParams({},{
+                    filterOptions: { filterLayout: "horizontal" },
+                    dataset: response.data.changes
                 });
             }, function(error) {
                 alert(error);
             })
         };
+
+        $scope.states = [{statusIng: 'not received', statusSpa: 'No recibido'}, {statusIng: 'received', statusSpa: 'Recibido'}, {statusIng: 'processed', statusSpa: 'Procesado'}];
+
+        $scope.add = function(vdm, data){
+            data.splice(data.indexOf(vdm)+1, 0, {
+                cp: vdm.cp,
+                videoId: null,
+                videoTittle: null,
+                videoContent: null,
+                status: null,
+                comments: null,
+                description: null,
+                writable: true
+            });
+        };
+
+        $scope.editRow = function(vdm){
+            vdm.writable = true;
+        };
+
         $scope.remove = function(element, array){
             if (element != null){
                 if(element.id != null){
                     swal({
                         title: "Justifique",
-                        text: "Por que desea eliminar este elemento",
+                        text: "Por que desea eliminar el mdt del video " + element.videoId,
                         type: "question",
                         showCancelButton: true,
                         confirmButtonText: "OK",
@@ -30,14 +52,16 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
 
                     }).then(function(text) {
                         element.justification = text;
-                        dawProcessManagerService.deleteCp(element, function(response){
+                        dawProcessManagerService.deleteVdm(element, function(response){
                             swal({
                                 title: "Exitoso",
-                                text: "Se ha eliminado el elemento",
+                                text: "Se ha eliminado el MDT del video " + response.data.videoId,
                                 type: 'success',
                                 confirmButtonText: "OK"
                             });
                             element.id = response.data.id;
+                            element.videoId = response.data.videoId;
+                            element.writable = false;
                             array.splice(array.indexOf(element), 1);
                         }, function(error){
                             console.log(error)
@@ -49,20 +73,18 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
             }
         };
 
-        $scope.save = function(cp, sp){
-            if (cp != null && sp != null){
-                cp.subjectId = sp.subject.id;
-                cp.subjectPlanId = sp.id;
-                if(cp.id != null){
-                    dawProcessManagerService.editCP(cp, function (response){
+        $scope.saveVdm = function(vdm){
+            if (vdm != null){
+                if(vdm.id != null){
+                    dawProcessManagerService.updateVdm(vdm, function (response){
                         swal({
                             title: "Exitoso",
-                            text: "Se ha Actualizado el el plan de clases del tema " + cp.topicName,
+                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
                             type: 'success',
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightskyblue"
                         });
-                        cp.writable = false;
+                        vdm.writable = false;
                     }, function(error){
                         console.log(error)
                     })
@@ -73,18 +95,17 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                         type: 'question',
                         showCancelButton: true
                     }).then(function(text) {
-                        cp.justification = text;
-                        dawProcessManagerService.saveCp(cp, function(response){
+                        vdm.justification = text;
+                        dawProcessManagerService.addVdm(vdm, function(response){
                             swal({
                                 title: "Exitoso",
-                                text: "Se ha Guardado el el plan de clases del tema " + response.data.topicName,
+                                text: "Se ha guardado el MDT del video " + response.data.videoId,
                                 type: 'success',
                                 confirmButtonText: "OK"
                             });
-                            cp.id = response.data.id;
-                            cp.vdms = response.data.videos;
-                            cp.writable = false;
-                            cp.newRow = false;
+                            vdm.id = response.data.id;
+                            vdm.videoId = response.data.videoId;
+                            vdm.writable = false
                         }, function(error){
                             console.log(error)
                         })
@@ -95,26 +116,15 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
             }
         };
 
-        $scope.close = function(cp, arr){
-            if(cp.id != null){
-                cp.writable = false;
+        $scope.close = function(vdm, arr){
+            if(vdm.id != null){
+                vdm.writable = false;
             }else{
-                arr.splice(arr.indexOf(cp), 1)
+                arr.splice(arr.indexOf(vdm), 1)
             }
 
         };
-        $scope.editRow = function(row){
-            row.writable = true;
-        };
-        $scope.add = function(cp, data){
-            data.splice(data.indexOf(cp)+1, 0, {
-                meGeneralObjective: null,
-                meSpecificObjective: null,
-                meSpecificObjDesc: null,
-                topicName: null,
-                writable: true,
-                newRow: true
-            });
-        };
+        
         getClassesPlan();
+
     }]);

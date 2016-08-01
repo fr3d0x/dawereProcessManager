@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  changeDate: 2016-07-31
+  changeDetail: MyString
+  changedFrom: MyText
+  changedTo: MyText
+  comments: MyText
+  uname: MyString
+
+two:
+  changeDate: 2016-07-31
+  changeDetail: MyString
+  changedFrom: MyText
+  changedTo: MyText
+  comments: MyText
+  uname: MyString

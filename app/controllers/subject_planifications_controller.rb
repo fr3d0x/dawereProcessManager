@@ -70,16 +70,19 @@ class SubjectPlanificationsController < ApplicationController
       subject_planification = SubjectPlanification.find_by_subject_id(params[:id])
       cps = []
       subject_planification.classes_planifications.each do |classPlan|
-        cp = {
-            meGeneralObjective: classPlan.meGeneralObjective,
-            meSpecificObjective: classPlan.meSpecificObjective,
-            meSpecificObjDesc: classPlan.meSpecificObjDesc,
-            topicName: classPlan.topicName,
-            vdms: classPlan.vdms.as_json,
-            vdmsString: classPlan.vdms.as_json.to_s
+        if classPlan.status != 'DESTRPYED'
+          cp = {
+              id: classPlan.id,
+              meGeneralObjective: classPlan.meGeneralObjective,
+              meSpecificObjective: classPlan.meSpecificObjective,
+              meSpecificObjDesc: classPlan.meSpecificObjDesc,
+              topicName: classPlan.topicName,
+              vdms: classPlan.vdms.as_json,
+              vdmsString: classPlan.vdms.as_json.to_s
 
-        }
-        cps.push(cp)
+          }
+          cps.push(cp)
+        end
       end
       payload = {
           id: subject_planification.id,
@@ -133,7 +136,7 @@ class SubjectPlanificationsController < ApplicationController
         for i in 1..cp.videos.to_i
           vdm = Vdm.new
           vdm.classes_planification_id = cp.id
-          lastVid = subjectPlan.classes_planifications.last.vdms.last
+          lastVid = subjectPlan.classes_planifications.reject { |r| r.status == 'DESTROYED' }.last.vdms.last
           if lastVid != nil
             vdmCounter = lastVid.number + 1
           else
