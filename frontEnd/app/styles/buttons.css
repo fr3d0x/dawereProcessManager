@@ -71,7 +71,7 @@
 }
 
 .prettyLinkBig:hover{
-    font-size: 23px;
+    font-size: 25px;
     color: lightskyblue;
-    font-weight: 600;
+    font-weight: 400;
 }
