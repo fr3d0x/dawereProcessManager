@@ -137,6 +137,12 @@ var app = angular.module('app', [
             templateUrl: 'views/pre-production/editClassPlan.html'
         })
 
+        .state('app.preProduction.cpHistory', {
+            url: '/cpHistoryById?id',
+            controller: 'cpHistoryController',
+            templateUrl: 'views/pre-production/cpHistory.html'
+        })
+
         //VDM
         .state('app.vdm', {
             url: '/vdm',
