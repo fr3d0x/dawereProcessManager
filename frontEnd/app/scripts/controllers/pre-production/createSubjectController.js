@@ -25,6 +25,7 @@ app.controller("createSubjectController",['$scope', 'ENV', 'dawProcessManagerSer
         };
         
         $scope.saveSubject = function (grade,subject) {
+            $scope.disableBtn = true;
             if (grade != null && subject != null){
                 data = {
                     grade: grade,
@@ -38,7 +39,9 @@ app.controller("createSubjectController",['$scope', 'ENV', 'dawProcessManagerSer
                             type: "success",
                             confirmButtonText: "Aceptar",
                             confirmButtonColor: "lightskyblue"
-                        });
+                        }).then(function () {
+                            $state.go('app.dashboard');
+                        }, function(){});
                     }else{
                         swal({
                             title: "Fallido",
