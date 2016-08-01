@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :production_dpts, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit] do
       collection do

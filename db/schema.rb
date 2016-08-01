@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801140316) do
+ActiveRecord::Schema.define(version: 20160801174034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,6 +74,20 @@ ActiveRecord::Schema.define(version: 20160801140316) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "production_dpts", force: :cascade do |t|
+    t.string   "status"
+    t.text     "script"
+    t.text     "comments"
+    t.boolean  "intro"
+    t.boolean  "vidDev"
+    t.boolean  "conclu"
+    t.integer  "vdm_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
 
   create_table "roles", force: :cascade do |t|
     t.string   "role"
@@ -170,6 +184,7 @@ ActiveRecord::Schema.define(version: 20160801140316) do
   add_foreign_key "classes_planifications", "subject_planifications"
   add_foreign_key "cp_changes", "classes_planifications"
   add_foreign_key "cp_changes", "users"
+  add_foreign_key "production_dpts", "vdms"
   add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects"
   add_foreign_key "subject_planifications", "teachers"
