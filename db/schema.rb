@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160801011219) do
+ActiveRecord::Schema.define(version: 20160801140316) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20160801011219) do
     t.integer  "user_id"
     t.datetime "created_at",               null: false
     t.datetime "updated_at",               null: false
+    t.string   "topicName"
   end
 
   add_index "cp_changes", ["classes_planification_id"], name: "index_cp_changes_on_classes_planification_id", using: :btree

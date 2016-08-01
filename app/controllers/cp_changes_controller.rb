@@ -47,6 +47,20 @@ class CpChangesController < ApplicationController
     head :no_content
   end
 
+  def getChangesBySubject
+    if params[:id] != nil
+      subject = Subject.find(params[:id])
+      history = CpChange.find_by_sql('Select cph.* from cp_changes cph, classes_planifications cp, subject_planifications sp where sp.subject_id =' + params[:id] + ' and cp.subject_planification_id = sp.id and cph.classes_planification_id = cp.id')
+      payload = {
+          subject: subject,
+          history: history.as_json
+      }
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
   private
 
     def set_cp_change

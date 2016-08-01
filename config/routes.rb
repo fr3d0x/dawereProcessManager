@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :cp_changes, except: [:new, :edit]
-  resources :classes_planifications_changes, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit] do
       collection do
@@ -52,7 +50,12 @@ Rails.application.routes.draw do
         get :getGradesWithSubjects
       end
     end
-    resources :global_progresses, except: [:new, :edit]
+    resources :cp_changes, except: [:new, :edit] do
+      collection do
+        get :getChangesBySubject
+      end
+    end
+
   end
 
 
