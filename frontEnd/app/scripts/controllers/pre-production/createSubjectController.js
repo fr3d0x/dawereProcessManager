@@ -1,19 +1,9 @@
 /**
- * Created by dawere on 29/07/16.
+ * Created by hector on 29/07/16.
  */
 
 app.controller("createSubjectController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', '$rootScope',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, $rootScope){
-
-        /*$scope.subject = {
-            name: null,
-            grade: null,
-            description: null,
-            first_period: null,
-            second_period: null,
-            third_period: null,
-            goal: null
-        };*/
         $scope.subject = {};
         $scope.grade = {};
         

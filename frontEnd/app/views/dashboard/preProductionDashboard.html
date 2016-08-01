@@ -21,16 +21,27 @@
         </div>
         <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
 
-            <table ng-table="tableParams" align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
-                <tr ng-repeat="row in $data">
-                    <td data-title="'Materia'">{{row.subject.name}}</td>
-                    <td data-title="'Profesor'" >{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
-                    <td data-title="'No recibido'">{{row.notReceived}}</td>
-                    <td data-title="'Recibido (Cantidad)'">{{row.received}}</td>
-                    <td data-title="'Devueltos (Cantidad)'">{{row.returned}}</td>
-                    <td data-title="'Procesado'">{{row.processed}}</td>
-                    <td data-title="'Video Clases'">{{row.totalVideos}}</td>
-                    <td data-title="'Efectividad'">{{row.effectiveness}}%</td>
+            <table align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
+                <tr>
+                    <th>Materia</th>
+                    <th>Profesor</th>
+                    <th>No recibido</th>
+                    <th>Recibido (Cantidad)</th>
+                    <th>Devueltos (Cantidad)</th>
+                    <th>Procesado</th>
+                    <th>Video Clases</th>
+                    <th>Efectividad</th>
+                </tr>
+
+                <tr ng-repeat="row in progress">
+                    <td>{{row.subject.name}}</td>
+                    <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+                    <td>{{row.notReceived}}</td>
+                    <td>{{row.received}}</td>
+                    <td>{{row.returned}}</td>
+                    <td>{{row.processed}}</td>
+                    <td>{{row.totalVideos}}</td>
+                    <td>{{row.effectiveness}}%</td>
                 </tr>
             </table>
 

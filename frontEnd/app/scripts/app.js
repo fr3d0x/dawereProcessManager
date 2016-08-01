@@ -107,7 +107,7 @@ var app = angular.module('app', [
             templateUrl: 'views/sharedNavigation/createTeacher.html'
         })
 
-        //pre-produccion
+        //pre-production
         .state('app.preProduction', {
             url: '/preProduction',
             template: '<div ui-view></div>'
@@ -116,25 +116,25 @@ var app = angular.module('app', [
         .state('app.preProduction.classesPlanification', {
             url: '/classesPlanification?id',
             controller: 'classesPlanificationController',
-            templateUrl: 'views/pre-produccion/classesPlanification.html'
+            templateUrl: 'views/pre-production/classesPlanification.html'
         })
 
         .state('app.preProduction.showClassPlan', {
             url: '/showClassPlan?id',
             controller: 'showClassPlanController',
-            templateUrl: 'views/pre-produccion/showClassPlan.html'
+            templateUrl: 'views/pre-production/showClassPlan.html'
         })
         
         .state('app.preProduction.createPlanification',{
             url: '/createPlanification',
             controller: 'createPlanificationController',
-            templateUrl: 'views/pre-produccion/createPlanificationForm.html'
+            templateUrl: 'views/pre-production/createPlanificationForm.html'
         })
         
         .state('app.preProduction.editClassPlan', {
             url: '/editClassPlan?id',
             controller: 'editClassPlanController',
-            templateUrl: 'views/pre-produccion/editClassPlan.html'
+            templateUrl: 'views/pre-production/editClassPlan.html'
         })
 
         //VDM
@@ -167,10 +167,11 @@ var app = angular.module('app', [
             url: '/subject',
             template: '<div ui-view></div>'
         })
+
         .state('app.subject.createSubject',{
             url: '/createSubject',
             controller: 'createSubjectController',
-            template: "views/pre-production/createSubject.html"
+            templateUrl: "views/pre-production/createSubject.html"
         })
 
         
