@@ -110,8 +110,6 @@ class UsersController < ApplicationController
         }
         i += 1
       end
-
-
       render :json => { data: payload.as_json, grades: grades, status: 'SUCCESS'}, :status => 200
     end
   end

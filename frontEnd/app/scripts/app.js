@@ -21,7 +21,8 @@ var app = angular.module('app', [
   'ngRoute',
   'config',
   'LocalStorageModule',
-  'ngTable'
+  'ngTable',
+  'ngFileUpload'
 ])
   .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
     $rootScope.$state = $state;

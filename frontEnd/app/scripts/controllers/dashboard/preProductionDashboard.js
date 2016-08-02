@@ -18,6 +18,20 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
                 alert(error);
             })
         };
+        
+        $scope.examinateFile = function(file){
+            var dataUrl;
+            var fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = function (e) {
+                dataUrl = e.target.result;
+                window.open("data:application/pdf;base64, " + dataUrl);
+            };
+
+            return file
+            
+            
+        };
 
         getGlobalProgress();
         

@@ -17,6 +17,12 @@
 
                 <button class="createButton" ui-sref="app.subject.createSubject">Registrar nueva materia</button>
 
+                <span ng-show="!$flow.files.length" style="margin-top:30px; cursor: pointer" flow-btn="">Cambiar imagen
+                  <input id="upload" type="file" ngf-select ng-model="file" name="file" ngf-max-size="10MB">
+                </span>
+
+                <button class="createButton" ng-click="examinateFile(file)">examinar</button>
+
             </div>
         </div>
         <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
