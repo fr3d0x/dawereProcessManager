@@ -115,19 +115,18 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
-      sp.classes_planifications.each do |cp|
+      sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
         cp.vdms.each do |vdm|
-          if vdm.status != 'DESTROYED'
-            payload.push({
-                id: vdm.id,
-                videoId: vdm.videoId,
-                videoTittle: vdm.videoTittle,
-                videoContent: vdm.videoContent,
-                status: vdm.status,
-                comments: vdm.comments,
-                cp: cp.as_json
-            })
-          end
+          payload.push({
+              id: vdm.id,
+              videoId: vdm.videoId,
+              videoTittle: vdm.videoTittle,
+              videoContent: vdm.videoContent,
+              status: vdm.status,
+              comments: vdm.comments,
+              cp: cp.as_json,
+              prodDpt: vdm.production_dpt
+          })
           i+=1
         end
       end

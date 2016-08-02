@@ -21,7 +21,7 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
             fileReader.readAsDataURL(file);
             fileReader.onload = function (e) {
                 dataUrl = e.target.result;
-                window.open("data:application/pdf;base64, " + dataUrl);
+                window.open(dataUrl);
             };
 
             return file
