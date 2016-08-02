@@ -60,7 +60,7 @@ class ClassesPlanificationsController < ApplicationController
           meSpecificObjDesc: classPlan.meSpecificObjDesc,
           videos: classPlan.videos,
           subject: classPlan.subject_planification.subject,
-          vdms: classPlan.vdms.where("status != 'DESTROYED'").as_json,
+          vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
           changes: classPlan.cp_changes.as_json
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
@@ -93,7 +93,7 @@ class ClassesPlanificationsController < ApplicationController
       vdmCounter = 0
       for i in 1..parameters['videos'].to_i
         vdm = Vdm.new
-        lastVid = subjectPlan.classes_planifications.reject { |r| r.status == 'DESTROYED' }.last.vdms.last
+        lastVid = subjectPlan.classes_planifications.last.vdms.last
         if lastVid != nil
           if(vdmCounter != 0)
             vdmCounter = vdmCounter + 1
@@ -142,6 +142,7 @@ class ClassesPlanificationsController < ApplicationController
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.classes_planification_id = cp.id
+        change.topicName = cp.topicName
         change.changeDate = Time.now
         changes.push(change)
       end
@@ -153,6 +154,7 @@ class ClassesPlanificationsController < ApplicationController
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.classes_planification_id = cp.id
+        change.topicName = cp.topicName
         change.changeDate = Time.now
         changes.push(change)
       end
@@ -164,6 +166,7 @@ class ClassesPlanificationsController < ApplicationController
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.classes_planification_id = cp.id
+        change.topicName = cp.topicName
         change.changeDate = Time.now
         changes.push(change)
       end
@@ -175,6 +178,7 @@ class ClassesPlanificationsController < ApplicationController
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.classes_planification_id = cp.id
+        change.topicName = edition['topicName']
         change.changeDate = Time.now
         changes.push(change)
       end
@@ -198,8 +202,17 @@ class ClassesPlanificationsController < ApplicationController
       cp = ClassesPlanification.find(parameters['id'])
       cp.status = 'DESTROYED'
       cp.save
+      vdmChanges = []
       cp.vdms.each do |vdm|
         vdm.status = 'DESTROYED'
+        vdmChange = VdmChange.new
+        vdmChange.changeDate = Time.now
+        vdmChange.changeDetail = 'Eliminacion'
+        vdmChange.comments = 'Fue eliminado el plan de clases asociado a este elemento'
+        vdmChange.vdm_id = vdm.id
+        vdmChange.uname = $currentPetitionUser['username']
+        vdmChange.videoId = vdm.videoId
+        vdmChanges.push(vdmChange)
       end
       Vdm.transaction do
         cp.vdms.each(&:save!)
@@ -212,8 +225,12 @@ class ClassesPlanificationsController < ApplicationController
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
       change.classes_planification_id = cp.id
+      change.topicName = cp.topicName
       change.changeDate = Time.now
       change.save!
+      VdmChange.transaction do
+        vdmChanges.each(&:save!)
+      end
       render :json => { data: cp, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound

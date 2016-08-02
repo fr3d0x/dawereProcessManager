@@ -14,22 +14,20 @@
         </div>
 
         <div class="col-md-10 col-md-offset-1">
-
             <div class="clearfix"></div>
-
-
-            <div ng-repeat="subject in subjects" style="margin-bottom: 30px">
-                <a class="nonblock nontext Button rounded-corners clearfix" ng-click="activateAssignmentInfo(item)">
-                    <div class="listItemDescription col-md-6 col-md-offset-3 col-sm-4">
-                        <p align="center">{{subject.name}} </p>
-                        <div class="subjectOptions">
-                            <button class="col-md-3 col-md-offset-1 subjectButton" ui-sref="app.preProduction.classesPlanification({id: subject.id})">Plan de clases</button>
-                            <button class="col-md-3 subjectButton" ui-sref="app.vdm.vdmList({id: subject.id})">MDT</button>
-                            <button class="col-md-3 subjectButton">Consolidación</button>
+            <div class="row">
+                <div ng-repeat="subject in subjects" style="margin-bottom: 30px" class="col-md-6 col-lg-6 col-sm-12 col-xs-12 row">
+                    <a class="nonblock nontext Button rounded-corners clearfix" ng-click="activateAssignmentInfo(item)">
+                        <div class="listItemDescription col-md-11 col-lg-11 col-sm-12 col-xs-12">
+                            <p align="center">{{subject.name}} </p>
+                            <div class="subjectOptions">
+                                <button class="col-md-3 col-md-offset-1 subjectButton" ui-sref="app.preProduction.classesPlanification({id: subject.id})">Plan de clases</button>
+                                <button class="col-md-3 subjectButton" ui-sref="app.vdm.vdmList({id: subject.id})">MDT</button>
+                                <button class="col-md-3 subjectButton">Consolidación</button>
+                            </div>
                         </div>
-                    </div>
-                </a>
-
+                    </a>
+                </div>
             </div>
         </div>
     </div>

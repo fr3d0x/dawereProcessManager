@@ -43,9 +43,7 @@ app.controller("loginController",['$scope', 'ENV', 'dawProcessManagerService', '
                     localStorageService.set('currentUser', cu);
                     if ($location.search().red != null){
                         $window.location.href = $base64.decode($location.search().red);
-                        swal.close();
                     }else{
-                        swal.close();
                         $state.go('app.dashboard');
                     }
 

@@ -1,12 +1,11 @@
 /**
- * Created by fr3d0 on 7/30/16.
+ * Created by fr3d0 on 01/08/16.
  */
 'use strict';
-
-app.controller("vdmsHistoryController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
+app.controller("cpHistoryController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter) {
         var getVdmsHixtory = function () {
-            dawProcessManagerService.getVdmsHistoryBySubject($stateParams.id, function (response) {
+            dawProcessManagerService.getCpHistoryBySubject($stateParams.id, function (response) {
                 $scope.subject = response.data.subject;
                 $scope.tableParams = new NgTableParams({}, {
                     filterOptions: {filterLayout: "horizontal"},
@@ -16,6 +15,6 @@ app.controller("vdmsHistoryController",['$scope', 'ENV', 'dawProcessManagerServi
                 alert(error);
             })
         };
-        
+
         getVdmsHixtory();
     }]);

@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  status: MyString
+  script: MyText
+  comments: MyText
+  intro: false
+  vidDev: false
+  conclu: false
+
+two:
+  status: MyString
+  script: MyText
+  comments: MyText
+  intro: false
+  vidDev: false
+  conclu: false

@@ -21,3 +21,5 @@ bower_components
 /tmp
 .idea
 npm-debug.log
+concat.js
+concat.min.js

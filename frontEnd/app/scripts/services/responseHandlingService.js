@@ -9,17 +9,21 @@ app.service('responseHandlingService',function(){
         var motive;
 
         switch (status){
-            case "UNAUTHORIZED":
-                title = "NO AUTORIZADO";
+            case "UNAUTHORIZEDLOGIN":
+                title = "Usuario o clave invalida";
                 motive = "warning";
                 break;
             case "FAILED":
                 title = "FALLIDO";
                 motive = "warning";
                 break;
+            case "UNAUTHORIZED":
+                title = "NO AUTORIZADO";
+                motive = "warning";
+                break;
             default :
                 title = "ERROR";
-                motive = "error";
+                motive = "warning";
                 msg = "Fallo de conexion";
         }
         swal(title, msg, motive);
