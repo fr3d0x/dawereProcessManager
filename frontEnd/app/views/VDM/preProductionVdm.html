@@ -1,0 +1,73 @@
+<!--PreProduction role Vdm View-->
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" ng-if="currentRole == 'contentLeader'">
+    <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+
+                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
+                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
+                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                        {{row.videoTittle | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                        {{row.videoContent | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                        {{row.comments | limitTo : 300}}...
+                    </div>
+                </td>
+
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                    <div align="center">
+                        <a ng-click="editRow(row)" title='editar'>
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px">|</span>
+
+                        <a ng-click="add(row, $data)" title='agregar video a este tema'>
+                            <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px">|</span>
+
+                        <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
+                            <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+
+                    </div>
+                </td>
+
+                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
+                <td data-title="'Id video'" ng-if="row.writable == true">{{row.videoId}}</td>
+                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
+                <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
+                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.status" ng-options="state.statusIng as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
+                    <option value="#">No especifico</option>
+                </select>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div align="center">
+                        <a ng-click="saveVdm(row)" title='guardar'>
+                            <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px">|</span>
+                        <a ng-click="remove(row, $data)" title='eliminar'>
+                            <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px">|</span>
+                        <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div class="col-md-3 col-md-offset-4 col-sm-3 col-sm-offset-4 col-xs-3 col-xs-offset-4 col-lg-3 col-lg-offset-4" style="margin-top: 20px;">
+    <a class="prettyLinkBig" ui-sref="app.vdm.vdmsHistory({id: subject.id})">ver historial completo <i class="fa fa-clock-o" aria-hidden="true" style="font-size: 30px"></i></a>
+</div>
+<!-- ---End--- PreProduction role Vdm View-->
