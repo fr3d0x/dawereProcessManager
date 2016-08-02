@@ -84,9 +84,9 @@ class VdmsController < ApplicationController
       vdm.comments = parameters['comments']
       vdm.videoContent = parameters['videoContent']
       vdm.videoTittle = parameters['videoTittle']
-      lastVid = classPlan.subject_planification.classes_planifications.last.vdms.last
+      lastVid = Vdm.find_by_sql('Select MAX(number) from vdms v, classes_planifications cp, subject_planifications sp where sp.subject_id = ' + subject.id.to_s + ' and cp.subject_planification_id = sp.id and v.classes_planification_id = cp.id')
       if lastVid != nil
-        vdmCount = lastVid.number + 1
+        vdmCount = lastVid.first.max + 1
       else
         vdmCount = 1
       end
@@ -115,8 +115,8 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
-      sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-        cp.vdms.each do |vdm|
+      sp.classes_planifications.each do |cp|
+        cp.vdms.reject{ |r| r.status == 'DESTROYED' }.each do |vdm|
           payload.push({
               id: vdm.id,
               videoId: vdm.videoId,
@@ -180,7 +180,7 @@ class VdmsController < ApplicationController
         change = VdmChange.new
         change.changeDetail = "Cambio de Titulo"
         if vdm.videoTittle != nil
-          change.changedFrom = "De "+vdm.videoTittle4
+          change.changedFrom = "De "+vdm.videoTittle
         else
           change.changedFrom = "De vacio"
         end

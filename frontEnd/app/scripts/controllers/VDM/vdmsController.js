@@ -6,11 +6,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
         var getVdms = function(){
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
-                var data = response.data;
+                $scope.vdms = response.data;
                 $scope.subject = response.subject;
                 $scope.tableParams = new NgTableParams({},{
                     filterOptions: { filterLayout: "horizontal" },
-                    dataset: data
+                    dataset: response.data
                 });
             }, function(error) {
                 alert(error);
@@ -28,7 +28,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 status: null,
                 comments: null,
                 description: null,
-                writable: true
+                writable: true,
+                previewsIndex: data.indexOf(vdm)
             });
         };
         
@@ -70,7 +71,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             }
         };
 
-        $scope.saveVdm = function(vdm){
+        $scope.saveVdm = function(vdm, array){
             if (vdm != null){
                 if(vdm.id != null){
                     dawProcessManagerService.updateVdm(vdm, function (response){
@@ -102,7 +103,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             });
                             vdm.id = response.data.id;
                             vdm.videoId = response.data.videoId;
-                            vdm.writable = false
+                            vdm.writable = false;
+                            array.splice(vdm.previewsIndex+1, 0,  vdm);
                         }, function(error){
                             console.log(error)
                         })

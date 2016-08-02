@@ -90,12 +90,14 @@ class UsersController < ApplicationController
         processed = 0
         received = 0
         notReceived = 0
-        sp.classes_planifications.each do |cp|
-        totalVideos = totalVideos + cp.vdms.count
-        notReceived = notReceived + cp.vdms.where(:status => 'not received').count
-        returned = returned + cp.vdms.where(:status => 'returned').count
-        processed = processed + cp.vdms.where(:status => 'processed').count
-        received = received + cp.vdms.where(:status => 'received').count
+        recorded = 0
+        sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+          totalVideos = totalVideos + cp.vdms.count
+          notReceived = notReceived + cp.vdms.where(:status => 'not received').count
+          returned = returned + cp.vdms.where(:status => 'returned').count
+          processed = processed + cp.vdms.where(:status => 'processed').count
+          received = received + cp.vdms.where(:status => 'received').count
+          recorded = recorded + ProductionDpt.find_by_sql("Select * from production_dpts pdpt, vdms v where v.classes_planification_id = " + cp.id.to_s + " and pdpt.vdm_id = v.id and pdpt.status = 'recorded'").count
         end
         effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
         payload[i] ={
@@ -106,7 +108,8 @@ class UsersController < ApplicationController
             returned: returned,
             processed: processed,
             notReceived: notReceived,
-            effectiveness: effectiveness
+            effectiveness: effectiveness,
+            recorded: recorded
         }
         i += 1
       end

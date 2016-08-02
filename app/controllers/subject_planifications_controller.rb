@@ -130,13 +130,17 @@ class SubjectPlanificationsController < ApplicationController
       end
 
       vdmCounter = 0
+      lastVid = Vdm.find_by_sql('Select MAX(number) from vdms v, classes_planifications cp, subject_planifications sp where sp.subject_id = ' + subject.id.to_s + ' and cp.subject_planification_id = sp.id and v.classes_planification_id = cp.id')
       cps.each do |cp|
         for i in 1..cp.videos.to_i
           vdm = Vdm.new
           vdm.classes_planification_id = cp.id
-          lastVid = subjectPlan.classes_planifications.last.vdms.last
           if lastVid != nil
-            vdmCounter = lastVid.number + 1
+            if(vdmCounter != 0)
+              vdmCounter = vdmCounter + 1
+            else
+              vdmCounter = lastVid.first.max + 1
+            end
           else
             vdmCounter = vdmCounter + 1
           end
