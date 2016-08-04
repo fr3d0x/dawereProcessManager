@@ -4,6 +4,7 @@ class VdmsController < ApplicationController
   before_action :only => [:addVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
   include ActionView::Helpers::TextHelper
 
+
   # GET /vdms
   # GET /vdms.json
   def index
@@ -208,6 +209,9 @@ class VdmsController < ApplicationController
         change.changeDate = Time.now
         changes.push(change)
       end
+
+
+
       if vdm.status != newVdm['status']
         change = VdmChange.new
         change.changeDetail = "Cambio de estado"
@@ -219,11 +223,38 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.changeDate = Time.now
         changes.push(change)
-
-
-        assign = true
+        #assign = true
         if newVdm['status'] == 'processed'
           if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
+            vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id")
+            vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and v.status = 'processed' and v.classes_planification_id = cp.id")
+            if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
+              productionDpt = []
+              vdm.classes_planification.subject_planification.firstPeriodCompleted = true
+              vdmsProcessed.each do |v|
+                pdpt = ProductionDpt.new
+                pdpt.status = 'assigned'
+                pdpt.vdm_id = v.id
+                productionDpt.push(pdpt)
+              end
+              #Agrego a la lista el que traigo del frontEnd que no esta en BD
+              pdpt = ProductionDpt.new
+              pdpt.status = 'assigned'
+              pdpt.vdm_id = newVdm['id']
+              productionDpt.push(pdpt)
+              ProductionDpt.transaction do
+                productionDpt.each(&:save!)
+              end
+
+              UserNotifier.send_assigned_to_production(productionDpt).deliver
+            end
+          else
+            production_dpt = ProductionDpt.new
+            production_dpt.status = 'assigned'
+            production_dpt.vdm_id = newVdm['id']
+            production_dpt.save!
+            UserNotifier.send_assigned_to_production(productionDpt).deliver
+=begin
             Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id").each do |v|
               if v.status != 'processed'
                 if v.id == newVdm['id']
@@ -235,8 +266,10 @@ class VdmsController < ApplicationController
                 end
               end
             end
+=end
           end
-          if assign
+#          if assign
+=begin
             if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
               productionDpt = []
               Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and cp.status = 'processed' and v.classes_planification_id = cp.id").each do |vm|
@@ -257,7 +290,9 @@ class VdmsController < ApplicationController
               production_dpt.vdm_id = vdm.id
               production_dpt.save!
             end
-          end
+=end
+#          end
+          vdm.classes_planification.subject_planification.save!
         end
 
       end
@@ -522,6 +557,25 @@ class VdmsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def checkFirstPeriodProcessed vdmFP, nvdm, vm,
+    processed = true
+    if vm.classes_planification.subject_planification.firstPeriodCompleted == false
+      vdmFP.each do |vdm|
+        if vdm.status != 'processed'
+          if (vdm.id == nvdm['id'])
+            if nvdm['status'] != 'processed'
+              processed = false
+            end
+          else
+            processed = false
+          end
+        end
+      end
+
+    end
+    return processed
   end
 
   private
