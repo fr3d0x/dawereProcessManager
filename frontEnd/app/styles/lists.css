@@ -135,3 +135,15 @@
     font-family: ubuntu,sans-serif;
     font-weight: 700;
 }
+
+.uploadBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.uploadBtn:hover{
+    color: lightskyblue;
+}

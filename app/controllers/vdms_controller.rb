@@ -115,8 +115,16 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
-      sp.classes_planifications.each do |cp|
-        cp.vdms.reject{ |r| r.status == 'DESTROYED' }.each do |vdm|
+      sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
+        cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
+          introduccion = nil
+          conclusion = nil
+          desarrollo = nil
+          if vdm.production_dpt != nil
+            introduccion = vdm.production_dpt.intro
+            conclusion = vdm.production_dpt.conclu
+            desarrollo = vdm.production_dpt.vidDev
+          end
           payload.push({
               id: vdm.id,
               videoId: vdm.videoId,
@@ -125,7 +133,10 @@ class VdmsController < ApplicationController
               status: vdm.status,
               comments: vdm.comments,
               cp: cp.as_json,
-              prodDept: vdm.production_dpt
+              prodDept: vdm.production_dpt,
+              intro: introduccion,
+              conclu: conclusion,
+              vidDev: desarrollo
           })
           i+=1
         end
@@ -148,7 +159,8 @@ class VdmsController < ApplicationController
           status: vdm.status,
           comments: vdm.comments,
           subject: vdm.classes_planification.subject_planification.subject,
-          changes: vdm.vdm_changes
+          changes: vdm.vdm_changes,
+          prodDept: vdm.production_dpt
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -160,7 +172,9 @@ class VdmsController < ApplicationController
     if request.raw_post != nil
       newVdm = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.find(newVdm['id'])
-      changes = [];
+      changes = []
+      script = ''
+      prdPayload = {}
       if vdm.videoContent != newVdm['videoContent']
         change = VdmChange.new
         change.changeDetail = "Cambio de contenido"
@@ -227,6 +241,7 @@ class VdmsController < ApplicationController
       end
       if newVdm['prodDept'] != nil
         prodDeptChanges = []
+        script = 'guardado'
         if vdm.production_dpt != nil
           if vdm.production_dpt.comments != newVdm['prodDept']['comments']
             change = VdmChange.new
@@ -260,8 +275,9 @@ class VdmsController < ApplicationController
             change.videoId = vdm.videoId
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            script = 'cambiado'
           end
-          if newVdm['prodDept']['intro'] != vdm.production_dpt.intro && newVdm['prodDept']['conclu'] != vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] != vdm.production_dpt.vidDev
+          if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "Grabacion completa"
             change.vdm_id = vdm.id
@@ -273,7 +289,7 @@ class VdmsController < ApplicationController
             vdm.production_dpt.status = 'recorded'
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] != vdm.production_dpt.intro && newVdm['prodDept']['conclu'] != vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] == vdm.production_dpt.vidDev
+          if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo intro y conclucion"
             change.vdm_id = vdm.id
@@ -286,7 +302,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] != vdm.production_dpt.intro && newVdm['prodDept']['conclu'] == vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] != vdm.production_dpt.vidDev
+          if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo intro y desarrollo"
             change.vdm_id = vdm.id
@@ -299,7 +315,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] == vdm.production_dpt.intro && newVdm['prodDept']['conclu'] != vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] != vdm.production_dpt.vidDev
+          if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo conclusion y desarrollo"
             change.vdm_id = vdm.id
@@ -312,7 +328,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] == vdm.production_dpt.intro && newVdm['prodDept']['conclu'] == vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] != vdm.production_dpt.vidDev
+          if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo desarrollo"
             change.vdm_id = vdm.id
@@ -325,7 +341,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] != vdm.production_dpt.intro && newVdm['prodDept']['conclu'] == vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] == vdm.production_dpt.vidDev
+          if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo intro"
             change.vdm_id = vdm.id
@@ -338,7 +354,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] == vdm.production_dpt.intro && newVdm['prodDept']['conclu'] != vdm.production_dpt.conclu && newVdm['prodDept']['vidDev'] == vdm.production_dpt.vidDev
+          if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
             change.changeDetail = "se grabo solo conclusion"
             change.vdm_id = vdm.id
@@ -351,7 +367,7 @@ class VdmsController < ApplicationController
             change.changeDate = Time.now
             prodDeptChanges.push(change)
           end
-          if newVdm['prodDept']['intro'] == true && newVdm['prodDept']['conclu'] == true && newVdm['prodDept']['vidDev'] == true
+          if newVdm['intro'] == true && newVdm['conclu'] == true && newVdm['vidDev'] == true
             change = VdmChange.new
             change.changeDetail = "Grabacion completa"
             change.vdm_id = vdm.id
@@ -365,20 +381,29 @@ class VdmsController < ApplicationController
           end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
           vdm.production_dpt.script = newVdm['prodDept']['script']
-          vdm.production_dpt.intro = newVdm['prodDept']['intro']
-          vdm.production_dpt.conclu = newVdm['prodDept']['conclu']
-          vdm.production_dpt.vidDev = newVdm['prodDept']['vidDev']
+          vdm.production_dpt.intro = newVdm['intro']
+          vdm.production_dpt.conclu = newVdm['conclu']
+          vdm.production_dpt.vidDev = newVdm['vidDev']
           vdm.production_dpt.save!
           VdmChange.transaction do
             prodDeptChanges.uniq.each(&:save!)
           end
         end
+        prdPayload = {
+            status: vdm.production_dpt.status,
+            script: script,
+            comments: vdm.production_dpt.comments,
+            intro: vdm.production_dpt.intro,
+            conclu: vdm.production_dpt.conclu,
+            vidDev: vdm.production_dpt.vidDev
+        }
       end
       vdm.videoContent = newVdm['videoContent']
       vdm.videoTittle = newVdm['videoTittle']
       vdm.status = newVdm['status']
       vdm.comments = newVdm['comments']
       vdm.save
+
       payload = {
           cp: vdm.classes_planification,
           videoId: vdm.videoId,
@@ -386,7 +411,9 @@ class VdmsController < ApplicationController
           videoContent: vdm.videoContent,
           status: vdm.status,
           comments: vdm.comments,
-          subject: vdm.classes_planification.subject_planification.subject
+          subject: vdm.classes_planification.subject_planification.subject,
+          prodDept: prdPayload
+
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end

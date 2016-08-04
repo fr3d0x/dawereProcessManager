@@ -75,3 +75,18 @@
     color: lightskyblue;
     font-weight: 400;
 }
+
+.prettyLinkSmall{
+    cursor: pointer;
+    color: #787878;
+    font-size: 14px;
+    font-weight: 300;
+    text-decoration: none;
+}
+
+.prettyLinkSmall:hover{
+    font-size: 14px;
+    color: lightskyblue;
+    font-weight: 200;
+    text-decoration: none;
+}

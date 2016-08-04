@@ -114,6 +114,142 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
             }
         };
+
+        $scope.saveVdmProd = function(vdm, file){
+            if (vdm != null){
+                var mesage = '';
+                var incomplete = false;
+                if (vdm.intro != vdm.prodDept.intro && vdm.conclu != vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo introduccion y conclucion";
+                    incomplete = true
+                }
+                if (vdm.intro != vdm.prodDept.intro && vdm.conclu == vdm.prodDept.conclu && vdm.vidDev != vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo introduccion y desarrollo";
+                    incomplete = true
+                }
+                if (vdm.intro == vdm.prodDept.intro && vdm.conclu != vdm.prodDept.conclu && vdm.vidDev != vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo conclusion y desarrollo";
+                    incomplete = true
+                }
+                if (vdm.intro != vdm.prodDept.intro && vdm.conclu == vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo introduccion";
+                    incomplete = true
+                }
+                if (vdm.intro == vdm.prodDept.intro && vdm.conclu != vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo conclusion";
+                    incomplete = true
+                }
+                if (vdm.intro == vdm.prodDept.intro && vdm.conclu == vdm.prodDept.conclu && vdm.vidDev != vdm.prodDept.vidDev){
+                    mesage = "Grabacion incompleta solo desarrollo";
+                    incomplete = true
+                }
+                if (file != undefined && file != null ){
+                    var fileReader = new FileReader();
+                    fileReader.readAsDataURL(file);
+                    fileReader.onload = function (e) {
+                        var dataUrl;
+                        dataUrl = e.target.result;
+                        vdm.prodDept.script = dataUrl.split(',')[1];
+                        if (incomplete){
+                            swal({
+                                title: 'Justificar',
+                                text: mesage,
+                                input: 'textarea',
+                                type: 'question',
+                                showCancelButton: true
+                            }).then(function(text){
+                                vdm.prodDept.justification = text;
+                                dawProcessManagerService.updateVdm(vdm, function (response){
+                                    swal({
+                                        title: "Exitoso",
+                                        text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                        type: 'success',
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "lightskyblue"
+                                    });
+                                    vdm.prodDept.script = response.data.prodDept.script;
+                                    vdm.prodDept.intro = response.data.prodDept.intro;
+                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                    vdm.prodDept.status = response.data.prodDept.status;
+
+                                    vdm.writable = false;
+                                }, function(error){
+                                    console.log(error)
+                                })
+                            }, function(){})
+                        }else{
+                            dawProcessManagerService.updateVdm(vdm, function (response){
+                                swal({
+                                    title: "Exitoso",
+                                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                                vdm.prodDept.script = response.data.prodDept.script;
+                                vdm.prodDept.intro = response.data.prodDept.intro;
+                                vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                vdm.prodDept.status = response.data.prodDept.status;
+
+                                vdm.writable = false;
+                            }, function(error){
+                                console.log(error)
+                            })
+                        }
+
+                    };
+                }else{
+                    if (incomplete){
+                        swal({
+                            title: 'Justificar creacion',
+                            input: 'textarea',
+                            text: mesage,
+                            type: 'question',
+                            showCancelButton: true
+                        }).then(function(text){
+                            vdm.prodDept.justification = text;
+                            dawProcessManagerService.updateVdm(vdm, function (response){
+                                swal({
+                                    title: "Exitoso",
+                                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                                vdm.prodDept.script = response.data.prodDept.script;
+                                vdm.prodDept.intro = response.data.prodDept.intro;
+                                vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                vdm.prodDept.status = response.data.prodDept.status;
+                                vdm.writable = false;
+                            }, function(error){
+                                console.log(error)
+                            })
+                        }, function(){})
+                    }else{
+                        dawProcessManagerService.updateVdm(vdm, function (response){
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                            vdm.prodDept.script = response.data.prodDept.script;
+                            vdm.prodDept.intro = response.data.prodDept.intro;
+                            vdm.prodDept.conclu = response.data.prodDept.conclu;
+                            vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                            vdm.prodDept.status = response.data.prodDept.status;
+                            vdm.writable = false;
+                        }, function(error){
+                            console.log(error)
+                        })
+                    }
+                }
+            }
+        };
         
         $scope.close = function(vdm, arr){
             if(vdm.id != null){

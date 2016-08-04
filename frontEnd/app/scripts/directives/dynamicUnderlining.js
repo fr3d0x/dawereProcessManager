@@ -17,7 +17,7 @@ app.directive('underlining',['$timeout',  function($timeout) {
                     '<div id="fbrdr" style="height: 5px; background-color: #ADDBD8; width:'+ color_width + 'px; position: relative ; top: -15px; left: 0;"></div> ' +
                     '<div id="sbrdr" style="height: 5px; background-color: #369291; width:'+ color_width +'px; position: relative; top: -20px;left:' + color_width+ 'px;"></div> ' +
                     '<div id="tbrdr" style="height: 5px; background-color: #135C60; width:' + color_width + 'px; position: relative; top: -25px; left:' + (2*color_width) + 'px;"></div>');
-            }, 100);
+            }, 250);
         }
     };
 }]);

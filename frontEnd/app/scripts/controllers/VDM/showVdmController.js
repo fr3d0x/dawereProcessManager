@@ -16,5 +16,9 @@ app.controller("showVdmController",['$scope', 'ENV', 'dawProcessManagerService',
             })
         };
 
+        $scope.showScript = function(data){
+            window.open("data:application/pdf;base64, " + data);
+        };
+        
         getVdm()
     }]);
