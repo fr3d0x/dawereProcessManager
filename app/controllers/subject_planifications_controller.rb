@@ -76,6 +76,7 @@ class SubjectPlanificationsController < ApplicationController
             meSpecificObjective: classPlan.meSpecificObjective,
             meSpecificObjDesc: classPlan.meSpecificObjDesc,
             topicName: classPlan.topicName,
+            period: classPlan.period,
             vdms: classPlan.vdms.as_json,
             vdmsString: classPlan.vdms.as_json.to_s
 
