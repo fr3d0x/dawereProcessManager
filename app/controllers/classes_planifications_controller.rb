@@ -60,6 +60,7 @@ class ClassesPlanificationsController < ApplicationController
           meSpecificObjDesc: classPlan.meSpecificObjDesc,
           videos: classPlan.videos,
           subject: classPlan.subject_planification.subject,
+          period: classPlan.period,
           vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
           changes: classPlan.cp_changes.as_json
       }
@@ -80,6 +81,7 @@ class ClassesPlanificationsController < ApplicationController
       cp.meSpecificObjective = parameters['meSpecificObjective']
       cp.meSpecificObjDesc = parameters['meSpecificObjDesc']
       cp.topicName = parameters['topicName']
+      cp.period = parameters['period']
       cp.subject_planification_id = parameters['subjectPlanId']
       change = CpChange.new
       change.changeDetail = 'Creacion'
@@ -136,7 +138,7 @@ class ClassesPlanificationsController < ApplicationController
       changes = []
       if cp.meGeneralObjective != edition['meGeneralObjective']
         change = CpChange.new
-        change.changeDetail = 'cambio de Onjetivo General'
+        change.changeDetail = 'cambio de Objetivo General'
         change.changedFrom = cp.meGeneralObjective
         change.changedTo = edition['meGeneralObjective']
         change.user_id = $currentPetitionUser['id']
@@ -148,7 +150,7 @@ class ClassesPlanificationsController < ApplicationController
       end
       if cp.meSpecificObjective != edition['meSpecificObjective']
         change = CpChange.new
-        change.changeDetail = 'cambio de Objetivo especifico'
+        change.changeDetail = 'Cambio de objetivo especifico'
         change.changedFrom = cp.meSpecificObjective
         change.changedTo = edition['meSpecificObjective']
         change.user_id = $currentPetitionUser['id']
@@ -174,7 +176,19 @@ class ClassesPlanificationsController < ApplicationController
         change = CpChange.new
         change.changeDetail = 'cambio de nombre de tema'
         change.changedFrom = cp.meSpecificObjDesc
-        change.changedTo = edition['meSpecificObjDesc']
+        change.changedTo = edition['topicName']
+        change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.classes_planification_id = cp.id
+        change.topicName = edition['topicName']
+        change.changeDate = Time.now
+        changes.push(change)
+      end
+      if cp.period != edition['period']
+        change = CpChange.new
+        change.changeDetail = 'Cambio de lapso'
+        change.changedFrom = cp.period
+        change.changedTo = edition['period']
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.classes_planification_id = cp.id
@@ -186,6 +200,7 @@ class ClassesPlanificationsController < ApplicationController
       cp.meSpecificObjective = edition['meSpecificObjective']
       cp.meSpecificObjDesc = edition['meSpecificObjDesc']
       cp.topicName = edition['topicName']
+      cp.period = edition['period']
       cp.save!
       CpChange.transaction do
         changes.each(&:save!)

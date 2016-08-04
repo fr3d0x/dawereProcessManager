@@ -219,16 +219,57 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.changeDate = Time.now
         changes.push(change)
+
+
+        assign = true
+        if newVdm['status'] == 'processed'
+          if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
+            Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id").each do |v|
+              if v.status != 'processed'
+                if v.id == newVdm['id']
+                  if  newVdm['status'] != 'processed'
+                    assign = false
+                  end
+                else
+                  assign = false
+                end
+              end
+            end
+          end
+          if assign
+            if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
+              productionDpt = []
+              Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and cp.status = 'processed' and v.classes_planification_id = cp.id").each do |vm|
+              #vdm.classes_planification.vdms.each do |vdm|
+                pdpt = ProductionDpt.new
+                pdpt.status = 'assigned'
+                pdpt.vdm_id = vm.id
+                productionDpt.push(pdpt)
+              end
+              ProductionDpt.transaction do
+                productionDpt.each(&:save!)
+              end
+              vdm.classes_planification.subject_planification.firstPeriodCompleted = true
+              vdm.classes_planification.subject_planification.save!
+            else
+              production_dpt = ProductionDpt.new
+              production_dpt.status = 'assigned'
+              production_dpt.vdm_id = vdm.id
+              production_dpt.save!
+            end
+          end
+        end
+
       end
       if vdm.comments != newVdm['comments']
         change = VdmChange.new
         change.changeDetail = "Cambio de comentarios"
         if vdm.videoTittle != nil
-          change.changedFrom = "De "+vdm.comments
+          change.changedFrom = "De "+vdm.videoTittle
         else
           change.changedFrom = "De vacio"
         end
-        change.changedTo = "A "+ newVdm['comments']
+        change.changedTo = "A "+ newVdm['videoTittle']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
