@@ -21,9 +21,12 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
             fileReader.readAsDataURL(file);
             fileReader.onload = function (e) {
                 dataUrl = e.target.result;
-                window.open(dataUrl);
+                var encoded_data = {data: dataUrl.split(',')[1]};
+                dawProcessManagerService.postPdf(encoded_data, function(response){
+                }, function (error) {
+                    console.log(error)
+                });
             };
-
             return file
             
             

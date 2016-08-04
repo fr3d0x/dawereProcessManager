@@ -14,6 +14,7 @@ Rails.application.routes.draw do
         get :getWholeVdm
         post :updateVdm
         post :deleteVdm
+        get :getDawereVdms
       end
     end
     resources :classes_planifications, except: [:new, :edit] do
@@ -42,6 +43,7 @@ Rails.application.routes.draw do
       collection do
         post :login
         get :globalProgress
+        post :generatePdf
       end
     end
     resources :employees, except: [:new, :edit]

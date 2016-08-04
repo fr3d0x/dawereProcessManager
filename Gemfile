@@ -13,6 +13,10 @@ gem 'jwt'
 
 gem 'rack-cors', :require => 'rack/cors'
 
+gem 'prawn'
+
+gem 'prawn-table'
+
 #gem 'sqlite3'
 
 

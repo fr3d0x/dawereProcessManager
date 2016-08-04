@@ -12,17 +12,52 @@
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
-
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status == null">
+                        {{row.status | translate}}
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status != null">
+                        {{row.prodDept.status | translate}}
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status == null">
+                        {{row.comments | limitTo : 300}}...
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status != null">
+                        {{row.prodDept.comments | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Guion'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <span ng-if="row.prodDept.script == null">
+                            no posee
+                        </span>
+                        <span ng-if="row.prodDept.script != null">
+                            guardado
+                        </span>
+                    </div>
+                </td>
+                <td data-title="'Intro'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.intro" ng-disabled="true">
+                    </div>
+                </td>
+                <td data-title="'Desarrollo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.vidDev" ng-disabled="true">
+                    </div>
+                </td>
+                <td data-title="'Conclu'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.conclu" ng-disabled="true">
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="editRow(row)" title='editar'>
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
-
-                        <a ng-click="add(row, $data)" title='agregar video a este tema'>
-                            <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -31,24 +66,46 @@
                     </div>
                 </td>
 
-                <td data-title="'Id video'" ng-if="row.writable == true">{{row.videoId}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
-                <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.status" ng-options="state.statusIng as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
-                    <option value="#">No especifico</option>
-                </select>
+                <td data-title="'Id video'" ng-if="row.writable == true && row.status == 'processed' && row.prodDept.status == 'assigned'">{{row.videoId}}</td>
+                <td data-title="'Titulo'" ng-if="row.writable == true && row.status == 'processed' && row.prodDept.status == 'assigned'" style="vertical-align:middle">{{row.videoTittle}}</td>
+                <td data-title="'Estado'" ng-if="row.writable == true && row.status == 'processed' && row.prodDept.status == 'assigned'"  style="vertical-align:middle">{{row.prodDept.status}}</td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true && row.status == 'processed' && row.prodDept.status == 'assigned'"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
+                <td data-title="'Guion'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <span ng-if="row.prodDept.script == null">
+                            no posee
+                        </span>
+                        <span ng-if="row.prodDept.script != null">
+                            guardado
+                        </span>
+                    </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
-                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
+                <td data-title="'Intro'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.intro">
+                    </div>
+                </td>
+                <td data-title="'Desarrollo'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.vidDev">
+                    </div>
+                </td>
+                <td data-title="'Conclu'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                        <input type="checkbox" name="intro" ng-model="row.prodDept.conclu">
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable == true && row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'"  style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="saveVdm(row)" title='guardar'>
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
-                        <a ng-click="remove(row, $data)" title='eliminar'>
-                            <i class="fa fa-minus-circle removeBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                        <a>
+                            <i class="fa fa-times-circle" aria-hidden="true" style="font-size: 15px"></i>
+                            <input id="upload" type="file" ngf-select ng-model="file" name="file" ngf-max-size="10MB">
                         </a>
                     </div>
                 </td>
