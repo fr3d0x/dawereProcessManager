@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803170259) do
+ActiveRecord::Schema.define(version: 20160805185916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,29 @@ ActiveRecord::Schema.define(version: 20160803170259) do
   add_index "cp_changes", ["classes_planification_id"], name: "index_cp_changes_on_classes_planification_id", using: :btree
   add_index "cp_changes", ["user_id"], name: "index_cp_changes_on_user_id", using: :btree
 
+  create_table "design_assigments", force: :cascade do |t|
+    t.string   "status"
+    t.string   "assignedName"
+    t.text     "comments"
+    t.integer  "user_id"
+    t.integer  "design_dpt_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "design_assigments", ["design_dpt_id"], name: "index_design_assigments_on_design_dpt_id", using: :btree
+  add_index "design_assigments", ["user_id"], name: "index_design_assigments_on_user_id", using: :btree
+
+  create_table "design_dpts", force: :cascade do |t|
+    t.string   "status"
+    t.text     "comments"
+    t.integer  "vdm_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "design_dpts", ["vdm_id"], name: "index_design_dpts_on_vdm_id", using: :btree
+
   create_table "employees", force: :cascade do |t|
     t.string   "firstName"
     t.string   "middleName"
@@ -75,6 +98,19 @@ ActiveRecord::Schema.define(version: 20160803170259) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "production_dpt_assigments", force: :cascade do |t|
+    t.string   "status"
+    t.string   "assignedName"
+    t.text     "comments"
+    t.integer  "user_id"
+    t.integer  "production_dpt_id"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+  end
+
+  add_index "production_dpt_assigments", ["production_dpt_id"], name: "index_production_dpt_assigments_on_production_dpt_id", using: :btree
+  add_index "production_dpt_assigments", ["user_id"], name: "index_production_dpt_assigments_on_user_id", using: :btree
 
   create_table "production_dpts", force: :cascade do |t|
     t.string   "status"
@@ -186,6 +222,11 @@ ActiveRecord::Schema.define(version: 20160803170259) do
   add_foreign_key "classes_planifications", "subject_planifications"
   add_foreign_key "cp_changes", "classes_planifications"
   add_foreign_key "cp_changes", "users"
+  add_foreign_key "design_assigments", "design_dpts"
+  add_foreign_key "design_assigments", "users"
+  add_foreign_key "design_dpts", "vdms"
+  add_foreign_key "production_dpt_assigments", "production_dpts"
+  add_foreign_key "production_dpt_assigments", "users"
   add_foreign_key "production_dpts", "vdms"
   add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects"
