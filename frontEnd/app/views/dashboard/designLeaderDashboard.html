@@ -1,10 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="container-fluid" >
+    <div class="row col-md-10 col-md-offset-1">
 
-</body>
-</html>
+        <div class="col-md-12">
+            <div class="tittle">
+                    <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                         <a style="text-decoration: none; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Inicio</b></span></a>
+                        <underlining></underlining>
+                    </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
+
+        <table align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
+            <tr>
+                <th>Materia</th>
+                <th>Profesor</th>
+                <th>No Asignado</th>
+                <th>Asignado (Cantidad)</th>
+                <th>Responsable (Cantidad)</th>
+                <th>Devueltos (Cantidad)</th>
+                <th>Video Clases</th>
+                <th>Efectividad</th>
+            </tr>
+
+            <tr ng-repeat="row in progress">
+                <td>{{row.subject.name}}</td>
+                <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+                <td>{{row.notAssigned}}</td>
+                <td>{{row.assigned}}</td>
+                <td>{{row.responsable}}</td>
+                <td>{{row.returned}}</td>
+                <td>{{row.totalVideos}}</td>
+                <td>{{row.effectiveness}}%</td>
+            </tr>
+        </table>
+
+    </div>
+    <!-- /tile body -->
+</div>
+
+<div class="row center-block" style=" margin-top: 50px;">
+    <!-- tile body -->
+    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-6 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-3">
+        <!--<div ng-repeat tuitions in $grade>-->
+        <div align="center" class="yearButtonContainer">
+            <span ng-repeat="grade in grades">
+                <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
+            </span>
+            <button  class="yearButton" title="Videos Dawere" name="Videos Dawere" ui-sref="app.vdm.dawereVdms">Dawere</button>
+        </div>
+    </div>
+    <!-- /tile body -->
+
+</div>
+
