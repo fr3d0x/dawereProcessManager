@@ -1,9 +1,9 @@
 <html>
   <h1>Lista de Videos asignados a producción</h1>
   <ul>
-    <% if @vdmList.lenght > 1 %>
+    <% if @vdmList.count != nil  %>
       <% @vdmList.each do |pdpt| %>
-        <li><%= pdpt.vdm_id + " "%> </li>
+        <li><%= pdpt.vdm_id %> </li>
       <% end %>
     <% else %>
       <li><%= @vdmList.vdm.videoId %></li>

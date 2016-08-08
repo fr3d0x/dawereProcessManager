@@ -7,17 +7,6 @@ class UsersController < ApplicationController
   # GET /users
   # GET /users.json
 
-=begin
-  def generatePdf
-    encoded_data = request.raw_post['data']
-    decoded_data=Base64.decode64(encoded_data)
-    file_name = "test.pdf"
-    temp_file = Tempfile.new("filename-#{Time.now}")
-    File.open(temp_file, 'wb') {|f| f.write(decoded_data)}
-    send_file temp_file.path, :type => 'application/pdf', :filename => file_name
-  end
-=end
-
   def index
     @users = User.all
 

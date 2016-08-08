@@ -200,6 +200,7 @@ ActiveRecord::Schema.define(version: 20160805211738) do
     t.text     "comments"
     t.string   "uname"
     t.string   "videoId"
+    t.string   "department"
   end
 
   add_index "vdm_changes", ["user_id"], name: "index_vdm_changes_on_user_id", using: :btree

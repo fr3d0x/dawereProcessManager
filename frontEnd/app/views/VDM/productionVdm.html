@@ -4,20 +4,27 @@
 
     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-            <tr ng-repeat="row in $data">
-
+            <tr ng-repeat="row in $data | orderBy : row.videoId">
                 <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
                 <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                <td data-title="'Estado'" filter="{prodDeptStatus: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status == null">
                         {{row.status | translate}}
                     </div>
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status != null">
                         {{row.prodDept.status | translate}}
+                    </div>
+                </td>
+                <td data-title="'Asignado'" filter="{prodDeptResponsable: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.production_dpt_assignments == null">
+                        no asignado
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.production_dpt_assignments != null">
+                        row.prodDept.production_dpt_assignments.name
                     </div>
                 </td>
                 <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
@@ -74,7 +81,14 @@
                 <td data-title="'Id video'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.videoId}}</td>
                 <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">{{row.videoTittle}}</td>
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.prodDept.status}}</td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
+                <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div align="center">
+                        <select ng-model="row.status" ng-options="employee as employee.name for employee in employees" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'recorded' && row.prodDept.production_dpt_assignments == null">
+                            <option value="#">No especifico</option>
+                        </select>
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
                 <td data-title="'Guion'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
                         <span ng-if="row.prodDept.script == null">
@@ -105,15 +119,15 @@
                         <input type="checkbox" name="intro" ng-model="row.conclu" ng-disabled="row.prodDept.conclu == true">
                     </div>
                 </td>
-                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div align="center">
                         <label for="upload" title="subir libreto">
                             <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="10MB" style="display: none">
+                                <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="5MB" style="display: none">
                             </i>
                         </label>
                         <span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
-                        <a ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'" ng-disabled="true">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>

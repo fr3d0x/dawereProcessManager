@@ -82,6 +82,7 @@ class ClassesPlanificationsController < ApplicationController
       cp.meSpecificObjDesc = parameters['meSpecificObjDesc']
       cp.topicName = parameters['topicName']
       cp.period = parameters['period']
+      cp.videos = parameters['videos']
       cp.subject_planification_id = parameters['subjectPlanId']
       change = CpChange.new
       change.changeDetail = 'Creacion'

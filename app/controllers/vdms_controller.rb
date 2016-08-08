@@ -116,11 +116,19 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
+      prodDeptStatus = 'not assigned',
+      prodDeptResponsable = 'not assigned'
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
           introduccion = nil
           conclusion = nil
           desarrollo = nil
+          if vdm.production_dpt != nil
+            prodDeptStatus = vdm.production_dpt.status
+            if vdm.production_dpt.production_dpt_assignment != nil
+              prodDeptResponsable = vdm.production_dpt.production_dpt_assignments.assignedName
+            end
+          end
           if vdm.production_dpt != nil
             introduccion = vdm.production_dpt.intro
             conclusion = vdm.production_dpt.conclu
@@ -137,7 +145,10 @@ class VdmsController < ApplicationController
               prodDept: vdm.production_dpt,
               intro: introduccion,
               conclu: conclusion,
-              vidDev: desarrollo
+              vidDev: desarrollo,
+              videoNumber: vdm.number,
+              prodDeptStatus: prodDeptStatus,
+              prodDeptResponsable: prodDeptResponsable
           })
           i+=1
         end
@@ -180,11 +191,11 @@ class VdmsController < ApplicationController
         change = VdmChange.new
         change.changeDetail = "Cambio de contenido"
         if vdm.videoContent != nil
-          change.changedFrom = "De "+vdm.videoContent
+          change.changedFrom = vdm.videoContent
         else
-          change.changedFrom = "De vacio"
+          change.changedFrom = "vacio"
         end
-        change.changedTo = "A "+ newVdm['videoContent']
+        change.changedTo = newVdm['videoContent']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
@@ -196,12 +207,12 @@ class VdmsController < ApplicationController
         change = VdmChange.new
         change.changeDetail = "Cambio de Titulo"
         if vdm.videoTittle != nil
-          change.changedFrom = "De "+vdm.videoTittle
+          change.changedFrom = vdm.videoTittle
         else
-          change.changedFrom = "De vacio"
+          change.changedFrom = "vacio"
         end
 
-        change.changedTo = "A "+ newVdm['videoTittle']
+        change.changedTo = newVdm['videoTittle']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
@@ -210,20 +221,17 @@ class VdmsController < ApplicationController
         changes.push(change)
       end
 
-
-
       if vdm.status != newVdm['status']
         change = VdmChange.new
         change.changeDetail = "Cambio de estado"
-        change.changedFrom = "De "+vdm.status
-        change.changedTo = "A "+ newVdm['status']
+        change.changedFrom = vdm.status
+        change.changedTo = newVdm['status']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.videoId = vdm.videoId
         change.changeDate = Time.now
         changes.push(change)
-        #assign = true
         if newVdm['status'] == 'processed'
           if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
             vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id")
@@ -254,44 +262,7 @@ class VdmsController < ApplicationController
             production_dpt.vdm_id = newVdm['id']
             production_dpt.save!
             UserNotifier.send_assigned_to_production(productionDpt).deliver
-=begin
-            Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id").each do |v|
-              if v.status != 'processed'
-                if v.id == newVdm['id']
-                  if  newVdm['status'] != 'processed'
-                    assign = false
-                  end
-                else
-                  assign = false
-                end
-              end
-            end
-=end
           end
-#          if assign
-=begin
-            if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
-              productionDpt = []
-              Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and cp.status = 'processed' and v.classes_planification_id = cp.id").each do |vm|
-              #vdm.classes_planification.vdms.each do |vdm|
-                pdpt = ProductionDpt.new
-                pdpt.status = 'assigned'
-                pdpt.vdm_id = vm.id
-                productionDpt.push(pdpt)
-              end
-              ProductionDpt.transaction do
-                productionDpt.each(&:save!)
-              end
-              vdm.classes_planification.subject_planification.firstPeriodCompleted = true
-              vdm.classes_planification.subject_planification.save!
-            else
-              production_dpt = ProductionDpt.new
-              production_dpt.status = 'assigned'
-              production_dpt.vdm_id = vdm.id
-              production_dpt.save!
-            end
-=end
-#          end
           vdm.classes_planification.subject_planification.save!
         end
 
@@ -300,11 +271,11 @@ class VdmsController < ApplicationController
         change = VdmChange.new
         change.changeDetail = "Cambio de comentarios"
         if vdm.videoTittle != nil
-          change.changedFrom = "De "+vdm.videoTittle
+          change.changedFrom = vdm.videoTittle
         else
-          change.changedFrom = "De vacio"
+          change.changedFrom = "vacio"
         end
-        change.changedTo = "A "+ newVdm['videoTittle']
+        change.changedTo = newVdm['videoTittle']
         change.vdm_id = vdm.id
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
@@ -323,11 +294,11 @@ class VdmsController < ApplicationController
             change = VdmChange.new
             change.changeDetail = "Cambio de comentarios de produccion"
             if vdm.production_dpt.comments != nil
-              change.changedFrom = "De "+vdm.production_dpt.comments
+              change.changedFrom = vdm.production_dpt.comments
             else
-              change.changedFrom = "De vacio"
+              change.changedFrom = "vacio"
             end
-            change.changedTo = "A "+ newVdm['prodDept']['comments']
+            change.changedTo = newVdm['prodDept']['comments']
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -340,11 +311,11 @@ class VdmsController < ApplicationController
             change = VdmChange.new
             change.changeDetail = "Cambio de Guion de produccion"
             if vdm.production_dpt.comments != nil
-              change.changedFrom = "De "+vdm.production_dpt.script
+              change.changedFrom = vdm.production_dpt.script
             else
-              change.changedFrom = "De vacio"
+              change.changedFrom = "vacio"
             end
-            change.changedTo = "A "+ newVdm['prodDept']['script']
+            change.changedTo = newVdm['prodDept']['script']
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -377,6 +348,7 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -390,6 +362,8 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -403,6 +377,8 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -416,6 +392,8 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -429,6 +407,8 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -442,18 +422,7 @@ class VdmsController < ApplicationController
             end
             change.changeDate = Time.now
             prodDeptChanges.push(change)
-          end
-          if newVdm['intro'] == true && newVdm['conclu'] == true && newVdm['vidDev'] == true
-            change = VdmChange.new
-            change.changeDetail = "Grabacion completa"
-            change.vdm_id = vdm.id
-            change.user_id = $currentPetitionUser['id']
-            change.uname = $currentPetitionUser['username']
-            change.videoId = vdm.videoId
-            change.comments = 'Se grabo el video completo'
-            change.changeDate = Time.now
-            vdm.production_dpt.status = 'recorded'
-            prodDeptChanges.push(change)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
           end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
           vdm.production_dpt.script = newVdm['prodDept']['script']
@@ -497,6 +466,20 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
+  def checkForCompleteRecording(intro, vidDev, conclu, vdm, array)
+    if intro == true && conclu == true && vidDev == true
+      change = VdmChange.new
+      change.changeDetail = "Grabacion completa"
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.comments = 'Se grabo el video completo'
+      change.changeDate = Time.now
+      vdm.production_dpt.status = 'recorded'
+      array.push(change)
+    end
+  end
   def getDawereVdms
 
     sp = SubjectPlanification.find_by_subject_id(100)
@@ -559,7 +542,7 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
-  def checkFirstPeriodProcessed vdmFP, nvdm, vm,
+  def checkFirstPeriodProcessed (vdmFP, nvdm, vm)
     processed = true
     if vm.classes_planification.subject_planification.firstPeriodCompleted == false
       vdmFP.each do |vdm|

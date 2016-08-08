@@ -15,12 +15,15 @@ app.directive('pdf', function() {
         var height = scope.height;
         element.html('<object type="application/pdf" data="data:application/pdf;base64, ' + scope.data + ' " style="width:100%; height: '+scope.height+ 'px ;margin-top:20px;margin-bottom:20px"></object>');
       };
-      construction();
       scope.$watch("data", function () {
-        construction();
+          if(scope.data != undefined && scope.data != null){
+              construction();
+          }
       });
       scope.$watch("height", function () {
-          construction();
+          if(scope.data != undefined && scope.data != null){
+              construction();
+          }
       });
     }
   };

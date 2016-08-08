@@ -8,7 +8,17 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
                 $scope.vdms = response.data;
                 $scope.subject = response.subject;
-                $scope.tableParams = new NgTableParams({},{
+                if (response.data.prodDept != null){
+                    response.data = response.data.prodDept.intro;
+                    response.conclu = response.data.prodDept.conclu;
+                    response.vidDev = response.data.prodDept.vidDev
+
+                }
+                $scope.tableParams = new NgTableParams({
+                    sorting: {
+                    videoNumber: 'asc'
+                    }
+                },{
                     filterOptions: { filterLayout: "horizontal" },
                     dataset: response.data
                 });
@@ -116,6 +126,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         };
 
         $scope.saveVdmProd = function(vdm, file){
+            $scope.disableProdSave = true;
+            $("body").css("cursor", "progress");
             if (vdm != null){
                 var mesage = '';
                 var incomplete = false;
@@ -144,21 +156,69 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     incomplete = true
                 }
                 if (file != undefined && file != null ){
+                    var fileMessage = '';
+                    var valid = true;
                     var fileReader = new FileReader();
                     fileReader.readAsDataURL(file);
                     fileReader.onload = function (e) {
                         var dataUrl;
                         dataUrl = e.target.result;
                         vdm.prodDept.script = dataUrl.split(',')[1];
-                        if (incomplete){
+                        if (file.size > 1000000){
+                            fileMessage = "El archivo es demasiado grande para ser guardado, por favor asegurese que los guiones no pesen mas de 1MB";
+                            valid = false;
+                        }
+                        if (file.type != 'application/pdf'){
+                            fileMessage = "Los guiones deben ser de tipo .pdf para ser guardados";
+                            valid = false;
+                        }
+                        if (valid == false){
+                            $("body").css("cursor", "default");
                             swal({
-                                title: 'Justificar',
-                                text: mesage,
-                                input: 'textarea',
-                                type: 'question',
-                                showCancelButton: true
-                            }).then(function(text){
-                                vdm.prodDept.justification = text;
+                                title: 'Aviso',
+                                text: fileMessage,
+                                type: 'warning',
+                                showCancelButton: false,
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            })
+                        }else{
+                            if (incomplete){
+                                $("body").css("cursor", "default");
+                                swal({
+                                    title: 'Justificar',
+                                    text: mesage,
+                                    input: 'textarea',
+                                    type: 'question',
+                                    showCancelButton: true
+                                }).then(function(text){
+                                    $("body").css("cursor", "progress");
+                                    vdm.prodDept.justification = text;
+                                    dawProcessManagerService.updateVdm(vdm, function (response){
+                                        swal({
+                                            title: "Exitoso",
+                                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                            type: 'success',
+                                            confirmButtonText: "OK",
+                                            confirmButtonColor: "lightskyblue"
+                                        });
+                                        $("body").css("cursor", "default");
+                                        $scope.disableProdSave = false;
+                                        vdm.prodDept.script = response.data.prodDept.script;
+                                        vdm.prodDept.intro = response.data.prodDept.intro;
+                                        vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                        vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                        vdm.prodDept.status = response.data.prodDept.status;
+
+                                        vdm.writable = false;
+                                    }, function(error){
+                                        $("body").css("cursor", "default");
+                                        $scope.disableProdSave = false;
+                                        console.log(error)
+                                    })
+                                }, function(){})
+                            }else{
+                                $("body").css("cursor", "progress");
                                 dawProcessManagerService.updateVdm(vdm, function (response){
                                     swal({
                                         title: "Exitoso",
@@ -167,6 +227,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         confirmButtonText: "OK",
                                         confirmButtonColor: "lightskyblue"
                                     });
+                                    $("body").css("cursor", "default");
+                                    $scope.disableProdSave = false;
+
                                     vdm.prodDept.script = response.data.prodDept.script;
                                     vdm.prodDept.intro = response.data.prodDept.intro;
                                     vdm.prodDept.conclu = response.data.prodDept.conclu;
@@ -175,33 +238,17 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                                     vdm.writable = false;
                                 }, function(error){
+                                    $("body").css("cursor", "default");
+                                    $scope.disableProdSave = false;
+
                                     console.log(error)
                                 })
-                            }, function(){})
-                        }else{
-                            dawProcessManagerService.updateVdm(vdm, function (response){
-                                swal({
-                                    title: "Exitoso",
-                                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
-                                    type: 'success',
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "lightskyblue"
-                                });
-                                vdm.prodDept.script = response.data.prodDept.script;
-                                vdm.prodDept.intro = response.data.prodDept.intro;
-                                vdm.prodDept.conclu = response.data.prodDept.conclu;
-                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
-                                vdm.prodDept.status = response.data.prodDept.status;
-
-                                vdm.writable = false;
-                            }, function(error){
-                                console.log(error)
-                            })
+                            }
                         }
-
                     };
                 }else{
                     if (incomplete){
+                        $("body").css("cursor", "default");
                         swal({
                             title: 'Justificar creacion',
                             input: 'textarea',
@@ -209,6 +256,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             type: 'question',
                             showCancelButton: true
                         }).then(function(text){
+                            $("body").css("cursor", "progress");
                             vdm.prodDept.justification = text;
                             dawProcessManagerService.updateVdm(vdm, function (response){
                                 swal({
@@ -218,6 +266,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     confirmButtonText: "OK",
                                     confirmButtonColor: "lightskyblue"
                                 });
+                                $("body").css("cursor", "default");
+                                $scope.disableProdSave = false;
+
                                 vdm.prodDept.script = response.data.prodDept.script;
                                 vdm.prodDept.intro = response.data.prodDept.intro;
                                 vdm.prodDept.conclu = response.data.prodDept.conclu;
@@ -225,10 +276,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 vdm.prodDept.status = response.data.prodDept.status;
                                 vdm.writable = false;
                             }, function(error){
+                                $("body").css("cursor", "default");
+                                $scope.disableProdSave = false;
+
                                 console.log(error)
                             })
                         }, function(){})
                     }else{
+                        $("body").css("cursor", "progress");
                         dawProcessManagerService.updateVdm(vdm, function (response){
                             swal({
                                 title: "Exitoso",
@@ -237,6 +292,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 confirmButtonText: "OK",
                                 confirmButtonColor: "lightskyblue"
                             });
+                            $("body").css("cursor", "default");
+                            $scope.disableProdSave = false;
+
                             vdm.prodDept.script = response.data.prodDept.script;
                             vdm.prodDept.intro = response.data.prodDept.intro;
                             vdm.prodDept.conclu = response.data.prodDept.conclu;
@@ -244,6 +302,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             vdm.prodDept.status = response.data.prodDept.status;
                             vdm.writable = false;
                         }, function(error){
+                            $scope.disableProdSave = false;
+
                             console.log(error)
                         })
                     }
