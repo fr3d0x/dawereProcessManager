@@ -83,7 +83,7 @@
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.prodDept.status}}</td>
                 <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
-                        <select ng-model="row.status" ng-options="employee as employee.name for employee in employees" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'recorded' && row.prodDept.production_dpt_assignments == null">
+                        <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'recorded' && row.prodDept.production_dpt_assignments == null">
                             <option value="#">No especifico</option>
                         </select>
                     </div>
@@ -127,7 +127,7 @@
                             </i>
                         </label>
                         <span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
-                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'" ng-disabled="true">
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>

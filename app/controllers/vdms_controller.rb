@@ -116,8 +116,8 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
-      prodDeptStatus = 'not assigned',
-      prodDeptResponsable = 'not assigned'
+      prodDeptStatus = 'no asignado',
+      prodDeptResponsable = 'no asignado'
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
           introduccion = nil
@@ -153,7 +153,8 @@ class VdmsController < ApplicationController
           i+=1
         end
       end
-      render :json => { data: payload, subject: sp.subject, status: 'SUCCESS'}, :status => 200
+      employees = User.all
+      render :json => { data: payload, subject: sp.subject, employees: employees, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -232,7 +233,7 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.changeDate = Time.now
         changes.push(change)
-        if newVdm['status'] == 'processed'
+        if newVdm['status'] == 'procesado'
           if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
             vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id")
             vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and v.status = 'processed' and v.classes_planification_id = cp.id")
@@ -247,7 +248,7 @@ class VdmsController < ApplicationController
               end
               #Agrego a la lista el que traigo del frontEnd que no esta en BD
               pdpt = ProductionDpt.new
-              pdpt.status = 'assigned'
+              pdpt.status = 'asignado'
               pdpt.vdm_id = newVdm['id']
               productionDpt.push(pdpt)
               ProductionDpt.transaction do
@@ -258,7 +259,7 @@ class VdmsController < ApplicationController
             end
           else
             production_dpt = ProductionDpt.new
-            production_dpt.status = 'assigned'
+            production_dpt.status = 'asignado'
             production_dpt.vdm_id = newVdm['id']
             production_dpt.save!
             UserNotifier.send_assigned_to_production(productionDpt).deliver
@@ -333,7 +334,7 @@ class VdmsController < ApplicationController
             change.videoId = vdm.videoId
             change.comments = 'Se grabo el video completo'
             change.changeDate = Time.now
-            vdm.production_dpt.status = 'recorded'
+            vdm.production_dpt.status = 'grabado'
             prodDeptChanges.push(change)
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
@@ -476,7 +477,7 @@ class VdmsController < ApplicationController
       change.videoId = vdm.videoId
       change.comments = 'Se grabo el video completo'
       change.changeDate = Time.now
-      vdm.production_dpt.status = 'recorded'
+      vdm.production_dpt.status = 'grabado'
       array.push(change)
     end
   end
@@ -546,9 +547,9 @@ class VdmsController < ApplicationController
     processed = true
     if vm.classes_planification.subject_planification.firstPeriodCompleted == false
       vdmFP.each do |vdm|
-        if vdm.status != 'processed'
+        if vdm.status != 'procesado'
           if (vdm.id == nvdm['id'])
-            if nvdm['status'] != 'processed'
+            if nvdm['status'] != 'procesado'
               processed = false
             end
           else

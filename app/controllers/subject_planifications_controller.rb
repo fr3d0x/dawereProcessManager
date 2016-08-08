@@ -139,7 +139,7 @@ class SubjectPlanificationsController < ApplicationController
           vdm.classes_planification_id = cp.id
           vdmCounter = vdmCounter + 1
           vdm.videoId = generateVideoId(subject, vdmCounter)
-          vdm.status = 'not received'
+          vdm.status = 'no recibido'
           vdm.number = vdmCounter
           vdms.push(vdm)
         end

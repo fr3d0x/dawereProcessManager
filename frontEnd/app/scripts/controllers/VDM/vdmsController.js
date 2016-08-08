@@ -8,6 +8,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
                 $scope.vdms = response.data;
                 $scope.subject = response.subject;
+                $scope.employees = response.employees;
                 if (response.data.prodDept != null){
                     response.data = response.data.prodDept.intro;
                     response.conclu = response.data.prodDept.conclu;
@@ -127,7 +128,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.saveVdmProd = function(vdm, file){
             $scope.disableProdSave = true;
-            $("body").css("cursor", "progress");
+            $("body").css("cursor", "progress !important");
             if (vdm != null){
                 var mesage = '';
                 var incomplete = false;
@@ -174,6 +175,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         }
                         if (valid == false){
                             $("body").css("cursor", "default");
+                            $scope.disableProdSave = false;
                             swal({
                                 title: 'Aviso',
                                 text: fileMessage,

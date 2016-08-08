@@ -1,3 +1,7 @@
 .disabled {
     cursor: not-allowed;
 }
+
+a:hover, a:focus {
+    text-decoration: none;
+}
