@@ -116,23 +116,37 @@ class VdmsController < ApplicationController
       sp = SubjectPlanification.find_by_subject_id(params[:id])
       i = 0
       payload = []
-      prodDeptStatus = 'no asignado',
-      prodDeptResponsable = 'no asignado'
+      productionPayload = []
+      employees = []
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
-          introduccion = nil
-          conclusion = nil
-          desarrollo = nil
           if vdm.production_dpt != nil
+            prodDeptResponsable = 'no asignado'
             prodDeptStatus = vdm.production_dpt.status
             if vdm.production_dpt.production_dpt_assignment != nil
-              prodDeptResponsable = vdm.production_dpt.production_dpt_assignments.assignedName
+              prodDeptResponsable = vdm.production_dpt.production_dpt_assignment.assignedName
             end
-          end
-          if vdm.production_dpt != nil
             introduccion = vdm.production_dpt.intro
             conclusion = vdm.production_dpt.conclu
             desarrollo = vdm.production_dpt.vidDev
+
+            productionPayload.push({
+                 id: vdm.id,
+                 videoId: vdm.videoId,
+                 videoTittle: vdm.videoTittle,
+                 videoContent: vdm.videoContent,
+                 status: vdm.status,
+                 comments: vdm.comments,
+                 cp: cp.as_json,
+                 prodDept: vdm.production_dpt,
+                 prodAssignment: vdm.production_dpt.production_dpt_assignment,
+                 intro: introduccion,
+                 conclu: conclusion,
+                 vidDev: desarrollo,
+                 videoNumber: vdm.number,
+                 prodDeptStatus: prodDeptStatus,
+                 prodDeptResponsable: prodDeptResponsable
+             })
           end
           payload.push({
               id: vdm.id,
@@ -143,18 +157,24 @@ class VdmsController < ApplicationController
               comments: vdm.comments,
               cp: cp.as_json,
               prodDept: vdm.production_dpt,
-              intro: introduccion,
-              conclu: conclusion,
-              vidDev: desarrollo,
               videoNumber: vdm.number,
-              prodDeptStatus: prodDeptStatus,
-              prodDeptResponsable: prodDeptResponsable
           })
           i+=1
         end
       end
-      employees = User.all
-      render :json => { data: payload, subject: sp.subject, employees: employees, status: 'SUCCESS'}, :status => 200
+      users = User.all
+      users.each do |user|
+        if user.employee != nil
+          employees.push({
+               id: user.id,
+               name: user.employee.firstName,
+               lastName: user.employee.firstSurname,
+               username: user.username,
+               roles: user.roles
+           })
+        end
+      end
+      render :json => { data: payload, subject: sp.subject, employees: employees, production: productionPayload, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -236,37 +256,38 @@ class VdmsController < ApplicationController
         if newVdm['status'] == 'procesado'
           if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
             vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id")
-            vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and v.status = 'processed' and v.classes_planification_id = cp.id")
+            vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
             if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
               productionDpt = []
+              vdmsEmail = []
               vdm.classes_planification.subject_planification.firstPeriodCompleted = true
               vdmsProcessed.each do |v|
                 pdpt = ProductionDpt.new
-                pdpt.status = 'assigned'
+                pdpt.status = 'asignado'
                 pdpt.vdm_id = v.id
                 productionDpt.push(pdpt)
+                vdmsEmail.push(v)
               end
               #Agrego a la lista el que traigo del frontEnd que no esta en BD
               pdpt = ProductionDpt.new
               pdpt.status = 'asignado'
               pdpt.vdm_id = newVdm['id']
               productionDpt.push(pdpt)
+              vdmsEmail.push(newVdm)
               ProductionDpt.transaction do
                 productionDpt.each(&:save!)
               end
-
-              UserNotifier.send_assigned_to_production(productionDpt).deliver
+              UserNotifier.send_assigned_to_production(vdmsEmail).deliver
             end
           else
             production_dpt = ProductionDpt.new
             production_dpt.status = 'asignado'
             production_dpt.vdm_id = newVdm['id']
             production_dpt.save!
-            UserNotifier.send_assigned_to_production(productionDpt).deliver
+            UserNotifier.send_assigned_to_production(newVdm).deliver
           end
           vdm.classes_planification.subject_planification.save!
         end
-
       end
       if vdm.comments != newVdm['comments']
         change = VdmChange.new
@@ -335,6 +356,10 @@ class VdmsController < ApplicationController
             change.comments = 'Se grabo el video completo'
             change.changeDate = Time.now
             vdm.production_dpt.status = 'grabado'
+            assignment = ProductionDptAssignment.new
+            assignment.production_dpt_id = vdm.production_dpt.id
+            assignment.status = 'no asignado'
+            assignment.save!
             prodDeptChanges.push(change)
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
@@ -425,6 +450,16 @@ class VdmsController < ApplicationController
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
           end
+          if newVdm['asigned'] != nil
+            if vdm.production_dpt.production_dpt_assignment != nil
+              if vdm.production_dpt.production_dpt_assignment.user_id == nil
+                vdm.production_dpt.production_dpt_assignment.user_id = newVdm['asigned']['id']
+                vdm.production_dpt.production_dpt_assignment.assignedName = newVdm['asigned']['name'] + ' ' + newVdm['asigned']['lastName']
+                vdm.production_dpt.production_dpt_assignment.status = 'asignado'
+                vdm.production_dpt.production_dpt_assignment.save!
+              end
+            end
+          end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
           vdm.production_dpt.script = newVdm['prodDept']['script']
           vdm.production_dpt.intro = newVdm['intro']
@@ -478,6 +513,10 @@ class VdmsController < ApplicationController
       change.comments = 'Se grabo el video completo'
       change.changeDate = Time.now
       vdm.production_dpt.status = 'grabado'
+      assignment = ProductionDptAssignment.new
+      assignment.production_dpt_id = vdm.production_dpt.id
+      assignment.status = 'no asignado'
+      assignment.save!
       array.push(change)
     end
   end

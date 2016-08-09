@@ -20,11 +20,17 @@
                     </div>
                 </td>
                 <td data-title="'Asignado'" filter="{prodDeptResponsable: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.production_dpt_assignments == null">
-                        no asignado
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodAssignment == null">
+                        sin editor
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.production_dpt_assignments != null">
-                        row.prodDept.production_dpt_assignments.name
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodAssignment != null">
+                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodAssignment.assignedName == null">
+                            sin editor
+                        </div>
+                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodAssignment.assignedName != null">
+                            {{row.prodAssignment.assignedName}}<br>
+                            status: {{row.prodAssignment.status}}
+                        </div>
                     </div>
                 </td>
                 <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
@@ -67,9 +73,17 @@
                 </td>
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
+
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status == 'grabado' && row.prodAssignment != null && row.prodAssignment.status == 'editado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodAssignment != null && row.prodAssignment.status == 'editado'">|</span>
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status == 'grabado' && row.prodAssignment != null && row.prodAssignment.status == 'editado'">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodAssignment != null && row.prodAssignment.status == 'editado'">|</span>
+
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' || row.prodDeptResponsable == null">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado' || row.prodDeptResponsable == null">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -83,7 +97,7 @@
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.prodDept.status}}</td>
                 <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
-                        <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'recorded' && row.prodDept.production_dpt_assignments == null">
+                        <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodAssignment.user_id != null">
                             <option value="#">No especifico</option>
                         </select>
                     </div>
@@ -126,10 +140,10 @@
                                 <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="5MB" style="display: none">
                             </i>
                         </label>
-                        <span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
-                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">
+                        <span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">|</span>
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'recorded' || row.prodDept.status == 'assigned'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

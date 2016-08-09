@@ -8,7 +8,7 @@ class UserNotifier < ApplicationMailer
 
   def send_assigned_to_production(vdmList)
     @vdmList = vdmList
-    mail( :to => ['hectorug@gmail.com'],
+    mail( :to => ['alfredoescalante89@gmail.com'],
           :subject => 'Se han asignado nuevos MDT a producción' )
   end
 end
