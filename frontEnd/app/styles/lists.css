@@ -147,3 +147,27 @@
 .uploadBtn:hover{
     color: lightskyblue;
 }
+
+.returnBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: lightcoral;
+    cursor:pointer;
+}
+
+.returnBtn:hover{
+    color: #c9302c;
+}
+
+.approveBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 46px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.approveBtn:hover{
+    color: lightgreen;
+}

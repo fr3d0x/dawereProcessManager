@@ -207,7 +207,8 @@ class VdmsController < ApplicationController
       vdm = Vdm.find(newVdm['id'])
       changes = []
       script = ''
-      prdPayload = {}
+      prdPayload = nil
+      prodAssignedPayload = nil
       if vdm.videoContent != newVdm['videoContent']
         change = VdmChange.new
         change.changeDetail = "Cambio de contenido"
@@ -458,6 +459,11 @@ class VdmsController < ApplicationController
                 vdm.production_dpt.production_dpt_assignment.status = 'asignado'
                 vdm.production_dpt.production_dpt_assignment.save!
               end
+              prodAssignedPayload = {
+                  id: vdm.production_dpt.production_dpt_assignment.id,
+                  assignedName: vdm.production_dpt.production_dpt_assignment.assignedName,
+                  status: vdm.production_dpt.production_dpt_assignment.status
+              }
             end
           end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
@@ -476,7 +482,8 @@ class VdmsController < ApplicationController
             comments: vdm.production_dpt.comments,
             intro: vdm.production_dpt.intro,
             conclu: vdm.production_dpt.conclu,
-            vidDev: vdm.production_dpt.vidDev
+            vidDev: vdm.production_dpt.vidDev,
+            assignment: prodAssignedPayload
         }
       end
       vdm.videoContent = newVdm['videoContent']

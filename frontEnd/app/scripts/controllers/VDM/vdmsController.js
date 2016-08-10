@@ -16,6 +16,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     case 'production':
                         tableData = response.production;
                         break;
+                    case 'editor':
+                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                        tableData = $filter('vdmsByUser')(response.production, user.id);
+                        break;
                 }
                 $scope.tableParams = new NgTableParams({
                     sorting: {
@@ -246,6 +250,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         vdm.prodDept.conclu = response.data.prodDept.conclu;
                                         vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                         vdm.prodDept.status = response.data.prodDept.status;
+                                        if(response.data.prodDept.assignment != null){
+                                            vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                            vdm.prodAssignment.id = response.data.prodDept.assignment.id;
+                                            vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                        }
 
                                         vdm.writable = false;
                                     }, function(error){
@@ -275,6 +284,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     vdm.prodDept.conclu = response.data.prodDept.conclu;
                                     vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                     vdm.prodDept.status = response.data.prodDept.status;
+                                    if(response.data.prodDept.assignment != null){
+                                        vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                        vdm.prodAssignment.id = response.data.prodDept.assignment.id;
+                                        vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                    }
 
                                     vdm.writable = false;
                                 }, function(error){
@@ -314,6 +328,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 vdm.prodDept.conclu = response.data.prodDept.conclu;
                                 vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                 vdm.prodDept.status = response.data.prodDept.status;
+                                if(response.data.prodDept.assignment != null){
+                                    vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                    vdm.prodAssignment.id = response.data.prodDept.assignment.id;
+                                    vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                }
                                 vdm.writable = false;
                             }, function(error){
                                 $("body").css("cursor", "default");
@@ -342,6 +361,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             vdm.prodDept.conclu = response.data.prodDept.conclu;
                             vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                             vdm.prodDept.status = response.data.prodDept.status;
+                            if(response.data.prodDept.assignment != null){
+                                vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                vdm.prodAssignment.id = response.data.prodDept.assignment.id;
+                                vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                            }
                             vdm.writable = false;
                         }, function(error){
                             $("body").css("cursor", "default");
