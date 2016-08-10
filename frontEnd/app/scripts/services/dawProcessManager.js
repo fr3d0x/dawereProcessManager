@@ -100,4 +100,12 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
     this.getCpHistoryBySubject = function (id, success, error) {
         $http.get(baseUrl + '/api/cp_changes/getChangesBySubject?id='+id ).success(success).error(error);
     };
+
+    this.approveVdmFromEdition = function (id, success, error) {
+        $http.get(baseUrl + '/api/vdms/approveEditionVdm?id='+id ).success(success).error(error);
+    };
+
+    this.rejectVdmFromEdition = function (id, success, error) {
+        $http.get(baseUrl + '/api/vdms/rejectEditionVdm?id='+id ).success(success).error(error);
+    };
 }]);

@@ -2,7 +2,7 @@
   <h1>Lista de Videos asignados a producción</h1>
   <ul>
     <% if @vdmList != nil  %>
-        <% if @vdmList.count != nil %>
+        <% if @vdmList.is_a?(Array) %>
             <% @vdmList.each do |vdm| %>
                 <% if vdm.is_a?(Hash) %>
                   <li><%= vdm['videoId'] %> </li>
@@ -16,7 +16,6 @@
             <% else %>
                 <li><%= @vdmList.videoId %> </li>
             <%end%>
-
         <% end %>
     <% end %>
   </ul>

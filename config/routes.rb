@@ -15,6 +15,8 @@ Rails.application.routes.draw do
         post :updateVdm
         post :deleteVdm
         get :getDawereVdms
+        get :approveEditionVdm
+        get :rejectEditionVdm
       end
     end
     resources :classes_planifications, except: [:new, :edit] do

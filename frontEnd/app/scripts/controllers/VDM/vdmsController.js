@@ -4,6 +4,7 @@
 'use strict';
 app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
+        $scope.assignmentStatus = null;
         var getVdms = function(){
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
                 var tableData = [];
@@ -18,7 +19,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         break;
                     case 'editor':
                         var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                        tableData = $filter('vdmsByUser')(response.production, user.id);
+                        tableData = $filter('vdmsByUser')(response.production, user, localStorageService.get('currentRole'));
                         break;
                 }
                 $scope.tableParams = new NgTableParams({
@@ -35,6 +36,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         };
 
         $scope.states = [{statusIng: 'not received', statusSpa: 'no recibido'}, {statusIng: 'received', statusSpa: 'recibido'}, {statusIng: 'processed', statusSpa: 'procesado'}];
+        $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
 
         $scope.add = function(vdm, data){
             data.splice(data.indexOf(vdm)+1, 0, {
@@ -175,19 +177,19 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }
                 }
                 if (vdm.intro != vdm.prodDept.intro && vdm.conclu == vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
-                    if (vdm.intro == vdm.prodDept.conclu != true && vdm.prodDept.vidDev != true){
+                    if (vdm.intro == vdm.prodDept.conclu != true || vdm.prodDept.vidDev != true){
                         mesage = "Grabacion incompleta solo introduccion";
                         incomplete = true
                     }
                 }
                 if (vdm.intro == vdm.prodDept.intro && vdm.conclu != vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
-                    if (vdm.intro == vdm.prodDept.intro != true && vdm.prodDept.vidDev != true){
+                    if (vdm.intro == vdm.prodDept.intro != true || vdm.prodDept.vidDev != true){
                         mesage = "Grabacion incompleta solo conclusion";
                         incomplete = true
                     }
                 }
                 if (vdm.intro == vdm.prodDept.intro && vdm.conclu == vdm.prodDept.conclu && vdm.vidDev != vdm.prodDept.vidDev){
-                    if (vdm.intro == vdm.prodDept.intro != true && vdm.prodDept.conclu != true) {
+                    if (vdm.intro == vdm.prodDept.intro != true || vdm.prodDept.conclu != true) {
                         mesage = "Grabacion incompleta solo desarrollo";
                         incomplete = true
                     }
@@ -245,15 +247,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         });
                                         $("body").css("cursor", "default");
                                         $scope.disableProdSave = false;
-                                        vdm.prodDept.script = response.data.prodDept.script;
+                                        vdm.script = response.data.prodDept.script;
                                         vdm.prodDept.intro = response.data.prodDept.intro;
                                         vdm.prodDept.conclu = response.data.prodDept.conclu;
                                         vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                         vdm.prodDept.status = response.data.prodDept.status;
                                         if(response.data.prodDept.assignment != null){
-                                            vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                            vdm.prodAssignment.id = response.data.prodDept.assignment.id;
-                                            vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
                                         }
 
                                         vdm.writable = false;
@@ -279,15 +281,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     $("body").css("cursor", "default");
                                     $scope.disableProdSave = false;
 
-                                    vdm.prodDept.script = response.data.prodDept.script;
+                                    vdm.script = response.data.prodDept.script;
                                     vdm.prodDept.intro = response.data.prodDept.intro;
                                     vdm.prodDept.conclu = response.data.prodDept.conclu;
                                     vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                     vdm.prodDept.status = response.data.prodDept.status;
                                     if(response.data.prodDept.assignment != null){
-                                        vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                        vdm.prodAssignment.id = response.data.prodDept.assignment.id;
-                                        vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                        vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                        vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
                                     }
 
                                     vdm.writable = false;
@@ -323,15 +325,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 $("body").css("cursor", "default");
                                 $scope.disableProdSave = false;
 
-                                vdm.prodDept.script = response.data.prodDept.script;
+                                vdm.script = response.data.prodDept.script;
                                 vdm.prodDept.intro = response.data.prodDept.intro;
                                 vdm.prodDept.conclu = response.data.prodDept.conclu;
                                 vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                                 vdm.prodDept.status = response.data.prodDept.status;
                                 if(response.data.prodDept.assignment != null){
-                                    vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                    vdm.prodAssignment.id = response.data.prodDept.assignment.id;
-                                    vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                                    vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                    vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                    vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
                                 }
                                 vdm.writable = false;
                             }, function(error){
@@ -356,16 +358,17 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             $("body").css("cursor", "default");
                             $scope.disableProdSave = false;
 
-                            vdm.prodDept.script = response.data.prodDept.script;
+                            vdm.script = response.data.prodDept.script;
                             vdm.prodDept.intro = response.data.prodDept.intro;
                             vdm.prodDept.conclu = response.data.prodDept.conclu;
                             vdm.prodDept.vidDev = response.data.prodDept.vidDev;
                             vdm.prodDept.status = response.data.prodDept.status;
-                            if(response.data.prodDept.assignment != null){
-                                vdm.prodAssignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                vdm.prodAssignment.id = response.data.prodDept.assignment.id;
-                                vdm.prodAssignment.status = response.data.prodDept.assignment.status;
+                            if(vdm.prodDept.assignment == null){
+                                if(response.data.prodDept.assignment != null) {
+                                    vdm.prodDept.assignment = response.data.prodDept.assignment
+                                }
                             }
+
                             vdm.writable = false;
                         }, function(error){
                             $("body").css("cursor", "default");
@@ -373,6 +376,37 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             console.log(error)
                         })
                     }
+                }
+            }
+        };
+
+        $scope.saveVdmEditor = function(vdm){
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null){
+                if(vdm.id != null){
+                    if (vdm.assignmentStatus != null){
+                        vdm.prodDept.assignment.status = vdm.assignmentStatus;
+                    }
+                    dawProcessManagerService.updateVdm(vdm, function (response){
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                        vdm.writable = false;
+                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                        vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
+
+                    }, function(error){
+                        console.log(error);
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                    })
                 }
             }
         };
@@ -384,6 +418,58 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 arr.splice(arr.indexOf(vdm), 1)
             }
 
+        };
+        
+        $scope.approveEdition = function(vdm) {
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null) {
+                if (vdm.id != null) {
+                    dawProcessManagerService.approveVdmFromEdition(vdm.id, function (response) {
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha aprobado el MDT del video " + vdm.videoId,
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                        if (vdm.prodDept.assignment.status != null){
+                            vdm.prodDept.assignment.status = response.data.status
+                        }
+                    }, function(error){
+                        console.log(error)
+                    })
+                }
+            }
+        };
+
+        $scope.rejectEdition = function(vdm) {
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null) {
+                if (vdm.id != null) {
+                    dawProcessManagerService.rejectVdmFromEdition(vdm.id, function (response) {
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha rechazado la edicion del MDT del video " + vdm.videoId,
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                        if (vdm.prodDept.assignment.status != null){
+                            vdm.prodDept.assignment.status = response.data.status
+                        }
+                    }, function(error){
+                        console.log(error);
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                    })
+                }
+            }
         };
         getVdms();
     }]);

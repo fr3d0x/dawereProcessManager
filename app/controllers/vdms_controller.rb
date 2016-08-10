@@ -118,6 +118,7 @@ class VdmsController < ApplicationController
       payload = []
       productionPayload = []
       employees = []
+      productionDept = {};
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
           if vdm.production_dpt != nil
@@ -125,6 +126,17 @@ class VdmsController < ApplicationController
             prodDeptStatus = vdm.production_dpt.status
             if vdm.production_dpt.production_dpt_assignment != nil
               prodDeptResponsable = vdm.production_dpt.production_dpt_assignment.assignedName
+              productionDept = {
+                  status: vdm.production_dpt.status,
+                  script: vdm.production_dpt.script,
+                  comments: vdm.production_dpt.comments,
+                  intro: vdm.production_dpt.intro,
+                  vidDev: vdm.production_dpt.vidDev,
+                  conclu: vdm.production_dpt.conclu,
+                  assignment: vdm.production_dpt.production_dpt_assignment
+              }
+            else
+              productionDept = vdm.production_dpt
             end
             introduccion = vdm.production_dpt.intro
             conclusion = vdm.production_dpt.conclu
@@ -138,8 +150,7 @@ class VdmsController < ApplicationController
                  status: vdm.status,
                  comments: vdm.comments,
                  cp: cp.as_json,
-                 prodDept: vdm.production_dpt,
-                 prodAssignment: vdm.production_dpt.production_dpt_assignment,
+                 prodDept: productionDept,
                  intro: introduccion,
                  conclu: conclusion,
                  vidDev: desarrollo,
@@ -285,7 +296,7 @@ class VdmsController < ApplicationController
             production_dpt.status = 'asignado'
             production_dpt.vdm_id = newVdm['id']
             production_dpt.save!
-            UserNotifier.send_assigned_to_production(newVdm).deliver
+            UserNotifier.send_assigned_to_production(vdm).deliver
           end
           vdm.classes_planification.subject_planification.save!
         end
@@ -462,9 +473,48 @@ class VdmsController < ApplicationController
               prodAssignedPayload = {
                   id: vdm.production_dpt.production_dpt_assignment.id,
                   assignedName: vdm.production_dpt.production_dpt_assignment.assignedName,
-                  status: vdm.production_dpt.production_dpt_assignment.status
+                  status: vdm.production_dpt.production_dpt_assignment.status,
+                  user_id: vdm.production_dpt.production_dpt_assignment.user_id
               }
             end
+          end
+          if newVdm['prodDept']['assignment'] != nil
+            if vdm.production_dpt.production_dpt_assignment.comments != newVdm['prodDept']['assignment']['comments']
+              change = VdmChange.new
+              change.changeDetail = "Cambio de comentarios de editor"
+              if vdm.production_dpt.production_dpt_assignment.comments != nil
+                change.changedFrom = vdm.production_dpt.production_dpt_assignment.comments
+              else
+                change.changedFrom = "vacio"
+              end
+              change.changedTo = newVdm['prodDept']['assignment']['comments']
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              prodDeptChanges.push(change)
+            end
+            if vdm.production_dpt.production_dpt_assignment.status != newVdm['prodDept']['assignment']['status']
+              change = VdmChange.new
+              change.changeDetail = "Cambio de estado de editor"
+              if vdm.production_dpt.production_dpt_assignment.status != nil
+                change.changedFrom = vdm.production_dpt.production_dpt_assignment.status
+              else
+                change.changedFrom = "vacio"
+              end
+              change.changedTo = newVdm['prodDept']['assignment']['status']
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              prodDeptChanges.push(change)
+            end
+            vdm.production_dpt.production_dpt_assignment.comments = newVdm['prodDept']['assignment']['comments']
+            vdm.production_dpt.production_dpt_assignment.status = newVdm['prodDept']['assignment']['status']
+            vdm.production_dpt.production_dpt_assignment.save!
+            prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
           end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
           vdm.production_dpt.script = newVdm['prodDept']['script']
@@ -608,6 +658,59 @@ class VdmsController < ApplicationController
     return processed
   end
 
+  def approveEditionVdm
+    if params[:id] != nil
+      vdm = Vdm.find(params[:id])
+      if vdm.production_dpt.production_dpt_assignment != nil
+        change = VdmChange.new
+        change.changeDetail = 'aprobado por produccion'
+        change.changeDate = Time.now
+        change.user_id = $currentPetitionUser['id']
+        change.vdm_id = vdm.id
+        change.department = 'produccion'
+        change.changedFrom = vdm.production_dpt.production_dpt_assignment.status
+        change.changedTo = 'aprobado'
+        change.videoId = vdm.videoId
+        change.uname = $currentPetitionUser['username']
+        change.save!
+        vdm.production_dpt.production_dpt_assignment.status = 'aprobado'
+        vdm.production_dpt.production_dpt_assignment.save!
+        design = DesignDpt.new
+        design.status = 'asignado'
+        design.vdm = vdm
+        design.design_assignment = DesignAssignment.new
+        design.design_assignment.status = 'no asignado'
+        design.save!
+        payload = {
+            status: vdm.production_dpt.production_dpt_assignment.status
+        }
+        render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+      end
+    end
+  rescue ActiveRecord::RecordNotFound
+    render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  end
+
+  def rejectEditionVdm
+    if params[:id] != nil
+      vdm = Vdm.find(params[:id])
+      if vdm.production_dpt.production_dpt_assignment != nil
+        vdm.production_dpt.production_dpt_assignment.status = 'rechazado'
+        change = VdmChange.new
+        change.changeDetail = 'rechazado por produccion'
+        change.changeDate = Time.now
+        change.user_id = $currentPetitionUser.id
+        change.vdm_id = vdm.id
+        change.department = 'produccion'
+        change.changedFrom = vdm.production_dpt.production_dpt_assignment.status
+        change.changedTo = 'rechazado'
+        change.videoId = vdm.videoId
+        change.uname = $currentPetitionUser.username
+        change.save!
+        vdm.production_dpt.production_dpt_assignment.save!
+      end
+    end
+  end
   private
 
     def set_vdm
