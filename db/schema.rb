@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160805211738) do
+ActiveRecord::Schema.define(version: 20160811150445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,18 @@ ActiveRecord::Schema.define(version: 20160805211738) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "product_managements", force: :cascade do |t|
+    t.string   "productionStatus"
+    t.string   "editionStatus"
+    t.string   "designStatus"
+    t.string   "postProductionStatus"
+    t.integer  "vdm_id"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "product_managements", ["vdm_id"], name: "index_product_managements_on_vdm_id", using: :btree
 
   create_table "production_dpt_assignments", force: :cascade do |t|
     t.string   "status"
@@ -226,6 +238,7 @@ ActiveRecord::Schema.define(version: 20160805211738) do
   add_foreign_key "design_assignments", "design_dpts"
   add_foreign_key "design_assignments", "users"
   add_foreign_key "design_dpts", "vdms"
+  add_foreign_key "product_managements", "vdms"
   add_foreign_key "production_dpt_assignments", "production_dpts"
   add_foreign_key "production_dpt_assignments", "users"
   add_foreign_key "production_dpts", "vdms"

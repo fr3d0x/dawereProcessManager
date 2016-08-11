@@ -105,7 +105,7 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.get(baseUrl + '/api/vdms/approveEditionVdm?id='+id ).success(success).error(error);
     };
 
-    this.rejectVdmFromEdition = function (id, success, error) {
-        $http.get(baseUrl + '/api/vdms/rejectEditionVdm?id='+id ).success(success).error(error);
+    this.rejectVdm = function (request, success, error) {
+        $http.post(baseUrl + '/api/vdms/rejectVdm', request ).success(success).error(error);
     };
 }]);

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  productionStatus: MyString
+  editionStatus: MyString
+  designStatus: MyString
+  postProductionStatus: MyString
+
+two:
+  productionStatus: MyString
+  editionStatus: MyString
+  designStatus: MyString
+  postProductionStatus: MyString

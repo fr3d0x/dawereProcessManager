@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :product_managements, except: [:new, :edit]
   resources :production_dpts, except: [:new, :edit]
   scope(:path => '/api') do
     resources :vdm_changes, except: [:new, :edit] do
@@ -16,7 +17,7 @@ Rails.application.routes.draw do
         post :deleteVdm
         get :getDawereVdms
         get :approveEditionVdm
-        get :rejectEditionVdm
+        post :rejectVdm
       end
     end
     resources :classes_planifications, except: [:new, :edit] do

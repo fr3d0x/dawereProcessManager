@@ -77,7 +77,7 @@
                         <a ng-click="approveEdition(row)" title='aprobar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
-                        <a ng-click="rejectEdition(row)" title='rechazar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
+                        <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
@@ -140,10 +140,10 @@
                                 <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="5MB" style="display: none">
                             </i>
                         </label>
-                        <span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">|</span>
-                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">
+                        <span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado'">|</span>
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status != 'grabado'">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' || row.prodDept.status == 'asignado'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

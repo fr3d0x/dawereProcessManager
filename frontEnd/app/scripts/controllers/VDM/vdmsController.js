@@ -445,29 +445,118 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             }
         };
 
-        $scope.rejectEdition = function(vdm) {
+        $scope.reject = function(vdm, department) {
             $scope.disableSave = true;
             $("body").css("cursor", "progress");
             if (vdm != null) {
                 if (vdm.id != null) {
-                    dawProcessManagerService.rejectVdmFromEdition(vdm.id, function (response) {
-                        swal({
-                            title: "Exitoso",
-                            text: "Se ha rechazado la edicion del MDT del video " + vdm.videoId,
-                            type: 'success',
-                            confirmButtonText: "OK",
-                            confirmButtonColor: "lightskyblue"
-                        });
-                        $("body").css("cursor", "default");
-                        $scope.disableProdSave = false;
-                        if (vdm.prodDept.assignment.status != null){
-                            vdm.prodDept.assignment.status = response.data.status
+                    swal({
+                        title: 'Seleccione departamento para devolver el video',
+                        input: 'select',
+                        inputOptions: {
+                            'production': 'Produccion',
+                            'edition': 'Edicion'
+                        },
+                        inputPlaceholder: 'Seleccione',
+                        showCancelButton: true,
+                        inputValidator: function(value) {
+                            return new Promise(function(resolve, reject) {
+                                if (value != '') {
+                                    resolve();
+                                } else {
+                                    reject('Seleccione un departamento o precione cancelar)');
+                                }
+                            });
                         }
-                    }, function(error){
-                        console.log(error);
+                    }).then(function(result) {
+                        if(result != null){
+                            switch  (result){
+                                case 'production':
+                                    swal({
+                                        title: 'seleccione que desea devolver y justifique',
+                                        html:
+                                        '<input id="swal-intro" type="checkbox" value="true" autofocus>intro ' +
+                                        '<input id="swal-vidDev" type="checkbox" value="true">desarrollo '+
+                                        '<input id="swal-conclu" type="checkbox" value="true">conclusion<br>'+
+                                        '<textarea id="swal-justification" >',
+                                        preConfirm: function() {
+                                            return new Promise(function(resolve) {
+                                                if (result) {
+                                                    resolve([
+                                                        $('#swal-intro:checked').val(),
+                                                        $('#swal-vidDev:checked').val(),
+                                                        $('#swal-conclu:checked').val(),
+                                                        $('#swal-justification').val()
+                                                    ]);
+                                                }
+                                            });
+                                        }
+                                    }).then(function(result) {
+                                        if (result != null){
+                                            var request = {};
+                                            request.rejection = 'production';
+                                            request.intro = result[0];
+                                            request.vidDev = result[1];
+                                            request.conclu = result[2];
+                                            request.justification = result[3];
+                                            request.rejectedFrom = department;
+                                            request.vdmId = vdm.id;
+                                            dawProcessManagerService.rejectVdm(request, function (response) {
+                                                swal({
+                                                    title: "Exitoso",
+                                                    text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a produccion",
+                                                    type: 'success',
+                                                    confirmButtonText: "OK",
+                                                    confirmButtonColor: "lightskyblue"
+                                                });
+                                            }, function(error){
+                                                $("body").css("cursor", "default");
+                                                $scope.disableProdSave = false;
+                                                console.log(error)
+                                            });
+                                        }
+                                    }, function(){
+                                        $scope.disableSave = false;
+                                        $("body").css("cursor", "default");
+                                    });
+                                    break;
+                                case 'edition':
+                                    swal({
+                                        title: 'Justificar rechazo',
+                                        input: 'textarea',
+                                        type: 'question',
+                                        showCancelButton: true
+                                    }).then(function(text){
+                                        var request = {};
+                                        request.rejection = 'edition';
+                                        request.justification = text;
+                                        request.vdmId = vdm.id;
+                                        request.rejectedFrom = department;
+                                        dawProcessManagerService.rejectVdm(request, function (response) {
+                                            swal({
+                                                title: "Exitoso",
+                                                text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a produccion",
+                                                type: 'success',
+                                                confirmButtonText: "OK",
+                                                confirmButtonColor: "lightskyblue"
+                                            });
+                                        }, function(error){
+                                            $("body").css("cursor", "default");
+                                            $scope.disableProdSave = false;
+                                            console.log(error)
+                                        });
+                                    }, function(){
+                                        $("body").css("cursor", "default");
+                                        $scope.disableProdSave = false;
+                                    });
+                                    break;
+                            }
+                        }
+                    }, function(){
+                        $scope.disableSave = false;
                         $("body").css("cursor", "default");
-                        $scope.disableProdSave = false;
-                    })
+                    });
+
                 }
             }
         };

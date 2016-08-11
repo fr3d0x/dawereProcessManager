@@ -9,7 +9,7 @@ app.filter('vdmsByUser', function() {
                 for(var i = 0; i < vdms.length; i++){
                     var vdm = vdms[i];
                     if (vdm.prodDept.assignment != null) {
-                        if(vdm.prodDept.assignment.user_id === user.id){
+                        if(vdm.prodDept.assignment.user_id === user.id && vdm.prodDept.assignment.status != 'no asignado'){
                             filtered.push(vdm)
                         }
                     }
