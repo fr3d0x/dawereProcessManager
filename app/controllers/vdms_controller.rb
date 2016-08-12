@@ -374,7 +374,7 @@ class VdmsController < ApplicationController
             else
               assignment = ProductionDptAssignment.new
               assignment.production_dpt_id = vdm.production_dpt.id
-              assignment.status = 'no asignado'
+              assignment.status = 'asignado'
               assignment.save!
             end
             prodDeptChanges.push(change)
@@ -708,7 +708,6 @@ class VdmsController < ApplicationController
       case params['rejection']
         when 'production'
           if vdm.production_dpt != nil
-            vdm.production_dpt.status = 'rechazado'
             if params['intro'] == 'true'
               vdm.production_dpt.intro = false
             end
@@ -744,6 +743,7 @@ class VdmsController < ApplicationController
               change.comments = params['justification']
             end
             change.save!
+            vdm.production_dpt.status = 'rechazado'
             vdm.production_dpt.save!
             payload = {
                 status: vdm.production_dpt.status
@@ -751,7 +751,6 @@ class VdmsController < ApplicationController
           end
         when 'edition'
           if vdm.production_dpt.production_dpt_assignment != nil
-            vdm.production_dpt.production_dpt_assignment.status = 'no asignado'
             if vdm.design_dpt != nil
               vdm.design_dpt.status = 'no asignado'
               vdm.design_dpt.save!
@@ -774,6 +773,7 @@ class VdmsController < ApplicationController
               change.comments = params['justification']
             end
             change.save!
+            vdm.production_dpt.production_dpt_assignment.status = 'rechazado'
             vdm.production_dpt.production_dpt_assignment.save!
             payload = {
                 status: vdm.production_dpt.status

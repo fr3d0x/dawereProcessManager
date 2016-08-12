@@ -21,9 +21,7 @@
                                 <div class="dawereNav style_nav">
                                     <p class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser.username}} <span class="caret"></span></p>
                                     <ul class="dropdown-menu">
-                                        <li><a ui-sref="app.dashboard">Mis cursos</a></li>
-                                        <li><a ui-sref="app.user.profile">Mi perfil</a></li>
-                                        <li><a ui-sref="app.complaint.submition">Ayuda</a></li>
+                                        <li ng-repeat="role in roles"><a ng-click="changeRole(role.role)" style="cursor: pointer">{{role.role}}</a></li>
                                         <li style=" color: gray;" ><a href="{{logoutURL}}" ng-click="logout()" style=" color: white;">Cerrar sesión</a></li>
                                     </ul>
                                 </div>
