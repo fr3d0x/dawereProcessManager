@@ -368,15 +368,15 @@ class VdmsController < ApplicationController
             change.comments = 'Se grabo el video completo'
             change.changeDate = Time.now
             vdm.production_dpt.status = 'grabado'
-            if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-              vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-              vdm.production_dpt.production_dpt_assignment.save!
+            assignment = ProductionDptAssignment.find_by_production_dpt_id(vdm.production_dpt.id)
+            if assignment != nil && assignment.user_id != nil
+              assignment.status = 'asignado'
             else
               assignment = ProductionDptAssignment.new
               assignment.production_dpt_id = vdm.production_dpt.id
               assignment.status = 'asignado'
-              assignment.save!
             end
+            assignment.save!
             prodDeptChanges.push(change)
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
@@ -575,15 +575,15 @@ class VdmsController < ApplicationController
       change.comments = 'Se grabo el video completo'
       change.changeDate = Time.now
       vdm.production_dpt.status = 'grabado'
-      if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-        vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-        vdm.production_dpt.production_dpt_assignment.save
+      assignment = ProductionDptAssignment.find_by_production_dpt_id(vdm.production_dpt.id)
+      if assignment != nil && assignment.user_id != nil
+        assignment.status = 'asignado'
       else
         assignment = ProductionDptAssignment.new
         assignment.production_dpt_id = vdm.production_dpt.id
-        assignment.status = 'no asignado'
-        assignment.save!
+        assignment.status = 'asignado'
       end
+      assignment.save!
       array.push(change)
     end
   end

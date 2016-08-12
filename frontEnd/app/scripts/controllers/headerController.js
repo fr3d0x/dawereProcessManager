@@ -16,7 +16,6 @@ app.controller('headerController',['$scope', 'localStorageService', '$rootScope'
     $scope.changeRole = function(role){
         localStorageService.set('currentRole', role);
         $rootScope.currentRole = role;
-        $window.location.reload();
     }
     
 

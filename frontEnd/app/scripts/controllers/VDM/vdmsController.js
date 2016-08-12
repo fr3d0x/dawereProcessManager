@@ -447,7 +447,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.reject = function(vdm, department) {
             $scope.disableSave = true;
-            $("body").css("cursor", "progress");
             if (vdm != null) {
                 if (vdm.id != null) {
                     swal({
@@ -492,6 +491,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             });
                                         }
                                     }).then(function(result) {
+                                        $("body").css("cursor", "progress");
                                         if (result != null){
                                             var request = {};
                                             request.rejection = 'production';
@@ -509,6 +509,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "lightskyblue"
                                                 });
+                                                $("body").css("cursor", "default");
+                                                $scope.disableProdSave = false;
                                             }, function(error){
                                                 $("body").css("cursor", "default");
                                                 $scope.disableProdSave = false;
@@ -527,6 +529,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         type: 'question',
                                         showCancelButton: true
                                     }).then(function(text){
+                                        $("body").css("cursor", "progress");
                                         var request = {};
                                         request.rejection = 'edition';
                                         request.justification = text;
@@ -535,11 +538,13 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         dawProcessManagerService.rejectVdm(request, function (response) {
                                             swal({
                                                 title: "Exitoso",
-                                                text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a produccion",
+                                                text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a edicion",
                                                 type: 'success',
                                                 confirmButtonText: "OK",
                                                 confirmButtonColor: "lightskyblue"
                                             });
+                                            $("body").css("cursor", "default");
+                                            $scope.disableProdSave = false;
                                         }, function(error){
                                             $("body").css("cursor", "default");
                                             $scope.disableProdSave = false;

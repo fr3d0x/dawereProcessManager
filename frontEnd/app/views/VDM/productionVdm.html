@@ -140,10 +140,10 @@
                                 <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="5MB" style="display: none">
                             </i>
                         </label>
-                        <span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado'">|</span>
-                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-if="row.prodDept.status != 'grabado'">
+                        <span style="font-size: 20px">|</span>
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar'>
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado'">|</span>
+                        </a><span style="font-size: 20px">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
