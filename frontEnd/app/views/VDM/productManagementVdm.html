@@ -1,0 +1,82 @@
+<!-- ---End--- ProductManagement role Vdm View-->
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data | orderBy : row.videoId">
+                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
+                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                        {{row.videoTittle | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Estado Produccion'" filter="{productionStatus: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.productionStatus == null">
+                        {{row.prodDept.status}}
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.productionStatus != null" style="text-align: center">
+                        {{row.productManagement.productionStatus}}
+                        <span style="font-size: 20px;" ng-if="row.productManagement.productionStatus != 'aprobado'">|</span>
+                        <a ng-click="approve(row, 'Gerente de Producto', 'production')" title='aprobar produccion' ng-if="row.productManagement.productionStatus != 'aprobado'">
+                            <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                </td>
+                <td data-title="'Estado Edicion'" filter="{editionStatus: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.editionStatus == null">
+                        <span ng-if="row.prodDept.assignment.status != null">
+                            {{row.prodDept.assignment.status}}
+                        </span>
+                        <span ng-if="row.prodDept.assignment.status == null">
+                            no asignado
+                        </span>
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.editionStatus != null">
+                        {{row.productManagement.editionStatus}}
+
+                    </div>
+                </td>
+                <td data-title="'Estado Diseño'" filter="{designStatus: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.designStatus == null">
+                        <span ng-if="row.designDept.assignment.status != null">
+                            {{row.designDept.assignment.status}}
+                        </span>
+                        <span ng-if="row.designDept.assignment.status == null">
+                            no asignado
+                        </span>
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.designStatus != null">
+                        {{row.productManagement.designStatus}}
+                    </div>
+                </td>
+                <td data-title="'Estado Post-produccion'" filter="{postProdStatus: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.postProductionStatus == null">
+                        <span ng-if="row.postpDept.assignment.status != null">
+                            {{row.postpDept.assignment.status}}
+                        </span>
+                        <span ng-if="row.postpDept.assignment.status == null">
+                            no asignado
+                        </span>
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.postProductionStatus != null">
+                        {{row.productManagement.postProductionStatus}}
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                    <div align="center">
+
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">|</span>
+
+                        <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
+                            <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- ---End--- ProductManagement role Vdm View-->

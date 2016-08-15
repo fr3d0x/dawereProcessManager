@@ -16,7 +16,7 @@ Rails.application.routes.draw do
         post :updateVdm
         post :deleteVdm
         get :getDawereVdms
-        get :approveEditionVdm
+        post :approveVdm
         post :rejectVdm
       end
     end

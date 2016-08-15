@@ -21,6 +21,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
                         tableData = $filter('vdmsByUser')(response.production, user, localStorageService.get('currentRole'));
                         break;
+                    case 'productManager':
+                        tableData = response.productManagement;
+                        break;
                 }
                 $scope.tableParams = new NgTableParams({
                     sorting: {
@@ -249,8 +252,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         $scope.disableProdSave = false;
                                         vdm.script = response.data.prodDept.script;
                                         vdm.prodDept.intro = response.data.prodDept.intro;
+                                        vdm.intro = vdm.prodDept.intro;
                                         vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                        vdm.conclu = vdm.prodDept.conclu;
                                         vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                        vdm.vidDev = vdm.prodDept.vidDev;
                                         vdm.prodDept.status = response.data.prodDept.status;
                                         if(response.data.prodDept.assignment != null){
                                             vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
@@ -282,9 +288,13 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     $scope.disableProdSave = false;
 
                                     vdm.script = response.data.prodDept.script;
+                                    vdm.script = response.data.prodDept.script;
                                     vdm.prodDept.intro = response.data.prodDept.intro;
+                                    vdm.intro = vdm.prodDept.intro;
                                     vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                    vdm.conclu = vdm.prodDept.conclu;
                                     vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                    vdm.vidDev = vdm.prodDept.vidDev;
                                     vdm.prodDept.status = response.data.prodDept.status;
                                     if(response.data.prodDept.assignment != null){
                                         vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
@@ -327,8 +337,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                                 vdm.script = response.data.prodDept.script;
                                 vdm.prodDept.intro = response.data.prodDept.intro;
+                                vdm.intro = vdm.prodDept.intro;
                                 vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                vdm.conclu = vdm.prodDept.conclu;
                                 vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                vdm.vidDev = vdm.prodDept.vidDev;
                                 vdm.prodDept.status = response.data.prodDept.status;
                                 if(response.data.prodDept.assignment != null){
                                     vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
@@ -360,13 +373,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                             vdm.script = response.data.prodDept.script;
                             vdm.prodDept.intro = response.data.prodDept.intro;
+                            vdm.intro = vdm.prodDept.intro;
                             vdm.prodDept.conclu = response.data.prodDept.conclu;
+                            vdm.conclu = vdm.prodDept.conclu;
                             vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                            vdm.vidDev = vdm.prodDept.vidDev;
                             vdm.prodDept.status = response.data.prodDept.status;
-                            if(vdm.prodDept.assignment == null){
-                                if(response.data.prodDept.assignment != null) {
-                                    vdm.prodDept.assignment = response.data.prodDept.assignment
-                                }
+                            if(response.data.prodDept.assignment != null) {
+                                vdm.prodDept.assignment = response.data.prodDept.assignment
                             }
 
                             vdm.writable = false;
@@ -420,15 +434,19 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         };
         
-        $scope.approveEdition = function(vdm) {
+        $scope.approve = function(vdm, department, approval) {
             $scope.disableSave = true;
             $("body").css("cursor", "progress");
             if (vdm != null) {
                 if (vdm.id != null) {
-                    dawProcessManagerService.approveVdmFromEdition(vdm.id, function (response) {
+                    var request = {};
+                    request.vdmId = vdm.id;
+                    request.approvedFrom = department;
+                    request.approval = approval;
+                    dawProcessManagerService.approveVdm(request, function (response) {
                         swal({
                             title: "Exitoso",
-                            text: "Se ha aprobado el MDT del video " + vdm.videoId,
+                            text: "Se ha aprobado el MDT del video " + vdm.videoId + " para " + approval,
                             type: 'success',
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightskyblue"
@@ -474,9 +492,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     swal({
                                         title: 'seleccione que desea devolver y justifique',
                                         html:
-                                        '<input id="swal-intro" type="checkbox" value="true" autofocus>intro ' +
-                                        '<input id="swal-vidDev" type="checkbox" value="true">desarrollo '+
-                                        '<input id="swal-conclu" type="checkbox" value="true">conclusion<br>'+
+                                        '<input id="swal-intro" type="checkbox" value="true" style="font-weight: bold"> intro ' +
+                                        '<input id="swal-vidDev" type="checkbox" value="true" style="font-weight: bold"> desarrollo '+
+                                        '<input id="swal-conclu" type="checkbox" value="true" style="font-weight: bold"> conclusion<br>'+
                                         '<textarea id="swal-justification" >',
                                         preConfirm: function() {
                                             return new Promise(function(resolve) {
@@ -511,6 +529,18 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 });
                                                 $("body").css("cursor", "default");
                                                 $scope.disableProdSave = false;
+                                                vdm.prodDept.intro = response.data.prodDept.intro;
+                                                vdm.intro = vdm.prodDept.intro;
+                                                vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                vdm.conclu = vdm.prodDept.conclu;
+                                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                vdm.vidDev = vdm.prodDept.vidDev;
+                                                vdm.prodDept.status = response.data.prodDept.status;
+                                                if(response.data.prodDept.assignment != null){
+                                                    vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                    vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                    vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                }
                                             }, function(error){
                                                 $("body").css("cursor", "default");
                                                 $scope.disableProdSave = false;
@@ -543,6 +573,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 confirmButtonText: "OK",
                                                 confirmButtonColor: "lightskyblue"
                                             });
+                                            vdm.prodDept.intro = response.data.prodDept.intro;
+                                            vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                            vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                            vdm.prodDept.status = response.data.prodDept.status;
+                                            if(response.data.prodDept.assignment != null){
+                                                vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                            }
                                             $("body").css("cursor", "default");
                                             $scope.disableProdSave = false;
                                         }, function(error){

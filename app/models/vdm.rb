@@ -3,4 +3,5 @@ class Vdm < ActiveRecord::Base
   has_many :vdm_changes
   has_one :production_dpt
   has_one :design_dpt
+  has_one :product_management
 end

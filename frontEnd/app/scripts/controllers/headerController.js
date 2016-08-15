@@ -4,13 +4,16 @@
 
 
 
-app.controller('headerController',['$scope', 'localStorageService', '$rootScope','ENV', 'dawProcessManagerService', '$window', function ($scope, localStorageService, $rootScope, ENV, dawProcessManagerService, $window) {
+app.controller('headerController',['$scope', 'localStorageService', '$rootScope','ENV', 'dawProcessManagerService', '$window', '$state', function ($scope, localStorageService, $rootScope, ENV, dawProcessManagerService, $window, $state) {
 
     var logoutURL = ENV.baseUrl;
-    
-    $scope.roles = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])).roles;
+
+    if (localStorageService.get('encodedToken') != null){
+        $scope.roles = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])).roles;
+    }
     $scope.logout = function(){
         localStorageService.clearAll();
+        $state.go('app.dashboard')
     };
     
     $scope.changeRole = function(role){

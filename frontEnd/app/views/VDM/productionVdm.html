@@ -74,7 +74,7 @@
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
                     <div align="center">
 
-                        <a ng-click="approveEdition(row)" title='aprobar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
+                        <a ng-click="approve(row, 'production', 'edition')" title='aprobar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
                         <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
