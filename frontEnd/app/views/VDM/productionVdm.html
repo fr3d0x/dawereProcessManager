@@ -43,10 +43,10 @@
                 </td>
                 <td data-title="'Guion'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
-                        <span ng-if="row.prodDept.script == null">
+                        <span ng-if="row.prodDept.script == null || row.prodDept.script == ''">
                             no posee
                         </span>
-                        <span ng-if="row.prodDept.script != null">
+                        <span ng-if="row.prodDept.script != null && row.prodDept.script != ''">
                             <span ng-if="row.script == 'cambiado'">
                                 cambiado
                             </span>
@@ -81,9 +81,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id == null">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -97,9 +97,22 @@
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.prodDept.status}}</td>
                 <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
-                        <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
-                            <option value="#">No especifico</option>
-                        </select>
+                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment != null">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName == null">
+                                <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
+                                    <option value="#">No especifico</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName != null">
+                                {{row.prodDept.assignment.assignedName}}<br>
+                                status: {{row.prodDept.assignment.status}}
+                            </div>
+                        </div>
+                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment == null">
+                            <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
+                                <option value="#">No especifico</option>
+                            </select>
+                        </div>
                     </div>
                 </td>
                 <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>

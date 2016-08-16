@@ -768,8 +768,15 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.status = 'aprobado'
             vdm.production_dpt.save!
+            if params['role'] == 'productManager'
+              if vdm.product_management != nil
+                vdm.product_management.productionStatus = 'aprobado'
+                vdm.product_management.save!
+              end
+            end
             payload = {
-                status: vdm.production_dpt.status
+                prodDeptStatus: vdm.production_dpt.status,
+                productManagement: vdm.product_management
             }
           end
         when 'edition'
@@ -793,12 +800,22 @@ class VdmsController < ApplicationController
             design.design_assignment = DesignAssignment.new
             design.design_assignment.status = 'no asignado'
             design.save!
-            if vdm.product_management != nil
-              vdm.product_management.editionStatus = 'por aprobar'
-              vdm.product_management.save!
+            if params['role'] == 'productManager'
+              if vdm.product_management != nil
+                vdm.product_management.editionStatus = 'aprobado'
+                vdm.product_management.save!
+              end
+            else
+              if vdm.product_management != nil
+                vdm.product_management.editionStatus = 'por aprobar'
+                vdm.product_management.save!
+              end
             end
+
             payload = {
-                status: vdm.production_dpt.production_dpt_assignment.status
+                editionStatus: vdm.production_dpt.production_dpt_assignment.status,
+                productManagement: vdm.product_management
+
             }
           end
       end
@@ -853,6 +870,13 @@ class VdmsController < ApplicationController
             if params['justification'] != nil
               change.comments = params['justification']+ '. Partes a regrabar: ' + parts
             end
+            if vdm.product_management != nil
+              vdm.product_management.productionStatus = 'rechazado'
+              vdm.product_management.editionStatus = nil
+              vdm.product_management.designStatus = nil
+              vdm.product_management.postProductionStatus = nil
+              vdm.product_management.save!
+            end
             change.save!
             vdm.production_dpt.status = 'rechazado'
             vdm.production_dpt.save!
@@ -871,7 +895,8 @@ class VdmsController < ApplicationController
                 videoContent: vdm.videoContent,
                 status: vdm.status,
                 comments: vdm.comments,
-                prodDept: prdPayload
+                prodDept: prdPayload,
+                productManagement: vdm.product_management
             }
           end
         when 'edition'
@@ -900,6 +925,12 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.production_dpt_assignment.status = 'rechazado'
             vdm.production_dpt.production_dpt_assignment.save!
+            if vdm.product_management != nil
+              vdm.product_management.editionStatus = 'rechazado'
+              vdm.product_management.designStatus = nil
+              vdm.product_management.postProductionStatus = nil
+              vdm.product_management.save!
+            end
             prdPayload = {
                 status: vdm.production_dpt.status,
                 comments: vdm.production_dpt.comments,
@@ -915,7 +946,8 @@ class VdmsController < ApplicationController
                 videoContent: vdm.videoContent,
                 status: vdm.status,
                 comments: vdm.comments,
-                prodDept: prdPayload
+                prodDept: prdPayload,
+                productManagement: vdm.product_management
             }
           end
       end

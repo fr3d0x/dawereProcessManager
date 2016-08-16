@@ -443,6 +443,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     request.vdmId = vdm.id;
                     request.approvedFrom = department;
                     request.approval = approval;
+                    request.role = localStorageService.get('currentRole');
                     dawProcessManagerService.approveVdm(request, function (response) {
                         swal({
                             title: "Exitoso",
@@ -453,8 +454,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         });
                         $("body").css("cursor", "default");
                         $scope.disableProdSave = false;
-                        if (vdm.prodDept.assignment.status != null){
-                            vdm.prodDept.assignment.status = response.data.status
+                        if (vdm.prodDept != null){
+                            if (vdm.prodDept.assignment.status != null){
+                                if(response.data.editionStatus != null){
+                                    vdm.prodDept.assignment.status = response.data.editionStatus
+                                }
+                            }
+                            if(response.data.prodDeptStatus != null){
+                                vdm.prodDept.status = response.data.prodDeptStatus;
+                            }
+                        }
+                        if(vdm.productManagement != null){
+                            if (response.data.productManagement != null){
+                                vdm.productManagement = response.data.productManagement;
+                            }
                         }
                     }, function(error){
                         console.log(error)
@@ -519,10 +532,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             request.justification = result[3];
                                             request.rejectedFrom = department;
                                             request.vdmId = vdm.id;
+                                            request.role = localStorageService.get('currentRole');
                                             dawProcessManagerService.rejectVdm(request, function (response) {
                                                 swal({
                                                     title: "Exitoso",
-                                                    text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a produccion",
+                                                    text: "Se ha rechazado el MDT del video " + vdm.videoId + " y ha sido devuelto a produccion",
                                                     type: 'success',
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "lightskyblue"
@@ -540,6 +554,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
                                                     vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
                                                     vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                }
+                                                if(vdm.productManagement != null){
+                                                    if (response.data.productManagement != null){
+                                                        vdm.productManagement = response.data.productManagement;
+                                                    }
                                                 }
                                             }, function(error){
                                                 $("body").css("cursor", "default");
@@ -565,6 +584,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         request.justification = text;
                                         request.vdmId = vdm.id;
                                         request.rejectedFrom = department;
+                                        request.role = localStorageService.get('currentRole');
                                         dawProcessManagerService.rejectVdm(request, function (response) {
                                             swal({
                                                 title: "Exitoso",
@@ -581,6 +601,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
                                                 vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
                                                 vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                            }
+                                            if(vdm.productManagement != null){
+                                                if (response.data.productManagement != null){
+                                                    vdm.productManagement = response.data.productManagement;
+                                                }
                                             }
                                             $("body").css("cursor", "default");
                                             $scope.disableProdSave = false;
