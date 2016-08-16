@@ -286,6 +286,7 @@ class VdmsController < ApplicationController
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
         change.videoId = vdm.videoId
+        change.department = 'pre-produccion'
         change.changeDate = Time.now
         changes.push(change)
       end
@@ -304,6 +305,7 @@ class VdmsController < ApplicationController
         change.uname = $currentPetitionUser['username']
         change.videoId = vdm.videoId
         change.changeDate = Time.now
+        change.department = 'pre-produccion'
         changes.push(change)
       end
 
@@ -317,6 +319,7 @@ class VdmsController < ApplicationController
         change.uname = $currentPetitionUser['username']
         change.videoId = vdm.videoId
         change.changeDate = Time.now
+        change.department = 'pre-produccion'
         changes.push(change)
         if newVdm['status'] == 'procesado'
           if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
@@ -368,6 +371,7 @@ class VdmsController < ApplicationController
         change.uname = $currentPetitionUser['username']
         change.videoId = vdm.videoId
         change.changeDate = Time.now
+        change.department = 'pre-produccion'
         changes.push(change)
       end
       VdmChange.transaction do
@@ -391,6 +395,7 @@ class VdmsController < ApplicationController
             change.uname = $currentPetitionUser['username']
             change.videoId = vdm.videoId
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
           end
 
@@ -409,6 +414,7 @@ class VdmsController < ApplicationController
               change.uname = $currentPetitionUser['username']
               change.videoId = vdm.videoId
               change.changeDate = Time.now
+              change.department = 'produccion'
               prodDeptChanges.push(change)
               script = 'cambiado'
             end
@@ -422,6 +428,7 @@ class VdmsController < ApplicationController
             change.videoId = vdm.videoId
             change.comments = 'Se grabo el video completo'
             change.changeDate = Time.now
+            change.department = 'produccion'
             vdm.production_dpt.status = 'grabado'
             if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
               vdm.production_dpt.production_dpt_assignment.status = 'asignado'
@@ -454,6 +461,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
           end
@@ -468,6 +476,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
 
@@ -483,6 +492,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
 
@@ -498,6 +508,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
 
@@ -513,6 +524,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
 
@@ -528,6 +540,7 @@ class VdmsController < ApplicationController
               change.comments = newVdm['prodDept']['justification']
             end
             change.changeDate = Time.now
+            change.department = 'produccion'
             prodDeptChanges.push(change)
             checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
           end
@@ -562,6 +575,7 @@ class VdmsController < ApplicationController
               change.uname = $currentPetitionUser['username']
               change.videoId = vdm.videoId
               change.changeDate = Time.now
+              change.department = 'edicion'
               prodDeptChanges.push(change)
             end
             if vdm.production_dpt.production_dpt_assignment.status != newVdm['prodDept']['assignment']['status']
@@ -579,6 +593,7 @@ class VdmsController < ApplicationController
                 change.uname = $currentPetitionUser['username']
                 change.videoId = vdm.videoId
                 change.changeDate = Time.now
+                change.department = 'edicion'
                 prodDeptChanges.push(change)
               end
             end
@@ -644,6 +659,7 @@ class VdmsController < ApplicationController
       change.videoId = vdm.videoId
       change.comments = 'Se grabo el video completo'
       change.changeDate = Time.now
+      change.department = 'produccion'
       vdm.production_dpt.status = 'grabado'
       if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
         vdm.production_dpt.production_dpt_assignment.status = 'asignado'
