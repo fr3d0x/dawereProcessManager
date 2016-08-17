@@ -24,6 +24,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     case 'productManager':
                         tableData = response.productManagement;
                         break;
+                    case 'designLeader':
+                        tableData = response.design;
+                        break;
                 }
                 $scope.tableParams = new NgTableParams({
                     sorting: {
@@ -95,10 +98,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.saveVdm = function(vdm, array){
             $scope.disableSave = true;
+            var request = angular.copy(vdm);
             $("body").css("cursor", "progress");
             if (vdm != null){
                 if(vdm.id != null){
-                    dawProcessManagerService.updateVdm(vdm, function (response){
+                    if (request.prodDept != null){
+                        delete request.prodDept
+                    }
+                    dawProcessManagerService.updateVdm(request, function (response){
                         swal({
                             title: "Exitoso",
                             text: "Se ha actualizado el MDT del video " + response.data.videoId,
@@ -108,6 +115,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         });
                         $scope.disableSave = false;
                         $("body").css("cursor", "default");
+                        if (response.data.designDept != null){
+                            vdm.designDept = response.data.designDept;
+
+                        }
                         vdm.writable = false;
                     }, function(error){
                         $scope.disableSave = false;

@@ -13,7 +13,7 @@ app.controller('headerController',['$scope', 'localStorageService', '$rootScope'
     }
     $scope.logout = function(){
         localStorageService.clearAll();
-        $state.go('app.dashboard')
+        $state.go('core.login')
     };
     
     $scope.changeRole = function(role){

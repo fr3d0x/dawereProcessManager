@@ -117,9 +117,15 @@ class VdmsController < ApplicationController
       i = 0
       payload = []
       productionPayload = []
-      productManagementPayload = [];
+      productManagementPayload = []
       employees = []
-      productionDept = {};
+      productionDept = {}
+      designPayload = []
+      designDept = {}
+      productionStatus = 'no asignado'
+      editionStatus = 'no asignado'
+      designStatus = 'no asignado'
+      postProdStatus = 'no asignado'
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
           if vdm.production_dpt != nil
@@ -127,6 +133,7 @@ class VdmsController < ApplicationController
             prodDeptStatus = vdm.production_dpt.status
             if vdm.production_dpt.production_dpt_assignment != nil
               prodDeptResponsable = vdm.production_dpt.production_dpt_assignment.assignedName
+              editionStatus = vdm.production_dpt.production_dpt_assignment.status
               productionDept = {
                   status: vdm.production_dpt.status,
                   script: vdm.production_dpt.script,
@@ -160,33 +167,31 @@ class VdmsController < ApplicationController
                  prodDeptResponsable: prodDeptResponsable
              })
           end
-          if vdm.product_management != nil
-            productionStatus = 'no asignado'
-            editionStatus = 'no asignado'
-            designStatus = 'no asignado'
-            postProdStatus = 'no asignado'
-            if vdm.production_dpt != nil
-              productionStatus = vdm.production_dpt.status
-              assignment = {status: 'no asignado'}
-              if vdm.production_dpt.production_dpt_assignment != nil
-                assignment = vdm.production_dpt.production_dpt_assignment
-                editionStatus = vdm.production_dpt.production_dpt_assignment.status
-              end
-              prodDept = {
-                  status: vdm.production_dpt.status,
-                  script: vdm.production_dpt.script,
-                  comments: vdm.production_dpt.comments,
-                  intro: vdm.production_dpt.intro,
-                  vidDev: vdm.production_dpt.vidDev,
-                  conclu: vdm.production_dpt.conclu,
-                  assignment: assignment
+
+          if vdm.design_dpt != nil
+            designResponsable = 'no asignado'
+            designStatus = vdm.production_dpt.status
+            if vdm.design_dpt.design_assignment != nil
+              designResponsable = vdm.design_dpt.design_assignment.assignedName
+              designDept = {
+                  status: vdm.design_dpt.status,
+                  comments: vdm.design_dpt.comments,
+                  assignment: vdm.design_dpt.design_assignment
               }
-            end
-            designDept = {status: 'no asignado'}
-            if vdm.design_dpt != nil
+            else
               designDept = vdm.design_dpt
-              designStatus = vdm.design_dpt.status
             end
+            designPayload.push({
+               id: vdm.id,
+               videoId: vdm.videoId,
+               videoTittle: vdm.videoTittle,
+               videoNumber: vdm.number,
+               prodDept: productionDept,
+               designDept: designDept
+             })
+          end
+          if vdm.product_management != nil
+
             postpDept = {status: 'no asignado'}
 =begin
             if vdm.post_production_dpt != nil
@@ -201,7 +206,7 @@ class VdmsController < ApplicationController
                  status: vdm.status,
                  comments: vdm.comments,
                  cp: cp.as_json,
-                 prodDept: prodDept,
+                 prodDept: productionDept,
                  designDept: designDept,
                  postpDept: postpDept,
                  productionStatus: productionStatus,
@@ -238,7 +243,7 @@ class VdmsController < ApplicationController
            })
         end
       end
-      render :json => { data: payload, subject: sp.subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, status: 'SUCCESS'}, :status => 200
+      render :json => { data: payload, subject: sp.subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -273,6 +278,7 @@ class VdmsController < ApplicationController
       script = ''
       prdPayload = nil
       prodAssignedPayload = nil
+      designPayload = nil
       if vdm.videoContent != newVdm['videoContent']
         change = VdmChange.new
         change.changeDetail = "Cambio de contenido"
@@ -605,7 +611,7 @@ class VdmsController < ApplicationController
             prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
           end
           vdm.production_dpt.comments = newVdm['prodDept']['comments']
-          if newVdm['prodDept']['script'].length > 10
+          if newVdm['prodDept']['script'] != nil && newVdm['prodDept']['script'].length > 10
             vdm.production_dpt.script = newVdm['prodDept']['script']
           end
           vdm.production_dpt.intro = newVdm['intro']
@@ -626,6 +632,24 @@ class VdmsController < ApplicationController
             assignment: prodAssignedPayload
         }
       end
+      if newVdm['designDept'] != nil
+        if newVdm['dAsigned'] != nil
+          assignment = vdm.design_dpt.design_assignment
+          if assignment == nil
+            assignment = DesignAssignment.new
+          end
+          assignment.design_dpt_id = vdm.design_dpt.id
+          assignment.user_id = newVdm['dAsigned']['id']
+          assignment.assignedName = newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
+          assignment.status = 'asignado'
+          assignment.save!
+        end
+        designPayload = {
+            status: vdm.design_dpt.status,
+            comments: vdm.design_dpt.comments,
+            assignment: assignment
+        }
+      end
       vdm.videoContent = newVdm['videoContent']
       vdm.videoTittle = newVdm['videoTittle']
       vdm.status = newVdm['status']
@@ -640,7 +664,8 @@ class VdmsController < ApplicationController
           status: vdm.status,
           comments: vdm.comments,
           subject: vdm.classes_planification.subject_planification.subject,
-          prodDept: prdPayload
+          prodDept: prdPayload,
+          designDept: designPayload
 
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
