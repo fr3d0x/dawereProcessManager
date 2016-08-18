@@ -1,4 +1,4 @@
-<!--DesignLeader role Vdm View-->
+<!-- Designer role Vdm View-->
 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </td>
-                <td data-title="'Asignado a'" ng-if="row.writable == true"  style="vertical-align:middle">
+                <td data-title="'Asignado a'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
                     <div align="center">
                         <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.assignment != null">
                             <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.assignment.assignedName == null">
@@ -54,17 +54,17 @@
                         </div>
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row">
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.comments != null">
+                        {{row.designDept.comments | limitTo : 300}}...
+                    </div>
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.comments == null">
                         {{row.prodDept.comments | limitTo : 300}}...
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.vdm.design_dpt.design_assignment.comments != null">
-                        {{row.designDept.comments | limitTo : 300}}...
-                    </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.designDept.comments"></textarea></td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.designDept.comments"></textarea></td>
 
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
                     <div align="center">
                         <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.status == 'asignado' && row.designDept.assignment.user_id == null">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
@@ -76,11 +76,11 @@
 
                     </div>
                 </td>
-                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div align="center">
-                        <a ng-click="saveVdm(row, file)" title='guardar' ng-if="row.designDept.status == 'asignado'">
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.designDept.assignment.status == 'asignado'">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.designDept.status == 'asignado'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.assignment.status == 'asignado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
@@ -90,4 +90,4 @@
         </table>
     </div>
 </div>
-<!-- ---End--- DesignLeader role Vdm View-->
+<!-- ---End--- Designer role Vdm View-->

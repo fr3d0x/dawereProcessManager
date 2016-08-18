@@ -4,18 +4,27 @@
 app.filter('vdmsByUser', function() {
     return function(vdms, user, role) {
         filtered = [];
-        switch (role){
-            case 'editor':
-                for(var i = 0; i < vdms.length; i++){
-                    var vdm = vdms[i];
-                    if (vdm.prodDept.assignment != null) {
-                        if(vdm.prodDept.assignment.user_id === user.id && vdm.prodDept.assignment.status != 'no asignado'){
-                            filtered.push(vdm)
+            for(var i = 0; i < vdms.length; i++){
+                var vdm = vdms[i];
+                switch (role){
+                    case 'editor':
+                        if (vdm.prodDept.assignment != null) {
+                            if(vdm.prodDept.assignment.user_id === user.id && vdm.prodDept.assignment.status != 'no asignado'){
+                                filtered.push(vdm)
+                            }
                         }
-                    }
+                        break;
+                    case 'designer':
+                        if (vdm.designDept.assignment != null) {
+                            if(vdm.designDept.assignment.user_id === user.id && vdm.designDept.assignment.status != 'no asignado'){
+                                filtered.push(vdm)
+                            }
+                        }
+                        break;
                 }
-                break;
-        }
+
+            }
+
         return filtered;
     };
 });

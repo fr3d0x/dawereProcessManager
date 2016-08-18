@@ -1,10 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<!--DesignLeader role Vdm View-->
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-</body>
-</html>
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+
+                <td data-title="'Id video'" filter="{videoId: 'text'}" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
+                <td data-title="'Titulo'" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                        {{row.videoTittle | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.assignment.status != null">
+                        {{row.designDept.assignment.status}}
+                    </div>
+                </td>
+                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                    <select ng-model="row.assignmentDesignStatus" ng-options="state.statusSpa as state.statusSpa for state in designerStates" style="height:2.2em; margin-top: 6px;" >
+                        <option value="#">No especifico</option>
+                    </select>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.assignment.comments != null">
+                        {{row.designDept.assignment.comments | limitTo : 300}}...
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.designDept.assignment.comments == null">
+                        {{row.designDept.comments | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-5 col-md-5 col-sm-5 col-xs-5"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.designDept.comments"></textarea></td>
+
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                    <div align="center">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.assignment.status != 'diseñado' && row.designDept.assignment.status != 'aprobado'">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.assignment.status != 'diseñado' && row.designDept.assignment.status != 'aprobado'">|</span>
+
+                        <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
+                            <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div align="center">
+                        <a ng-click="saveVdmDesigner(row)" title='guardar' ng-if="row.designDept.status == 'asignado'">
+                            <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.status == 'asignado'">|</span>
+                        <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- ---End--- DesignLeader role Vdm View-->

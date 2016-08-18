@@ -2,8 +2,8 @@
  * Created by fr3d0 on 28/07/16.
  */
 'use strict';
-app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter',
-    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
+app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope){
         $scope.assignmentStatus = null;
         var getVdms = function(){
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
@@ -27,6 +27,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     case 'designLeader':
                         tableData = response.design;
                         break;
+                    case 'designer':
+                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                        tableData = $filter('vdmsByUser')(response.design, user, localStorageService.get('currentRole'));
+                        break;
                 }
                 $scope.tableParams = new NgTableParams({
                     sorting: {
@@ -43,6 +47,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.states = [{statusIng: 'not received', statusSpa: 'no recibido'}, {statusIng: 'received', statusSpa: 'recibido'}, {statusIng: 'processed', statusSpa: 'procesado'}];
         $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
+        $scope.designerStates = [{statusIng: 'designed', statusSpa: 'diseñado'}];
+
 
         $scope.add = function(vdm, data){
             data.splice(data.indexOf(vdm)+1, 0, {
@@ -105,6 +111,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     if (request.prodDept != null){
                         delete request.prodDept
                     }
+                    vdm.role = $rootScope.currentRole;
                     dawProcessManagerService.updateVdm(request, function (response){
                         swal({
                             title: "Exitoso",
@@ -170,6 +177,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             $scope.disableProdSave = true;
             $("body").css("cursor", "progress !important");
             if (vdm != null){
+                vdm.role = $rootScope.currentRole;
                 var mesage = '';
                 var incomplete = false;
                 if (vdm.intro != vdm.prodDept.intro && vdm.conclu != vdm.prodDept.conclu && vdm.vidDev == vdm.prodDept.vidDev){
@@ -413,6 +421,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     if (vdm.assignmentStatus != null){
                         vdm.prodDept.assignment.status = vdm.assignmentStatus;
                     }
+                    vdm.role = $rootScope.currentRole;
                     dawProcessManagerService.updateVdm(vdm, function (response){
                         swal({
                             title: "Exitoso",
@@ -426,6 +435,39 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         vdm.writable = false;
                         vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
                         vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
+
+                    }, function(error){
+                        console.log(error);
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                    })
+                }
+            }
+        };
+
+        $scope.saveVdmDesigner = function(vdm){
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null){
+                if(vdm.id != null){
+                    if (vdm.assignmentDesignStatus != null){
+                        vdm.designDept.assignment.status = vdm.assignmentDesignStatus;
+                    }
+                    vdm.role = $rootScope.currentRole;
+                    dawProcessManagerService.updateVdm(vdm, function (response){
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                        vdm.writable = false;
+                        if(response.data.designDept.assignment != null){
+                            vdm.designDept.assignment = response.data.designDept.assignment
+                        }
 
                     }, function(error){
                         console.log(error);
