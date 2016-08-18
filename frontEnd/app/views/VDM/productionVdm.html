@@ -74,12 +74,12 @@
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
                     <div align="center">
 
-                        <a ng-click="approve(row, 'production', 'edition')" title='aprobar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
+                        <a ng-click="approve(row, 'produccion', 'edition')" title='aprobar' ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
-                        <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
+                        <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status == 'grabado' && row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
                         <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>

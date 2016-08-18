@@ -643,6 +643,7 @@ class VdmsController < ApplicationController
       end
       if newVdm['designDept'] != nil
         designChanges = []
+        assignment= {};
         if newVdm['dAsigned'] != nil
           if newVdm['role'] == 'designLeader'
             assignment = vdm.design_dpt.design_assignment
@@ -707,6 +708,7 @@ class VdmsController < ApplicationController
                 vdm.design_dpt.design_assignment.save!
               end
             end
+            assignment = vdm.design_dpt.design_assignment
           end
         end
         VdmChange.transaction do
@@ -715,7 +717,7 @@ class VdmsController < ApplicationController
         designPayload = {
             status: vdm.design_dpt.status,
             comments: vdm.design_dpt.comments,
-            assignment: vdm.design_dpt.design_assignment
+            assignment: assignment
         }
       end
       vdm.videoContent = newVdm['videoContent']
@@ -904,10 +906,19 @@ class VdmsController < ApplicationController
             vdm.production_dpt.production_dpt_assignment.status = 'aprobado'
             vdm.production_dpt.production_dpt_assignment.save!
             if params['role'] == 'productManager'
+              if vdm.production_dpt.status != 'aprobado'
+                vdm.production_dpt.status = 'aprobado'
+                vdm.production_dpt.save!
+              end
               if vdm.product_management != nil
+                vdm.product_management.productionStatus = 'aprobado'
                 vdm.product_management.editionStatus = 'aprobado'
+                vdm.product_management.designStatus = 'asignado'
                 vdm.product_management.save!
-                design = DesignDpt.new
+                design = vdm.design_dpt
+                if design == nil
+                  design = DesignDpt.new
+                end
                 design.status = 'asignado'
                 design.vdm = vdm
                 design.save!
@@ -922,9 +933,49 @@ class VdmsController < ApplicationController
             payload = {
                 editionStatus: vdm.production_dpt.production_dpt_assignment.status,
                 productManagement: vdm.product_management
-
             }
           end
+        when 'design'
+          designStatus = nil
+          designAsignmentStatus = nil
+          pmanagement = {}
+          if vdm.design_dpt != nil
+            if params['role'] == 'productManager'
+              vdm.design_dpt.status = 'aprobado'
+              vdm.design_dpt.save!
+              designStatus = 'aprobado'
+              if vdm.product_management != nil
+                vdm.product_management.designStatus = 'aprobado'
+                vdm.product_management.save!
+              end
+            else
+              if vdm.design_dpt.design_assignment != nil
+                vdm.design_dpt.design_assignment.status = 'aprobado'
+                designAsignmentStatus = 'aprobado'
+                vdm.design_dpt.design_assignment.save!
+                if vdm.product_management != nil
+                  vdm.product_management.designStatus = 'por aprobar'
+                  vdm.product_management.save!
+                end
+              end
+            end
+            change = VdmChange.new
+            change.changeDetail = 'aprobado Diseño por ' + params['approvedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'diseño'
+            change.changedFrom = vdm.design_dpt.status
+            change.changedTo = 'aprobado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+            change.save!
+          end
+          payload = {
+              designStatus: designStatus,
+              designAsignmentStatus: designAsignmentStatus,
+              productManagement: vdm.product_management
+          }
       end
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -995,6 +1046,11 @@ class VdmsController < ApplicationController
                 vidDev: vdm.production_dpt.vidDev,
                 assignment: vdm.production_dpt.production_dpt_assignment
             }
+            designPayload = {
+                status: vdm.design_dpt.status,
+                comments: vdm.design_dpt.comments,
+                assignment: vdm.design_dpt.design_assignment
+            }
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1003,7 +1059,8 @@ class VdmsController < ApplicationController
                 status: vdm.status,
                 comments: vdm.comments,
                 prodDept: prdPayload,
-                productManagement: vdm.product_management
+                productManagement: vdm.product_management,
+                designDept: designPayload
             }
           end
         when 'edition'
@@ -1046,6 +1103,11 @@ class VdmsController < ApplicationController
                 vidDev: vdm.production_dpt.vidDev,
                 assignment: vdm.production_dpt.production_dpt_assignment
             }
+            designPayload = {
+                status: vdm.design_dpt.status,
+                comments: vdm.design_dpt.comments,
+                assignment: vdm.design_dpt.design_assignment
+            }
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1054,6 +1116,58 @@ class VdmsController < ApplicationController
                 status: vdm.status,
                 comments: vdm.comments,
                 prodDept: prdPayload,
+                productManagement: vdm.product_management,
+                designDept: designPayload
+            }
+          end
+        when 'design'
+          if vdm.design_dpt != nil
+            if params['role'] == 'productManager'
+              vdm.design_dpt.status = 'rechazado'
+              vdm.design_dpt.save!
+              if vdm.design_dpt.design_assignment != nil
+                vdm.design_dpt.design_assignment.status = 'rechazado'
+                vdm.design_dpt.design_assignment.save!
+              end
+            else
+              if vdm.design_dpt.design_assignment != nil
+                vdm.design_dpt.design_assignment.status = 'rechazado'
+                vdm.design_dpt.design_assignment.save!
+              end
+            end
+
+            change = VdmChange.new
+            change.changeDetail = 'rechazado por '+request['rejectedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'diseño'
+            change.changedFrom = vdm.design_dpt.status
+            change.changedTo = 'rechazado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+            if params['justification'] != nil
+              change.comments = params['justification']
+            end
+            change.save!
+            if vdm.product_management != nil
+              vdm.product_management.designStatus = 'rechazado'
+              vdm.product_management.postProductionStatus = nil
+              vdm.product_management.save!
+            end
+            designPayload = {
+                status: vdm.design_dpt.status,
+                comments: vdm.design_dpt.comments,
+                assignment: vdm.design_dpt.design_assignment
+            }
+            payload = {
+                cp: vdm.classes_planification,
+                videoId: vdm.videoId,
+                videoTittle: vdm.videoTittle,
+                videoContent: vdm.videoContent,
+                status: vdm.status,
+                comments: vdm.comments,
+                designDept: designPayload,
                 productManagement: vdm.product_management
             }
           end

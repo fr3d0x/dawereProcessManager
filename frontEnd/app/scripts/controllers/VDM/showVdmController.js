@@ -9,7 +9,7 @@ app.controller("showVdmController",['$scope', 'ENV', 'dawProcessManagerService',
                 $scope.vdm = response.data;
                 $scope.tableParams = new NgTableParams({
                     sorting: {
-                        changeDate: 'desc'
+                        created_at: 'desc'
                     }
                 },{
                     filterOptions: { filterLayout: "horizontal" },

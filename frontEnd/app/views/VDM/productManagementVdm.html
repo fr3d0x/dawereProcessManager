@@ -51,6 +51,10 @@
                     </div>
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.designStatus != null">
                         {{row.productManagement.designStatus}}
+                        <span style="font-size: 20px;" ng-if="row.productManagement.designStatus == 'por aprobar'">|</span>
+                        <a ng-click="approve(row, 'Gerente de Producto', 'design')" title='aprobar edicion' ng-if="row.productManagement.designStatus == 'por aprobar'">
+                            <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
+                        </a>
                     </div>
                 </td>
                 <td data-title="'Estado Post-produccion'" filter="{postProdStatus: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
