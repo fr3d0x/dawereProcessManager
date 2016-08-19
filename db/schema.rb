@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160811150445) do
+ActiveRecord::Schema.define(version: 20160819141150) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,29 @@ ActiveRecord::Schema.define(version: 20160811150445) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "post_prod_dpt_assignments", force: :cascade do |t|
+    t.string   "status"
+    t.string   "assignedName"
+    t.text     "comments"
+    t.integer  "user_id"
+    t.integer  "post_prod_dpt_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
+  add_index "post_prod_dpt_assignments", ["post_prod_dpt_id"], name: "index_post_prod_dpt_assignments_on_post_prod_dpt_id", using: :btree
+  add_index "post_prod_dpt_assignments", ["user_id"], name: "index_post_prod_dpt_assignments_on_user_id", using: :btree
+
+  create_table "post_prod_dpts", force: :cascade do |t|
+    t.string   "status"
+    t.text     "comments"
+    t.integer  "vdm_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "post_prod_dpts", ["vdm_id"], name: "index_post_prod_dpts_on_vdm_id", using: :btree
 
   create_table "product_managements", force: :cascade do |t|
     t.string   "productionStatus"
@@ -238,6 +261,9 @@ ActiveRecord::Schema.define(version: 20160811150445) do
   add_foreign_key "design_assignments", "design_dpts"
   add_foreign_key "design_assignments", "users"
   add_foreign_key "design_dpts", "vdms"
+  add_foreign_key "post_prod_dpt_assignments", "post_prod_dpts"
+  add_foreign_key "post_prod_dpt_assignments", "users"
+  add_foreign_key "post_prod_dpts", "vdms"
   add_foreign_key "product_managements", "vdms"
   add_foreign_key "production_dpt_assignments", "production_dpts"
   add_foreign_key "production_dpt_assignments", "users"

@@ -121,7 +121,9 @@ class VdmsController < ApplicationController
       employees = []
       productionDept = {}
       designPayload = []
+      postProdPayload = []
       designDept = {}
+      postProdDept = {}
       productionStatus = 'no asignado'
       editionStatus = 'no asignado'
       designStatus = 'no asignado'
@@ -193,11 +195,31 @@ class VdmsController < ApplicationController
           if vdm.product_management != nil
 
             postpDept = {status: 'no asignado'}
-=begin
-            if vdm.post_production_dpt != nil
-              postpDept = vdm.post_production_dpt
+
+            if vdm.post_prod_dpt != nil
+              postProdResponsable = 'no asignado'
+              postProdStatus = vdm.post_prod_dpt.status
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                postProdResponsable = vdm.post_prod_dpt.post_prod_assignment.assignedName
+                postProdDept = {
+                    status: vdm.post_prod_dpt.status,
+                    comments: vdm.post_prod_dpt.comments,
+                    assignment: vdm.post_prod_dpt.post_prod_assignment
+                }
+              else
+                postpDept = vdm.post_prod_dpt
+              end
+              postProdPayload.push({
+                 id: vdm.id,
+                 videoId: vdm.videoId,
+                 videoTittle: vdm.videoTittle,
+                 videoNumber: vdm.number,
+                 prodDept: productionDept,
+                 designDept: designDept,
+                 postProdDept: postpDept
+               })
             end
-=end
+
             productManagementPayload.push({
                  id: vdm.id,
                  videoId: vdm.videoId,
@@ -243,7 +265,7 @@ class VdmsController < ApplicationController
            })
         end
       end
-      render :json => { data: payload, subject: sp.subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, status: 'SUCCESS'}, :status => 200
+      render :json => { data: payload, subject: sp.subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, postProduction: postProdPayload, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -279,6 +301,7 @@ class VdmsController < ApplicationController
       prdPayload = nil
       prodAssignedPayload = nil
       designPayload = nil
+      postProdPayload = nil
       if newVdm['role'] == 'contentLeader'
         if vdm.videoContent != newVdm['videoContent']
           change = VdmChange.new
@@ -337,7 +360,10 @@ class VdmsController < ApplicationController
                 vdmsEmail = []
                 vdm.classes_planification.subject_planification.firstPeriodCompleted = true
                 vdmsProcessed.each do |v|
-                  pdpt = ProductionDpt.new
+                  pdpt = vdm.production_dpt
+                  if pdpt == nil
+                    pdpt = ProductionDpt.new
+                  end
                   pdpt.status = 'asignado'
                   pdpt.vdm_id = v.id
                   productionDpt.push(pdpt)
@@ -355,7 +381,10 @@ class VdmsController < ApplicationController
                 UserNotifier.send_assigned_to_production(vdmsEmail).deliver
               end
             else
-              production_dpt = ProductionDpt.new
+              production_dpt = vdm.production_dpt
+              if production_dpt == nil
+                production_dpt = ProductionDpt.new
+              end
               production_dpt.status = 'asignado'
               production_dpt.vdm_id = newVdm['id']
               production_dpt.save!
@@ -573,6 +602,10 @@ class VdmsController < ApplicationController
             vdm.production_dpt.intro = newVdm['intro']
             vdm.production_dpt.conclu = newVdm['conclu']
             vdm.production_dpt.vidDev = newVdm['vidDev']
+            vdm.production_dpt.comments = newVdm['prodDept']['comments']
+            if newVdm['prodDept']['script'] != nil && newVdm['prodDept']['script'].length > 10
+              vdm.production_dpt.script = newVdm['prodDept']['script']
+            end
             vdm.production_dpt.save!
           end
 
@@ -621,15 +654,13 @@ class VdmsController < ApplicationController
               vdm.production_dpt.production_dpt_assignment.save!
               prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
             end
-            vdm.production_dpt.comments = newVdm['prodDept']['comments']
-            if newVdm['prodDept']['script'] != nil && newVdm['prodDept']['script'].length > 10
-              vdm.production_dpt.script = newVdm['prodDept']['script']
-            end
           end
-
           VdmChange.transaction do
             prodDeptChanges.uniq.each(&:save!)
           end
+        end
+        if prodAssignedPayload == nil && vdm.production_dpt.production_dpt_assignment != nil
+          prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
         end
         prdPayload = {
             status: vdm.production_dpt.status,
@@ -720,11 +751,92 @@ class VdmsController < ApplicationController
             assignment: assignment
         }
       end
-      vdm.videoContent = newVdm['videoContent']
-      vdm.videoTittle = newVdm['videoTittle']
-      vdm.status = newVdm['status']
-      vdm.comments = newVdm['comments']
-      vdm.save
+      if newVdm['postProdDept'] != nil
+        postProdChanges = []
+        assignment= {}
+        if newVdm['ppAsigned'] != nil
+          if newVdm['role'] == 'postProLeader'
+            assignment = vdm.post_prod_dpt.post_prod_dept_assignment
+            if assignment == nil
+              assignment = PostProdDptAssignment.new
+            end
+            assignment.post_prod_dpt_id = vdm.post_prod_dpt.id
+            assignment.user_id = newVdm['ppAsigned']['id']
+            assignment.assignedName = newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
+            assignment.status = 'asignado'
+            assignment.save!
+            change = VdmChange.new
+            change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            change.department = 'post-produccion'
+            postProdChanges.push(change)
+          end
+        end
+        if newVdm['postProdDept']['assignment']
+          if newVdm['role'] == 'post-producer'
+            if vdm.post_prod_dept.post_prod_dept_assignment.comments != newVdm['postProdDept']['assignment']['comments']
+              change = VdmChange.new
+              change.changeDetail = "Cambio de comentarios de post-productor"
+              if vdm.post_prod_dept.post_prod_dept_assignment.comments != nil
+                change.changedFrom = vdm.post_prod_dept.post_prod_dept_assignment.comments
+              else
+                change.changedFrom = "vacio"
+              end
+              change.changedTo = newVdm['postProdDept']['assignment']['comments']
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              postProdChanges.push(change)
+              vdm.post_prod_dept.post_prod_dept_assignment.comments = newVdm['postProdDept']['assignment']['comments']
+              vdm.post_prod_dept.post_prod_dept_assignment.save!
+            end
+            if vdm.post_prod_dept.post_prod_dept_assignment.status != newVdm['postProdDept']['assignment']['status']
+              if newVdm['postProdDept']['assignment']['status'] != 'no asignado'
+                change = VdmChange.new
+                change.changeDetail = "Cambio de estado de post-productor"
+                if vdm.post_prod_dept.post_prod_dept_assignment.status != nil
+                  change.changedFrom = vdm.post_prod_dept.post_prod_dept_assignment.status
+                else
+                  change.changedFrom = "vacio"
+                end
+                change.changedTo = newVdm['postProdDept']['assignment']['status']
+                change.vdm_id = vdm.id
+                change.user_id = $currentPetitionUser['id']
+                change.uname = $currentPetitionUser['username']
+                change.videoId = vdm.videoId
+                change.changeDate = Time.now
+                change.department = 'post-produccion'
+                designChanges.push(change)
+                vdm.post_prod_dept.post_prod_dept_assignment.status = newVdm['postProdDept']['assignment']['status']
+                vdm.post_prod_dept.post_prod_dept_assignment.save!
+              end
+            end
+            assignment = vdm.post_prod_dept.post_prod_dept_assignment
+          end
+        end
+        VdmChange.transaction do
+          designChanges.uniq.each(&:save!)
+        end
+        postProdPayload = {
+            status: vdm.post_prod_dept.status,
+            comments: vdm.post_prod_dept.comments,
+            assignment: assignment
+        }
+      end
+      if newVdm['role'] == 'contentLeader'
+        vdm.videoContent = newVdm['videoContent']
+        vdm.videoTittle = newVdm['videoTittle']
+        vdm.status = newVdm['status']
+        vdm.comments = newVdm['comments']
+        vdm.save
+      end
 
       payload = {
           cp: vdm.classes_planification,
@@ -735,7 +847,8 @@ class VdmsController < ApplicationController
           comments: vdm.comments,
           subject: vdm.classes_planification.subject_planification.subject,
           prodDept: prdPayload,
-          designDept: designPayload
+          designDept: designPayload,
+          postProdDept: postProdPayload
 
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
@@ -922,6 +1035,10 @@ class VdmsController < ApplicationController
                 design.status = 'asignado'
                 design.vdm = vdm
                 design.save!
+                if design.design_assignment != nil
+                  design.design_assignment.status = 'asignado'
+                  design.design_assignment.save!
+                end
               end
             else
               if vdm.product_management != nil
@@ -946,7 +1063,19 @@ class VdmsController < ApplicationController
               designStatus = 'aprobado'
               if vdm.product_management != nil
                 vdm.product_management.designStatus = 'aprobado'
+                vdm.product_management.postProductionStatus = 'asignado'
                 vdm.product_management.save!
+              end
+              postProd = vdm.post_prod_dpt
+              if postProd == nil
+                postProd = PostProdDpt.new
+              end
+              postProd.status = 'asignado'
+              postProd.vdm = vdm
+              postProd.save!
+              if postProd.post_prod_dpt_assignment != nil
+                postProd.post_prod_dpt_assignment.status = 'asignado'
+                postProd.post_prod_dpt_assignment.save!
               end
             else
               if vdm.design_dpt.design_assignment != nil
@@ -974,6 +1103,47 @@ class VdmsController < ApplicationController
           payload = {
               designStatus: designStatus,
               designAsignmentStatus: designAsignmentStatus,
+              productManagement: vdm.product_management
+          }
+        when 'postProduction'
+          postProdStatus = nil
+          postProdAssignmentStatus = nil
+          pmanagement = {}
+          if vdm.post_prod_dpt != nil
+            if params['role'] == 'productManager'
+              vdm.post_prod_dpt.status = 'aprobado'
+              vdm.post_prod_dpt.save!
+              postProdStatus = 'aprobado'
+              if vdm.product_management != nil
+                vdm.product_management.postProductionStatus = 'aprobado'
+                vdm.product_management.save!
+              end
+            else
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'aprobado'
+                postProdAssignmentStatus = 'aprobado'
+                vdm.design_dpt.design_assignment.save!
+                if vdm.product_management != nil
+                  vdm.product_management.postProductionStatus = 'por aprobar'
+                  vdm.product_management.save!
+                end
+              end
+            end
+            change = VdmChange.new
+            change.changeDetail = 'aprobado Post-Produccion por ' + params['approvedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'post-produccion'
+            change.changedFrom = vdm.post_prod_dpt.status
+            change.changedTo = 'aprobado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+            change.save!
+          end
+          payload = {
+              postProdStatus: postProdStatus,
+              postProdAssignmentStatus: postProdAssignmentStatus,
               productManagement: vdm.product_management
           }
       end
@@ -1135,7 +1305,6 @@ class VdmsController < ApplicationController
                 vdm.design_dpt.design_assignment.save!
               end
             end
-
             change = VdmChange.new
             change.changeDetail = 'rechazado por '+request['rejectedFrom']
             change.changeDate = Time.now
@@ -1168,6 +1337,57 @@ class VdmsController < ApplicationController
                 status: vdm.status,
                 comments: vdm.comments,
                 designDept: designPayload,
+                productManagement: vdm.product_management
+            }
+          end
+        when 'postProduction'
+          if vdm.design_dpt != nil
+            if params['role'] == 'productManager'
+              vdm.post_prod_dpt.status = 'rechazado'
+              vdm.post_prod_dpt.save!
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            else
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
+            change = VdmChange.new
+            change.changeDetail = 'rechazado por '+request['rejectedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'post-produccion'
+            change.changedFrom = vdm.design_dpt.status
+            change.changedTo = 'rechazado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+            if params['justification'] != nil
+              change.comments = params['justification']
+            end
+            change.save!
+            if vdm.product_management != nil
+              vdm.product_management.postProductionStatus = 'rechazado'
+              vdm.product_management.save!
+            end
+            postProdPayload = {
+                status: vdm.post_prod_dpt.status,
+                comments: vdm.post_prod_dpt.comments,
+                assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+            }
+            payload = {
+                cp: vdm.classes_planification,
+                videoId: vdm.videoId,
+                videoTittle: vdm.videoTittle,
+                videoContent: vdm.videoContent,
+                status: vdm.status,
+                comments: vdm.comments,
+                postProdDept: postProdPayload,
+                designDept: vdm.design_dpt,
+                prodDept: vdm.production_dpt,
                 productManagement: vdm.product_management
             }
           end

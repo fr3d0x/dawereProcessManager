@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
 
+  resources :post_prod_dpt_assignments, except: [:new, :edit]
+  resources :post_prod_dpts, except: [:new, :edit]
+  root 'employees#index'
   resources :product_managements, except: [:new, :edit]
   resources :production_dpts, except: [:new, :edit]
   scope(:path => '/api') do
