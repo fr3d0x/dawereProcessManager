@@ -2,3 +2,16 @@
 <span ng-if="currentRole == 'production'" ng-include="'views/dashboard/productionDashboard.html'" ng-controller="productionDashboardController"></span>
 <span ng-if="currentRole == 'designLeader'" ng-include="'views/dashboard/designLeaderDashboard.html'" ng-controller="productionDashboardController"></span>
 <span ng-if="currentRole == 'designer'" ng-include="'views/dashboard/designerDashboard.html'" ng-controller="productionDashboardController"></span>
+
+<div class="row center-block" style=" margin-top: 50px;">
+    <!-- tile body -->
+    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-xs-offset-3">
+        <!--<div ng-repeat tuitions in $grade>-->
+        <div align="center" class="yearButtonContainer">
+            <span ng-repeat="grade in grades">
+                <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
+            </span>
+        </div>
+    </div>
+    <!-- /tile body -->
+</div>

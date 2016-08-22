@@ -14,23 +14,7 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
                 alert(error);
             })
         };
-        
-        $scope.examinateFile = function(file){
-            var dataUrl;
-            var fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-            fileReader.onload = function (e) {
-                dataUrl = e.target.result;
-                var encoded_data = {data: dataUrl.split(',')[1]};
-                dawProcessManagerService.postPdf(encoded_data, function(response){
-                }, function (error) {
-                    console.log(error)
-                });
-            };
-            return file
-            
-            
-        };
+
 
         getGlobalProgress();
         

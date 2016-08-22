@@ -192,34 +192,32 @@ class VdmsController < ApplicationController
                designDept: designDept
              })
           end
-          if vdm.product_management != nil
 
-            postpDept = {status: 'no asignado'}
-
-            if vdm.post_prod_dpt != nil
-              postProdResponsable = 'no asignado'
-              postProdStatus = vdm.post_prod_dpt.status
-              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
-                postProdResponsable = vdm.post_prod_dpt.post_prod_assignment.assignedName
-                postProdDept = {
-                    status: vdm.post_prod_dpt.status,
-                    comments: vdm.post_prod_dpt.comments,
-                    assignment: vdm.post_prod_dpt.post_prod_assignment
-                }
-              else
-                postpDept = vdm.post_prod_dpt
-              end
-              postProdPayload.push({
-                 id: vdm.id,
-                 videoId: vdm.videoId,
-                 videoTittle: vdm.videoTittle,
-                 videoNumber: vdm.number,
-                 prodDept: productionDept,
-                 designDept: designDept,
-                 postProdDept: postpDept
-               })
+          if vdm.post_prod_dpt != nil
+            postProdResponsable = 'no asignado'
+            postProdStatus = vdm.post_prod_dpt.status
+            if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+              postProdResponsable = vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName
+              postProdDept = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            else
+              postProdDept = vdm.post_prod_dpt
             end
+            postProdPayload.push({
+               id: vdm.id,
+               videoId: vdm.videoId,
+               videoTittle: vdm.videoTittle,
+               videoNumber: vdm.number,
+               prodDept: productionDept,
+               designDept: designDept,
+               postProdDept: postProdDept
+           })
+          end
 
+          if vdm.product_management != nil
             productManagementPayload.push({
                  id: vdm.id,
                  videoId: vdm.videoId,
@@ -230,7 +228,7 @@ class VdmsController < ApplicationController
                  cp: cp.as_json,
                  prodDept: productionDept,
                  designDept: designDept,
-                 postpDept: postpDept,
+                 postProdDept: postProdDept,
                  productionStatus: productionStatus,
                  editionStatus: editionStatus,
                  designStatus: designStatus,
@@ -761,7 +759,7 @@ class VdmsController < ApplicationController
         assignment= {}
         if newVdm['ppAsigned'] != nil
           if newVdm['role'] == 'postProLeader'
-            assignment = vdm.post_prod_dpt.post_prod_dept_assignment
+            assignment = vdm.post_prod_dpt.post_prod_dpt_assignment
             if assignment == nil
               assignment = PostProdDptAssignment.new
             end
@@ -783,11 +781,11 @@ class VdmsController < ApplicationController
         end
         if newVdm['postProdDept']['assignment']
           if newVdm['role'] == 'post-producer'
-            if vdm.post_prod_dept.post_prod_dept_assignment.comments != newVdm['postProdDept']['assignment']['comments']
+            if vdm.post_prod_dpt.post_prod_dpt_assignment.comments != newVdm['postProdDept']['assignment']['comments']
               change = VdmChange.new
               change.changeDetail = "Cambio de comentarios de post-productor"
-              if vdm.post_prod_dept.post_prod_dept_assignment.comments != nil
-                change.changedFrom = vdm.post_prod_dept.post_prod_dept_assignment.comments
+              if vdm.post_prod_dpt.post_prod_dpt_assignment.comments != nil
+                change.changedFrom = vdm.post_prod_dpt.post_prod_dpt_assignment.comments
               else
                 change.changedFrom = "vacio"
               end
@@ -799,15 +797,15 @@ class VdmsController < ApplicationController
               change.changeDate = Time.now
               change.department = 'post-produccion'
               postProdChanges.push(change)
-              vdm.post_prod_dept.post_prod_dept_assignment.comments = newVdm['postProdDept']['assignment']['comments']
-              vdm.post_prod_dept.post_prod_dept_assignment.save!
+              vdm.post_prod_dpt.post_prod_dpt_assignment.comments = newVdm['postProdDept']['assignment']['comments']
+              vdm.post_prod_dpt.post_prod_dpt_assignment.save!
             end
-            if vdm.post_prod_dept.post_prod_dept_assignment.status != newVdm['postProdDept']['assignment']['status']
+            if vdm.post_prod_dpt.post_prod_dpt_assignment.status != newVdm['postProdDept']['assignment']['status']
               if newVdm['postProdDept']['assignment']['status'] != 'no asignado'
                 change = VdmChange.new
                 change.changeDetail = "Cambio de estado de post-productor"
-                if vdm.post_prod_dept.post_prod_dept_assignment.status != nil
-                  change.changedFrom = vdm.post_prod_dept.post_prod_dept_assignment.status
+                if vdm.post_prod_dpt.post_prod_dpt_assignment.status != nil
+                  change.changedFrom = vdm.post_prod_dpt.post_prod_dpt_assignment.status
                 else
                   change.changedFrom = "vacio"
                 end
@@ -819,19 +817,19 @@ class VdmsController < ApplicationController
                 change.changeDate = Time.now
                 change.department = 'post-produccion'
                 designChanges.push(change)
-                vdm.post_prod_dept.post_prod_dept_assignment.status = newVdm['postProdDept']['assignment']['status']
-                vdm.post_prod_dept.post_prod_dept_assignment.save!
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = newVdm['postProdDept']['assignment']['status']
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
               end
             end
-            assignment = vdm.post_prod_dept.post_prod_dept_assignment
+            assignment = vdm.post_prod_dpt.post_prod_dpt_assignment
           end
         end
         VdmChange.transaction do
           designChanges.uniq.each(&:save!)
         end
         postProdPayload = {
-            status: vdm.post_prod_dept.status,
-            comments: vdm.post_prod_dept.comments,
+            status: vdm.post_prod_dpt.status,
+            comments: vdm.post_prod_dpt.comments,
             assignment: assignment
         }
       end

@@ -40,6 +40,13 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
                         tableData = $filter('vdmsByUser')(response.design, user, localStorageService.get('currentRole'));
                         break;
+                    case 'post-producer':
+                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                        tableData = $filter('vdmsByUser')(response.postProduction, user, localStorageService.get('currentRole'));
+                        break;
+                    case 'postProLeader':
+                        tableData = response.postProduction;
+                        break;
                 }
                 $scope.tableParams = new NgTableParams({
                     sorting: {
@@ -57,7 +64,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.states = [{statusIng: 'not received', statusSpa: 'no recibido'}, {statusIng: 'received', statusSpa: 'recibido'}, {statusIng: 'processed', statusSpa: 'procesado'}];
         $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
         $scope.designerStates = [{statusIng: 'designed', statusSpa: 'diseñado'}];
-
+        $scope.postProducerStates = [{statusIng: 'post-produced', statusSpa: 'terminado'}];
 
         $scope.add = function(vdm, data){
             data.splice(data.indexOf(vdm)+1, 0, {
@@ -129,7 +136,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         $("body").css("cursor", "default");
                         if (response.data.designDept != null){
                             vdm.designDept = response.data.designDept;
-
+                        }
+                        if (response.data.postProdDept != null){
+                            vdm.postProdDept = response.data.postProdDept;
                         }
                         vdm.writable = false;
                     }, function(error){
@@ -702,7 +711,39 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
-        
+
+        $scope.saveVdmPostProducer = function(vdm) {
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null){
+                if(vdm.id != null){
+                    if (vdm.assignmentPostPStatus != null){
+                        vdm.postProdDept.assignment.status = vdm.assignmentPostPStatus;
+                    }
+                    vdm.role = localStorageService.get('currentRole');
+                    dawProcessManagerService.updateVdm(vdm, function (response){
+                        swal({
+                            title: "Exitoso",
+                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                        vdm.writable = false;
+                        if(response.data.designDept.assignment != null){
+                            vdm.designDept.assignment = response.data.designDept.assignment
+                        }
+
+                    }, function(error){
+                        console.log(error);
+                        $("body").css("cursor", "default");
+                        $scope.disableProdSave = false;
+                    })
+                }
+            }
+        };
         $scope.close = function(vdm, arr){
             if(vdm.id != null){
                 vdm.writable = false;

@@ -9,7 +9,7 @@
                     <a style="text-decoration: none; font-weight: 200;font-size: 28px;" ui-sref="app.subjects({id:subject.grade_id})" class="">Materias</a>
                     <a class="withoutOver" style="cursor:default;font-weight: 600;color: #787878;font-size: 40px;">></a>
                     <a style="text-decoration: none; color: #787878; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>MDT'S</b></span></a>
-                    <underlining></underlining>
+                    <underlining/>
                 </span>
             </div>
         </div>
@@ -19,7 +19,8 @@
         <span ng-if="currentRole == 'designLeader'" ng-include="'views/VDM/designDptVdm.html'" ng-controller="vdmsController"></span>
         <span ng-if="currentRole == 'editor'" ng-include="'views/VDM/editorVdm.html'" ng-controller="vdmsController"></span>
         <span ng-if="currentRole == 'designer'" ng-include="'views/VDM/designerVdm.html'" ng-controller="vdmsController"></span>
-
+        <span ng-if="currentRole == 'post-producer'" ng-include="'views/VDM/postProducerVdm.html'" ng-controller="vdmsController"></span>
+        <span ng-if="currentRole == 'postProLeader'" ng-include="'views/VDM/postProdDptVdm.html'" ng-controller="vdmsController"></span>
         <span ng-if="currentRole == 'productManager'" ng-include="'views/VDM/productManagementVdm.html'" ng-controller="vdmsController"></span>
 
 

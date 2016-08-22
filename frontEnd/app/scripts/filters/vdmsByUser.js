@@ -21,6 +21,13 @@ app.filter('vdmsByUser', function() {
                             }
                         }
                         break;
+                    case 'post-producer':
+                        if (vdm.postProdDept.assignment != null) {
+                            if(vdm.postProdDept.assignment.user_id === user.id && vdm.postProdDept.assignment.status != 'no asignado'){
+                                filtered.push(vdm)
+                            }
+                        }
+                        break;
                 }
 
             }
