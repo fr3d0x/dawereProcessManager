@@ -10,7 +10,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var editorsJson = {};
             for (var i = 0; i<editors.length; i++){
                 var name = editors[i].name + " " + editors[i].lastName;
-                editorsJson[name] = editors[i];
+                editorsJson[editors[i].id] = name;
             }
             return editorsJson
         };
@@ -223,7 +223,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }
 
                 }
-                if(vdm.prodDept.script != null){
+                if(vdm.prodDept.script != null && vdm.prodDept.script != ''){
                     scriptPresent = true;
                 }
                 if (file != undefined && file != null ){
@@ -295,6 +295,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     }
                                                 }).then(function(result){
                                                     if(result != null){
+                                                        vdm.asignedId = result;
                                                         $("body").css("cursor", "progress");
                                                         $scope.disableProdSave = true;
                                                         dawProcessManagerService.updateVdm(vdm, function (response){
@@ -381,6 +382,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 }
                                             }).then(function(result){
                                                 if(result != null){
+                                                    vdm.asignedId = result;
                                                     $("body").css("cursor", "progress");
                                                     $scope.disableProdSave = true;
                                                     dawProcessManagerService.updateVdm(vdm, function (response){
@@ -487,6 +489,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 }
                                             }).then(function(result){
                                                 if(result != null){
+                                                    vdm.asignedId = result;
                                                     $("body").css("cursor", "progress");
                                                     $scope.disableProdSave = true;
                                                     dawProcessManagerService.updateVdm(vdm, function (response){
@@ -574,6 +577,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             }
                                         }).then(function(result){
                                             if(result != null){
+                                                vdm.asignedId = result;
                                                 $("body").css("cursor", "progress");
                                                 $scope.disableProdSave = true;
                                                 dawProcessManagerService.updateVdm(vdm, function (response){

@@ -583,11 +583,16 @@ class VdmsController < ApplicationController
               prodDeptChanges.push(change)
               checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
             end
-            if newVdm['asigned'] != nil
+            if newVdm['asigned'] != nil || newVdm['asignedId'] != nil
+              if newVdm['asignedId'] != nil
+                user = User.find(newVdm['asignedId'])
+              else
+                user = User.find(['asigned']['id'])
+              end
               if vdm.production_dpt.production_dpt_assignment != nil
                 if vdm.production_dpt.production_dpt_assignment.user_id == nil
-                  vdm.production_dpt.production_dpt_assignment.user_id = newVdm['asigned']['id']
-                  vdm.production_dpt.production_dpt_assignment.assignedName = newVdm['asigned']['name'] + ' ' + newVdm['asigned']['lastName']
+                  vdm.production_dpt.production_dpt_assignment.user_id = user.id
+                  vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
                   vdm.production_dpt.production_dpt_assignment.status = 'asignado'
                   vdm.production_dpt.production_dpt_assignment.save!
                 end
