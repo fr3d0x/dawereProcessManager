@@ -17,4 +17,13 @@ app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService
                 } 
             }
         }
+
+        var getGrades = function(){
+            dawProcessManagerService.getGrades(function(response){
+                $scope.grades = response.data;
+            }, function(error){
+                console.log(error)
+            })
+        }
+        getGrades();
 }]);

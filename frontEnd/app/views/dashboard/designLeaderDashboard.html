@@ -19,7 +19,6 @@
                 <th>Profesor</th>
                 <th>No Asignado</th>
                 <th>Asignado (Cantidad)</th>
-                <th>Responsable (Cantidad)</th>
                 <th>Devueltos (Cantidad)</th>
                 <th>Video Clases</th>
                 <th>Efectividad</th>
@@ -30,7 +29,6 @@
                 <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
                 <td>{{row.notAssigned}}</td>
                 <td>{{row.assigned}}</td>
-                <td>{{row.responsable}}</td>
                 <td>{{row.returned}}</td>
                 <td>{{row.totalVideos}}</td>
                 <td>{{row.effectiveness}}%</td>
@@ -41,18 +39,4 @@
     <!-- /tile body -->
 </div>
 
-<div class="row center-block" style=" margin-top: 50px;">
-    <!-- tile body -->
-    <div class="col-lg-8 col-md-8 col-sm-8 col-xs-6 col-lg-offset-2 col-md-offset-2 col-sm-offset-2 col-xs-offset-3">
-        <!--<div ng-repeat tuitions in $grade>-->
-        <div align="center" class="yearButtonContainer">
-            <span ng-repeat="grade in grades">
-                <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
-            </span>
-            <button  class="yearButton" title="Videos Dawere" name="Videos Dawere" ui-sref="app.vdm.dawereVdms">Dawere</button>
-        </div>
-    </div>
-    <!-- /tile body -->
-
-</div>
 

@@ -5,45 +5,33 @@
             <div class="tittle">
                     <span id="border-total-width"  style="color:rgb(231, 232, 233);">
                          <a style="text-decoration: none; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Inicio</b></span></a>
-                        <underlining></underlining>
+                        <underlining/>
                     </span>
             </div>
         </div>
     </div>
 
-    <div class="row">
-        <div align="center" class="buttonsContainer col-lg-8 col-md-8 col-lg-offset-2 col-md-offset-2">
-                <span ng-show="!$flow.files.length" style="margin-top:30px; cursor: pointer" flow-btn="">Cambiar imagen
-                  <input id="upload" type="file" ngf-select ng-model="file" name="file" ngf-max-size="10MB">
-                </span>
-
-            <button class="createButton" ng-click="examinateFile(file)">examinar</button>
-
-        </div>
-    </div>
     <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
 
         <table align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
             <tr>
                 <th>Materia</th>
                 <th>Profesor</th>
-                <th>No recibido</th>
-                <th>Recibido (Cantidad)</th>
+                <th>Asignados (Cantidad)</th>
                 <th>Devueltos (Cantidad)</th>
                 <th>Grabado</th>
-                <th>Video Clases</th>
                 <th>Efectividad</th>
             </tr>
 
             <tr ng-repeat="row in progress">
                 <td>{{row.subject.name}}</td>
                 <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
-                <td>{{row.notReceived}}</td>
-                <td>{{row.received}}</td>
-                <td>{{row.returned}}</td>
-                <td>{{row.processed}}</td>
                 <td>{{row.totalVideos}}</td>
-                <td>{{row.effectiveness}}%</td>
+                <td>{{row.returned}}</td>
+                <td>{{row.recorded}}</td>
+                <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
+                <td ng-if="row.effectiveness == 'NaN'">0%</td>
+
             </tr>
         </table>
 
@@ -51,18 +39,4 @@
     <!-- /tile body -->
 </div>
 
-<div class="row center-block" style=" margin-top: 50px;">
-    <!-- tile body -->
-    <div class="col-lg-6 col-md-6 col-sm-8 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-xs-offset-3">
-        <!--<div ng-repeat tuitions in $grade>-->
-        <div align="center" class="yearButtonContainer">
-            <span ng-repeat="grade in grades">
-                <button  class="yearButton" title="{{grade.name}}" name="{{grade.name}}" ui-sref="app.subjects({id:grade.id})">{{grade.name}}</button>
-            </span>
-            <button  class="yearButton" title="Videos Dawere" name="Videos Dawere" ui-sref="app.vdm.dawereVdms">Dawere</button>
-        </div>
-    </div>
-    <!-- /tile body -->
-
-</div>
 

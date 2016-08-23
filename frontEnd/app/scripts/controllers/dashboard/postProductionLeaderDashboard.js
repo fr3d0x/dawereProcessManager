@@ -1,9 +1,8 @@
 /**
- * Created by fr3d0 on 25/07/16.
+ * Created by fr3d0 on 8/22/16.
  */
-
 'use strict';
-app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService','NgTableParams',
+app.controller("postProductionLeaderDashboard",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService','NgTableParams',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService,NgTableParams){
 
         var getGlobalProgress = function(){
@@ -14,7 +13,6 @@ app.controller("preProductionDashboardController",['$scope', 'ENV', 'dawProcessM
             })
         };
 
-
         getGlobalProgress();
-        
+
     }]);
