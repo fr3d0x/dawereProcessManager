@@ -40,3 +40,10 @@ development:
 test:
 
 production:
+  adapter: mysql2
+  encoding: utf8
+  database: dawProcessDbProd
+  pool: 5
+  username: root
+  password: 1234
+
