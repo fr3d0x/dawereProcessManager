@@ -47,7 +47,7 @@ class ApplicationController < ActionController::API
   end
 
   def generateVideoId(subject, vdmCount)
-    videoId = (subject.name[0, 3] +'v'+ vdmCount.to_s).upcase
+    videoId = (subject.grade.name[0,1] + subject.name[0, 3] +'v'+ vdmCount.to_s).upcase
     return videoId
   end
 

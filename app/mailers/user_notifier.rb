@@ -42,4 +42,10 @@ class UserNotifier < ApplicationMailer
     mail( :to => [user.email],
           :subject => 'Se te han asignado nuevos MDT' )
   end
+  def send_rejected_to_post_producer(vdm, user)
+    @vdm = vdm
+    @user = user
+    mail( :to => [user.email],
+          :subject => 'Se ha rechazado un mdt MDT' )
+  end
 end
