@@ -83,6 +83,7 @@ class UsersController < ApplicationController
     if $currentPetitionUser['id'] != nil
       payload = []
       grades = []
+      subject = {}
       if params[:role] != nil
         role = params[:role]
         case request['role']
@@ -106,8 +107,11 @@ class UsersController < ApplicationController
                 recorded = recorded + ProductionDpt.find_by_sql("Select * from production_dpts pdpt, vdms v where v.classes_planification_id = " + cp.id.to_s + " and pdpt.vdm_id = v.id and pdpt.status = 'recorded'").count
               end
               effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
                   received: received,
