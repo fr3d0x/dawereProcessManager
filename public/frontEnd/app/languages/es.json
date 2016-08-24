@@ -1,0 +1,14 @@
+{
+  "received": "recibido",
+  "not received": "no recibido",
+  "processed": "procesado",
+  "DESTROYED": "borrado",
+  "contentLeader": "Lider de contenido",
+  "production": "Produccion",
+  "editor": "Editor",
+  "productManager": "Gerente de producto",
+  "designLeader": "Lider de diseño",
+  "designer": "diseñador",
+  "postProLeader": "Lider de post-produccion",
+  "post-producer": "Post-productor"
+}

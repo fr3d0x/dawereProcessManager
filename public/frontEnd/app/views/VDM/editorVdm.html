@@ -48,7 +48,7 @@
                 <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.assignment.comments"></textarea></td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                     <div align="center">
-                        <a id="prodSave" ng-click="saveVdmEditor(row)" title='guardar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">
+                        <a id="prodSave" ng-click="saveVdmEditor(row)" title='guardar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment.status != 'editado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>

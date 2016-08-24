@@ -84,7 +84,7 @@
                 </td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div align="center">
-                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.designDept.status == 'asignado' && row.designDept.assignment.user_id == null">
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.designDept.status == 'asignado' && row.designDept.assignment.user_id == null" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.designDept.status == 'asignado' && row.designDept.assignment.user_id == null">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>

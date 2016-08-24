@@ -98,7 +98,7 @@ class UsersController < ApplicationController
               notReceived = 0
               recorded = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                totalVideos = totalVideos + cp.vdms.count
+                totalVideos = totalVideos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
                 notReceived = notReceived + cp.vdms.where(:status => 'no recibido').count
                 returned = returned + cp.vdms.where(:status => 'rechazado').count
                 processed = processed + cp.vdms.where(:status => 'procesado').count

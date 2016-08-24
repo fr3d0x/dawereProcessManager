@@ -154,7 +154,7 @@
                             </i>
                         </label>
                         <span style="font-size: 20px">|</span>
-                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar'>
+                        <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>

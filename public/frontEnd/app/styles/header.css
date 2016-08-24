@@ -18,7 +18,7 @@
 
 .style_nav {
     margin-top: 7px;
-    margin-left: 10px;
+    margin-left: 30px;
     font-size: medium;
     font-weight: bold;
     font-family: ubuntu, sans-serif;
@@ -56,10 +56,14 @@
     -moz-border-radius: 0 0 5px 5px;
     border-radius: 0 0 5px 5px;
     /*left: -28px;*/
-    left: 21px;
+    /*left: -66px;*/
     padding: 0;
-    top: 48px;
-    width: 130px;
+    top: 48px;/*
+    min-width: 130px;*/
+}
+.dropdown-menu > li > a:hover{
+    font-weight: 600;
+    color: red;
 }
 .dawereNav .dropdown-menu > li > a {
     text-align: center;

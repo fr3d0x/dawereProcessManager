@@ -1,7 +1,7 @@
 class VdmsController < ApplicationController
   before_action :set_vdm, only: [:show, :update, :destroy]
   before_action :authenticate
-  before_action :only => [:addVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
+  before_action :only => [:addVdm, :deleteVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
   include ActionView::Helpers::TextHelper
 
 
@@ -87,7 +87,7 @@ class VdmsController < ApplicationController
       vdm.videoTittle = parameters['videoTittle']
       lastVid = Vdm.find_by_sql('Select MAX(number) from vdms v, classes_planifications cp, subject_planifications sp where sp.subject_id = ' + subject.id.to_s + ' and cp.subject_planification_id = sp.id and v.classes_planification_id = cp.id')
       if lastVid != nil
-        vdmCount = lastVid.first.max + 1
+        vdmCount = lastVid.first['MAX(number)'] + 1
       else
         vdmCount = 1
       end
@@ -226,6 +226,7 @@ class VdmsController < ApplicationController
                  videoId: vdm.videoId,
                  videoTittle: vdm.videoTittle,
                  videoContent: vdm.videoContent,
+                 videoNumber: vdm.number,
                  status: vdm.status,
                  comments: vdm.comments,
                  cp: cp.as_json,
@@ -297,7 +298,6 @@ class VdmsController < ApplicationController
     if request.raw_post != nil
       newVdm = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.find(newVdm['id'])
-      UserNotifier.send_assigned_to_designLeader(vdm).deliver
       changes = []
       script = ''
       prdPayload = nil
@@ -355,8 +355,8 @@ class VdmsController < ApplicationController
           changes.push(change)
           if newVdm['status'] == 'procesado'
             if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
-              vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id")
-              vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + "and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
+              vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id and v.status != 'DESTROYED'")
+              vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
               if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
                 productionDpt = []
                 vdmsEmail = []
@@ -399,11 +399,11 @@ class VdmsController < ApplicationController
           change = VdmChange.new
           change.changeDetail = "Cambio de comentarios"
           if vdm.videoTittle != nil
-            change.changedFrom = vdm.videoTittle
+            change.changedFrom = vdm.comments
           else
             change.changedFrom = "vacio"
           end
-          change.changedTo = newVdm['videoTittle']
+          change.changedTo = newVdm['comments']
           change.vdm_id = vdm.id
           change.user_id = $currentPetitionUser['id']
           change.uname = $currentPetitionUser['username']
@@ -597,7 +597,7 @@ class VdmsController < ApplicationController
                   vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
                   vdm.production_dpt.production_dpt_assignment.status = 'asignado'
                   vdm.production_dpt.production_dpt_assignment.save!
-                  #UserNotifier.send_assigned_to_editor
+                  UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
                 end
                 prodAssignedPayload = {
                     id: vdm.production_dpt.production_dpt_assignment.id,
@@ -694,7 +694,8 @@ class VdmsController < ApplicationController
             assignment.assignedName = newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
             assignment.status = 'asignado'
             assignment.save!
-            #UserNotifier.send_assigned_to_designer
+            user = User.find(newVdm['dAsigned']['id'])
+            UserNotifier.send_assigned_to_designer(vdm, user.employee).deliver
             change = VdmChange.new
             change.changeDetail = "Asignado video a diseñador " + newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
             change.vdm_id = vdm.id
@@ -774,7 +775,8 @@ class VdmsController < ApplicationController
             assignment.assignedName = newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
             assignment.status = 'asignado'
             assignment.save!
-            #UserNotifier.send_assigned_to_post_producer
+            user = User.find(newVdm['dAsigned']['id'])
+            UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
             change = VdmChange.new
             change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
             change.vdm_id = vdm.id
@@ -1045,7 +1047,7 @@ class VdmsController < ApplicationController
                 design.status = 'asignado'
                 design.vdm = vdm
                 design.save!
-                #UserNotifier.send_assigned_to_designLeader
+                UserNotifier.send_assigned_to_designLeader(vdm).deliver
                 if design.design_assignment != nil
                   design.design_assignment.status = 'asignado'
                   design.design_assignment.save!
@@ -1084,7 +1086,7 @@ class VdmsController < ApplicationController
               postProd.status = 'asignado'
               postProd.vdm = vdm
               postProd.save!
-              #UserNotifier.send_assigned_to_post_prod_leader
+              UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
               if postProd.post_prod_dpt_assignment != nil
                 postProd.post_prod_dpt_assignment.status = 'asignado'
                 postProd.post_prod_dpt_assignment.save!

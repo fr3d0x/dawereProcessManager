@@ -77,8 +77,8 @@ class SubjectPlanificationsController < ApplicationController
             meSpecificObjDesc: classPlan.meSpecificObjDesc,
             topicName: classPlan.topicName,
             period: classPlan.period,
-            vdms: classPlan.vdms.as_json,
-            vdmsString: classPlan.vdms.as_json.to_s
+            vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
+            vdmsString: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json.to_s
 
         }
         cps.push(cp)

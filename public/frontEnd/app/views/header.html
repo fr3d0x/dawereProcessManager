@@ -1,4 +1,13 @@
-
+<style>
+    .logoutButtonHover:hover{
+        background-color: #369291 !important;
+        font-weight: 600 !important;
+    }
+    .buttonHover:hover{
+        font-weight: 400 !important;
+        color: black  !important;
+    }
+</style>
 <header ng-controller="headerController">
     <div class="container-fluid header-bg">
         <div class="row">
@@ -21,8 +30,8 @@
                                 <div class="dawereNav style_nav">
                                     <p class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser.username}} <span class="caret"></span></p>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="role in roles"><a ng-click="changeRole(role.role)" style="cursor: pointer">{{role.role}}</a></li>
-                                        <li style=" color: gray;" ><a href="{{logoutURL}}" ng-click="logout()" style=" color: white;">Cerrar sesión</a></li>
+                                        <li ng-repeat="role in roles"><a class="buttonHover" ng-click="changeRole(role.role)" style="cursor: pointer">{{role.role | translate}}</a></li>
+                                        <li style=" color: gray;" ><a href="{{logoutURL}}" class="logoutButtonHover" ng-click="logout()" style=" color: white;">Cerrar sesión</a></li>
                                     </ul>
                                 </div>
                             </li>

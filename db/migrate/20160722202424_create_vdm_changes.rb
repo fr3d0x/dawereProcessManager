@@ -3,8 +3,8 @@ class CreateVdmChanges < ActiveRecord::Migration
     create_table :vdm_changes do |t|
       t.date :changeDate
       t.text :changeDetail
-      t.string :changedFrom
-      t.string :changedTo
+      t.text :changedFrom
+      t.text :changedTo
       t.references :vdm, index: true
       t.references :user, index: true
 

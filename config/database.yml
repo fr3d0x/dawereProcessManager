@@ -6,33 +6,33 @@
 #
 
 
-#default: &default
-#  adapter: mysql2
-#  encoding: utf8
-#  database: catenco
-#  pool: 5
-#  username: root
-#  password: 1234
-
-#development:
-#  <<: *default
-#  database: dawProcessDb
-
-
-
 default: &default
-  adapter: postgresql
-  encoding: unicode
-  pool: 20
+  adapter: mysql2
+  encoding: utf8
+  database: catenco
+  pool: 5
+  username: root
+  password: 1234
 
 development:
   <<: *default
   database: dawProcessDb
-  username: postgres
-  password: 1234
-  timeout: 5000
-  owner: postgres
-  host: localhost
+
+
+
+#default: &default
+#  adapter: postgresql
+#  encoding: unicode
+#  pool: 20
+
+#development:
+#  <<: *default
+#  database: dawProcessDb
+#  username: postgres
+#  password: 1234
+#  timeout: 5000
+#  owner: postgres
+#  host: localhost
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".

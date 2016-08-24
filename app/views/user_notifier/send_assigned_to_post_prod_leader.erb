@@ -1,0 +1,12 @@
+<html>
+<h2>Nuevo video asignado a post-produccion</h2>
+<ul>
+  <% if @vdm != nil  %>
+      <% if @vdm.is_a?(Hash) %>
+          <li><%= @vdm['videoId'] %> </li>
+      <% else %>
+          <li><%= @vdm.videoId %> </li>
+      <%end%>
+  <% end %>
+</ul>
+</html>

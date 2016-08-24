@@ -2,8 +2,8 @@
  * Created by fr3d0 on 7/23/16.
  */
 'use strict';
-app.controller("loginController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService',
-    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService){
+app.controller("loginController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', '$rootScope',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, $rootScope){
 
         $scope.user = {};
 
@@ -40,6 +40,7 @@ app.controller("loginController",['$scope', 'ENV', 'dawProcessManagerService', '
                     cu.email = token.email;
                     cu.cedula = token.cedula;
                     cu.profile_picture = token.profile_picture;
+                    $rootScope.currentUser = cu;
                     localStorageService.set('currentUser', cu);
                     if ($location.search().red != null){
                         $window.location.href = $base64.decode($location.search().red);
