@@ -8,6 +8,8 @@ use Rack::Cors do
             /\Ahttp:\/\/192\.168\.0\.\d{1,3}(:\d+)?\z/
     # regular expressions can be used here
 
+    resource '/public/*', :headers => :any, :methods => :get
+    resource 'frontEnd/app/*', :headers => :any, :methods => :get
     resource '/file/list_all/', :headers => 'x-domain-token'
     resource '/file/at/*',
              :methods => [:get, :post, :delete, :put, :patch, :options, :head],
@@ -17,8 +19,4 @@ use Rack::Cors do
     # headers to expose
   end
 
-  allow do
-    origins '*'
-    resource '/public/*', :headers => :any, :methods => :get
-  end
 end
