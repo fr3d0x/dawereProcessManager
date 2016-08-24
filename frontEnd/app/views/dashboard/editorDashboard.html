@@ -1,10 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div class="container-fluid" >
+    <div class="row col-md-10 col-md-offset-1">
 
-</body>
-</html>
+        <div class="col-md-12">
+            <div class="tittle">
+                    <span id="border-total-width"  style="color:rgb(231, 232, 233);">
+                         <a style="text-decoration: none; cursor: default;font-weight: 200;font-size: 30px;" class=""><span style="color:#135C60"><b>Inicio</b></span></a>
+                        <underlining/>
+                    </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tile-body col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
+
+        <table align="center" class="table table-condensed table-bordered table-striped col-lg-8" style="top: 15px">
+            <tr>
+                <th>Materia</th>
+                <th>Profesor</th>
+                <th>Asignados (Cantidad)</th>
+                <th>Devueltos (Cantidad)</th>
+                <th>Aprobados (Cantidad)</th>
+                <th>Efectividad</th>
+            </tr>
+
+            <tr ng-repeat="row in progress">
+                <td>{{row.subject.name}}</td>
+                <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+                <td>{{row.totalVideos}}</td>
+                <td>{{row.returned}}</td>
+                <td>{{row.approved}}</td>
+                <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
+                <td ng-if="row.effectiveness == 'NaN'">0%</td>
+
+            </tr>
+        </table>
+
+    </div>
+    <!-- /tile body -->
+</div>
+
+

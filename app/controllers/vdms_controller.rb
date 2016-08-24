@@ -119,17 +119,17 @@ class VdmsController < ApplicationController
       productionPayload = []
       productManagementPayload = []
       employees = []
-      productionDept = {}
       designPayload = []
       postProdPayload = []
-      designDept = {}
-      postProdDept = {}
-      productionStatus = 'no asignado'
-      editionStatus = 'no asignado'
-      designStatus = 'no asignado'
-      postProdStatus = 'no asignado'
       sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
         cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
+          productionDept = {}
+          designDept = {}
+          postProdDept = {}
+          productionStatus = 'no asignado'
+          editionStatus = 'no asignado'
+          designStatus = 'no asignado'
+          postProdStatus = 'no asignado'
           if vdm.production_dpt != nil
             prodDeptResponsable = 'no asignado'
             prodDeptStatus = vdm.production_dpt.status
@@ -137,6 +137,7 @@ class VdmsController < ApplicationController
               prodDeptResponsable = vdm.production_dpt.production_dpt_assignment.assignedName
               editionStatus = vdm.production_dpt.production_dpt_assignment.status
               productionDept = {
+                  id: vdm.production_dpt.id,
                   status: vdm.production_dpt.status,
                   script: vdm.production_dpt.script,
                   comments: vdm.production_dpt.comments,
@@ -172,10 +173,11 @@ class VdmsController < ApplicationController
 
           if vdm.design_dpt != nil
             designResponsable = 'no asignado'
-            designStatus = vdm.production_dpt.status
+            designStatus = vdm.design_dpt.status
             if vdm.design_dpt.design_assignment != nil
               designResponsable = vdm.design_dpt.design_assignment.assignedName
               designDept = {
+                  id: vdm.design_dpt.id,
                   status: vdm.design_dpt.status,
                   comments: vdm.design_dpt.comments,
                   assignment: vdm.design_dpt.design_assignment
@@ -199,6 +201,7 @@ class VdmsController < ApplicationController
             if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
               postProdResponsable = vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName
               postProdDept = {
+                  id: vdm.post_prod_dpt.id,
                   status: vdm.post_prod_dpt.status,
                   comments: vdm.post_prod_dpt.comments,
                   assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
@@ -294,6 +297,7 @@ class VdmsController < ApplicationController
     if request.raw_post != nil
       newVdm = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.find(newVdm['id'])
+      UserNotifier.send_assigned_to_designLeader(vdm).deliver
       changes = []
       script = ''
       prdPayload = nil
@@ -585,7 +589,7 @@ class VdmsController < ApplicationController
               if newVdm['asignedId'] != nil
                 user = User.find(newVdm['asignedId'])
               else
-                user = User.find(['asigned']['id'])
+                user = User.find(newVdm['asigned']['id'])
               end
               if vdm.production_dpt.production_dpt_assignment != nil
                 if vdm.production_dpt.production_dpt_assignment.user_id == nil
@@ -593,6 +597,7 @@ class VdmsController < ApplicationController
                   vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
                   vdm.production_dpt.production_dpt_assignment.status = 'asignado'
                   vdm.production_dpt.production_dpt_assignment.save!
+                  #UserNotifier.send_assigned_to_editor
                 end
                 prodAssignedPayload = {
                     id: vdm.production_dpt.production_dpt_assignment.id,
@@ -689,6 +694,7 @@ class VdmsController < ApplicationController
             assignment.assignedName = newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
             assignment.status = 'asignado'
             assignment.save!
+            #UserNotifier.send_assigned_to_designer
             change = VdmChange.new
             change.changeDetail = "Asignado video a diseñador " + newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
             change.vdm_id = vdm.id
@@ -768,6 +774,7 @@ class VdmsController < ApplicationController
             assignment.assignedName = newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
             assignment.status = 'asignado'
             assignment.save!
+            #UserNotifier.send_assigned_to_post_producer
             change = VdmChange.new
             change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
             change.vdm_id = vdm.id
@@ -1038,6 +1045,7 @@ class VdmsController < ApplicationController
                 design.status = 'asignado'
                 design.vdm = vdm
                 design.save!
+                #UserNotifier.send_assigned_to_designLeader
                 if design.design_assignment != nil
                   design.design_assignment.status = 'asignado'
                   design.design_assignment.save!
@@ -1076,6 +1084,7 @@ class VdmsController < ApplicationController
               postProd.status = 'asignado'
               postProd.vdm = vdm
               postProd.save!
+              #UserNotifier.send_assigned_to_post_prod_leader
               if postProd.post_prod_dpt_assignment != nil
                 postProd.post_prod_dpt_assignment.status = 'asignado'
                 postProd.post_prod_dpt_assignment.save!
@@ -1124,6 +1133,7 @@ class VdmsController < ApplicationController
             else
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'aprobado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
                 postProdAssignmentStatus = 'aprobado'
                 vdm.design_dpt.design_assignment.save!
                 if vdm.product_management != nil
@@ -1159,6 +1169,9 @@ class VdmsController < ApplicationController
   def rejectVdm
     if request.raw_post != nil
       params = ActiveSupport::JSON.decode(request.raw_post)
+      prdPayload = {}
+      designPayload = {}
+      postProdPayload = {}
       vdm = Vdm.find(params['vdmId'])
       case params['rejection']
         when 'production'
@@ -1188,6 +1201,14 @@ class VdmsController < ApplicationController
                 vdm.design_dpt.design_assignment.save!
               end
             end
+            if vdm.post_prod_dpt != nil
+              vdm.post_prod_dpt.status = 'no asignado'
+              vdm.post_prod_dpt.save!
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
             change = VdmChange.new
             change.changeDetail = 'rechazado por '+request['rejectedFrom']
             change.changeDate = Time.now
@@ -1211,19 +1232,32 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.status = 'rechazado'
             vdm.production_dpt.save!
-            prdPayload = {
-                status: vdm.production_dpt.status,
-                comments: vdm.production_dpt.comments,
-                intro: vdm.production_dpt.intro,
-                conclu: vdm.production_dpt.conclu,
-                vidDev: vdm.production_dpt.vidDev,
-                assignment: vdm.production_dpt.production_dpt_assignment
-            }
-            designPayload = {
-                status: vdm.design_dpt.status,
-                comments: vdm.design_dpt.comments,
-                assignment: vdm.design_dpt.design_assignment
-            }
+            if vdm.production_dpt != nil
+              prdPayload = {
+                  status: vdm.production_dpt.status,
+                  comments: vdm.production_dpt.comments,
+                  intro: vdm.production_dpt.intro,
+                  conclu: vdm.production_dpt.conclu,
+                  vidDev: vdm.production_dpt.vidDev,
+                  assignment: vdm.production_dpt.production_dpt_assignment
+              }
+            end
+
+            if vdm.design_dpt != nil
+              designPayload = {
+                  status: vdm.design_dpt.status,
+                  comments: vdm.design_dpt.comments,
+                  assignment: vdm.design_dpt.design_assignment
+              }
+            end
+
+            if vdm.post_prod_dpt != nil
+              postProdPayload = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1233,7 +1267,8 @@ class VdmsController < ApplicationController
                 comments: vdm.comments,
                 prodDept: prdPayload,
                 productManagement: vdm.product_management,
-                designDept: designPayload
+                designDept: designPayload,
+                postProdDept: postProdPayload
             }
           end
         when 'edition'
@@ -1244,6 +1279,14 @@ class VdmsController < ApplicationController
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'no asignado'
                 vdm.design_dpt.design_assignment.save!
+              end
+            end
+            if vdm.post_prod_dpt != nil
+              vdm.post_prod_dpt.status = 'no asignado'
+              vdm.post_prod_dpt.save!
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
               end
             end
             change = VdmChange.new
@@ -1268,19 +1311,33 @@ class VdmsController < ApplicationController
               vdm.product_management.postProductionStatus = nil
               vdm.product_management.save!
             end
-            prdPayload = {
-                status: vdm.production_dpt.status,
-                comments: vdm.production_dpt.comments,
-                intro: vdm.production_dpt.intro,
-                conclu: vdm.production_dpt.conclu,
-                vidDev: vdm.production_dpt.vidDev,
-                assignment: vdm.production_dpt.production_dpt_assignment
-            }
-            designPayload = {
-                status: vdm.design_dpt.status,
-                comments: vdm.design_dpt.comments,
-                assignment: vdm.design_dpt.design_assignment
-            }
+            if vdm.production_dpt != nil
+              prdPayload = {
+                  status: vdm.production_dpt.status,
+                  comments: vdm.production_dpt.comments,
+                  intro: vdm.production_dpt.intro,
+                  conclu: vdm.production_dpt.conclu,
+                  vidDev: vdm.production_dpt.vidDev,
+                  assignment: vdm.production_dpt.production_dpt_assignment
+              }
+            end
+
+            if vdm.design_dpt != nil
+              designPayload = {
+                  status: vdm.design_dpt.status,
+                  comments: vdm.design_dpt.comments,
+                  assignment: vdm.design_dpt.design_assignment
+              }
+            end
+
+            if vdm.post_prod_dpt != nil
+              postProdPayload = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
+
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1290,7 +1347,8 @@ class VdmsController < ApplicationController
                 comments: vdm.comments,
                 prodDept: prdPayload,
                 productManagement: vdm.product_management,
-                designDept: designPayload
+                designDept: designPayload,
+                postProdDept: postProdPayload
             }
           end
         when 'design'
@@ -1306,6 +1364,14 @@ class VdmsController < ApplicationController
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'rechazado'
                 vdm.design_dpt.design_assignment.save!
+              end
+            end
+            if vdm.post_prod_dpt != nil
+              vdm.post_prod_dpt.status = 'no asignado'
+              vdm.post_prod_dpt.save!
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
               end
             end
             change = VdmChange.new
@@ -1327,11 +1393,20 @@ class VdmsController < ApplicationController
               vdm.product_management.postProductionStatus = nil
               vdm.product_management.save!
             end
-            designPayload = {
-                status: vdm.design_dpt.status,
-                comments: vdm.design_dpt.comments,
-                assignment: vdm.design_dpt.design_assignment
-            }
+            if vdm.design_dpt != nil
+              designPayload = {
+                  status: vdm.design_dpt.status,
+                  comments: vdm.design_dpt.comments,
+                  assignment: vdm.design_dpt.design_assignment
+              }
+            end
+            if vdm.post_prod_dpt != nil
+              postProdPayload = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1340,6 +1415,7 @@ class VdmsController < ApplicationController
                 status: vdm.status,
                 comments: vdm.comments,
                 designDept: designPayload,
+                postProdDept: postProdPayload,
                 productManagement: vdm.product_management
             }
           end
@@ -1376,11 +1452,14 @@ class VdmsController < ApplicationController
               vdm.product_management.postProductionStatus = 'rechazado'
               vdm.product_management.save!
             end
-            postProdPayload = {
-                status: vdm.post_prod_dpt.status,
-                comments: vdm.post_prod_dpt.comments,
-                assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
-            }
+            if vdm.post_prod_dpt != nil
+              postProdPayload = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
+
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,

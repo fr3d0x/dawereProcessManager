@@ -71,6 +71,7 @@
                 <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
                     <tr ng-repeat="row in $data">
                         <td data-title="'Usuario'" filter="{uname: 'text'}">{{row.uname}}</td>
+                        <td data-title="'Departamento'" filter="{department: 'text'}">{{row.department}}</td>
                         <td data-title="'Detalle'" filter="{changeDetail: 'text'}">{{row.changeDetail}}</td>
                         <td data-title="'Cambio de'" ng-if="row.changeDetail != 'Cambio de Guion de produccion'">
                             <div>

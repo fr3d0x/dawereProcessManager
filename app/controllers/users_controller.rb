@@ -129,7 +129,7 @@ class UsersController < ApplicationController
               received = 0
               recorded = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                cp.vdms.each do |vdm|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                   if vdm.production_dpt != nil
                     totalVideos += 1
                   end
@@ -150,6 +150,206 @@ class UsersController < ApplicationController
                   returned: returned,
                   effectiveness: effectiveness,
                   recorded: recorded
+              }
+              i += 1
+            end
+          when 'editor'
+            subjectPlannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              approved = 0
+              asigned = 0
+              edited = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.production_dpt != nil
+                    if vdm.production_dpt.production_dpt_assignment != nil
+                      if vdm.production_dpt.production_dpt_assignment.user_id == $currentPetitionUser['id']
+                        totalVideos += 1
+                        case vdm.production_dpt.production_dpt_assignment.status
+                          when 'rechazado'
+                            returned += 1
+                          when 'asignado'
+                            asigned += 1
+                          when 'editado'
+                            edited += 1
+                          when 'aprobado'
+                            approved += 1
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              payload[i] ={
+                  subject: sp.subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  asigned: asigned,
+                  returned: returned,
+                  approved: approved,
+                  effectiveness: effectiveness
+              }
+              i += 1
+            end
+          when 'designLeader'
+            subjectPlannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              received = 0
+              approved = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.design_dpt != nil
+                    totalVideos += 1
+                  end
+                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'rechazado'
+                    returned += 1
+                  end
+                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'aprobado'
+                    approved += 1
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              payload[i] ={
+                  subject: sp.subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  received: received,
+                  returned: returned,
+                  effectiveness: effectiveness,
+                  approved: approved
+              }
+              i += 1
+            end
+          when 'designer'
+            subjectPlannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              asigned = 0
+              approved = 0
+              designed = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.design_dpt != nil
+                    if vdm.design_dpt.design_assignment != nil
+                      if vdm.design_dpt.design_assignment.user_id == $currentPetitionUser['id']
+                        totalVideos += 1
+
+                        case vdm.design_dpt.design_assignment.status
+                          when 'asignado'
+                            asigned += 1
+                          when 'diseñado'
+                            designed += 1
+                          when 'rechazado'
+                            returned += 1
+                          when 'aprobado'
+                            approved += 1
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              payload[i] ={
+                  subject: sp.subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  asigned: asigned,
+                  returned: returned,
+                  effectiveness: effectiveness,
+                  approved: approved,
+                  designed: designed
+              }
+              i += 1
+            end
+          when 'postProLeader'
+            subjectPlannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              received = 0
+              approved = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.post_prod_dpt != nil
+                    totalVideos += 1
+                  end
+                  if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.status == 'rechazado'
+                    returned += 1
+                  end
+                  if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.status == 'aprobado'
+                    approved += 1
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              payload[i] ={
+                  subject: sp.subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  received: received,
+                  returned: returned,
+                  effectiveness: effectiveness,
+                  approved: approved
+              }
+              i += 1
+            end
+          when 'post-producer'
+            subjectPlannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              received = 0
+              approved = 0
+              finished = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.post_prod_dpt != nil
+                    if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                      if vdm.post_prod_dpt.post_prod_dpt_assignment.user_id == $currentPetitionUser['id']
+                        totalVideos += 1
+                        case vdm.post_prod_dpt.post_prod_dpt_assignment.status
+                          when 'asignado'
+                            received += 1
+                          when 'rechazado'
+                            returned += 1
+                          when 'aprobado'
+                            approved += 1
+                          when 'terminado'
+                            finished += 1
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              payload[i] ={
+                  subject: sp.subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  received: received,
+                  returned: returned,
+                  effectiveness: effectiveness,
+                  approved: approved,
+                  finished: finished
               }
               i += 1
             end

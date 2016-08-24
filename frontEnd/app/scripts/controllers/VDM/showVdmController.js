@@ -13,7 +13,9 @@ app.controller("showVdmController",['$scope', 'ENV', 'dawProcessManagerService',
                     }
                 },{
                     filterOptions: { filterLayout: "horizontal" },
-                    dataset: response.data.changes
+                    dataset: response.data.changes,
+                    groupBy: 'department'
+
                 });
             }, function(error) {
                 alert(error);

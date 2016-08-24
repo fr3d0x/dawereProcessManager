@@ -26,15 +26,29 @@
                     <tr ng-repeat="row in $data">
                         <td data-title="'Id de video'" filter="{videoId: 'text'}">{{row.videoId}}</td>
                         <td data-title="'Usuario'" filter="{uname: 'text'}">{{row.uname}}</td>
+                        <td data-title="'Departamento'" filter="{department: 'text'}">{{row.department}}</td>
                         <td data-title="'Detalle'" filter="{changeDetail: 'text'}">{{row.changeDetail}}</td>
-                        <td data-title="'Cambio de'">
+                        <td data-title="'Cambio de'" ng-if="row.changeDetail != 'Cambio de Guion de produccion'">
                             <div>
                                 {{row.changedFrom | limitTo : 300}}...
                             </div>
                         </td>
-                        <td data-title="'Cambio a'">
+                        <td data-title="'Cambio de'" ng-if="row.changeDetail == 'Cambio de Guion de produccion'">
+                            <div align="center" ng-if="row.changedFrom == 'vacio'">
+                                vacio
+                            </div>
+                            <div allign="center" ng-if="row.changedFrom != 'vacio'">
+                                <pdflink data="row.changedFrom" class="'prettyLinkSmall'" text="'ver original'"></pdflink>
+                            </div>
+                        </td>
+                        <td data-title="'Cambio a'" ng-if="row.changeDetail != 'Cambio de Guion de produccion'">
                             <div>
                                 {{row.changedTo | limitTo : 300}}...
+                            </div>
+                        </td>
+                        <td data-title="'Cambio a'" ng-if="row.changeDetail == 'Cambio de Guion de produccion'">
+                            <div allign="center">
+                                <pdflink data="row.changedTo" class="'prettyLinkSmall'" text="'ver cambio'"></pdflink>
                             </div>
                         </td>
                         <td data-title="'Commentarios'">

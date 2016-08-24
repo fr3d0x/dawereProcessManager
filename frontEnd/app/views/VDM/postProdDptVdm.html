@@ -66,7 +66,7 @@
 
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="approve(row, 'diseño', 'design')" title='aprobar' ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">
+                        <a ng-click="approve(row, 'Lider de post-produccion', 'postProduction')" title='aprobar' ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">|</span>
                         <a ng-click="reject(row, 'postProduction')" title='rechazar' ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">

@@ -9,6 +9,8 @@ gem 'spring', :group => :development
 
 gem 'pg'
 
+gem 'mysql2', '~> 0.3.18'
+
 gem 'jwt'
 
 gem 'rack-cors', :require => 'rack/cors'
