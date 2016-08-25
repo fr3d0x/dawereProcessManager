@@ -420,7 +420,7 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'production',
-            baseUrl: ''
+            baseUrl: 'http://192.168.2.45'
           }
         }
       }
@@ -482,5 +482,8 @@ module.exports = function (grunt) {
   ]);
   grunt.registerTask('development', [
     'ngconstant:development' //Agregado para las variables globales
+  ]);
+  grunt.registerTask('production', [
+    'ngconstant:production' //Agregado para las variables globales
   ]);
 };
