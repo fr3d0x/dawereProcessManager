@@ -471,7 +471,7 @@ class VdmsController < ApplicationController
               if newVdm['prodDept']['script'].length > 10
                 change = VdmChange.new
                 change.changeDetail = "Cambio de Guion de produccion"
-                if vdm.production_dpt.comments != nil
+                if vdm.production_dpt.script != nil
                   change.changedFrom = vdm.production_dpt.script
                 else
                   change.changedFrom = "vacio"

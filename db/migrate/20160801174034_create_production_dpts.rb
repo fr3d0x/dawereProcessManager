@@ -2,7 +2,7 @@ class CreateProductionDpts < ActiveRecord::Migration
   def change
     create_table :production_dpts do |t|
       t.string :status
-      t.text :script
+      t.text :script, :limit => 4294967295
       t.text :comments
       t.boolean :intro
       t.boolean :vidDev

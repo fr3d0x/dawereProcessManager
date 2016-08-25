@@ -64,7 +64,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 $scope.emptyResponse = false;
                 $scope.subject = response.subject;
                 if (response.data != null){
-
                     $scope.employees = response.employees;
                     switch (localStorageService.get('currentRole')){
                         case 'contentLeader':

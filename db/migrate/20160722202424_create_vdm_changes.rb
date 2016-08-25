@@ -3,8 +3,8 @@ class CreateVdmChanges < ActiveRecord::Migration
     create_table :vdm_changes do |t|
       t.date :changeDate
       t.text :changeDetail
-      t.text :changedFrom
-      t.text :changedTo
+      t.text :changedFrom, :limit => 4294967295
+      t.text :changedTo, :limit => 4294967295
       t.references :vdm, index: true
       t.references :user, index: true
 
