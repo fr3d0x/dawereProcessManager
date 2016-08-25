@@ -109,7 +109,7 @@
                             </div>
                         </div>
                         <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment == null">
-                            <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
+                            <select ng-model="row.asigned" ng-options="employee as employee.name for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
                                 <option value="#">No especifico</option>
                             </select>
                         </div>

@@ -82,8 +82,8 @@ class UserNotifier < ApplicationMailer
 
 
 
-  def send_approved_to_production(vdmList)
-    @vdmList = vdmList
+  def send_approved_to_production(vdm)
+    @vdmList = vdm
     @employees = Employee.find_by_sql("Select e.email from employees e, users u, roles r where r.role = 'production' and u.id = r.user_id and e.id = u.employee_id")
     mail( :to => [@employees.map(&:email)],
           :subject => 'Se ha aprobado un MDT de producción' )
@@ -121,8 +121,8 @@ class UserNotifier < ApplicationMailer
 
 
 
-  def send_to_approved_to_production(vdmList)
-    @vdmList = vdmList
+  def send_to_approved_to_production(vdm)
+    @vdm = vdm
     @employees = Employee.find_by_sql("Select e.email from employees e, users u, roles r where r.role = 'production' and u.id = r.user_id and e.id = u.employee_id")
     mail( :to => [@employees.map(&:email)],
           :subject => 'Cambio estado "por aprobar" un MDT de producción' )

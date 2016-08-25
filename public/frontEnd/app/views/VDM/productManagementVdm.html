@@ -35,7 +35,7 @@
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.editionStatus != null" style="text-align: center">
                         {{row.productManagement.editionStatus}}
                         <span style="font-size: 20px;" ng-if="row.productManagement.editionStatus == 'por aprobar'">|</span>
-                        <a ng-click="approve(row, 'Gerente de Producto', 'edition')" title='aprobar edicion' ng-if="row.productManagement.editionStatus == 'por aprobar'">
+                        <a ng-click="approve(row, 'Gerente de Producto', 'edition')" title='aprobar edicion' ng-if="row.productManagement.editionStatus == 'por aprobar'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a>
                     </div>
@@ -52,7 +52,7 @@
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.designStatus != null">
                         {{row.productManagement.designStatus}}
                         <span style="font-size: 20px;" ng-if="row.productManagement.designStatus == 'por aprobar'">|</span>
-                        <a ng-click="approve(row, 'Gerente de Producto', 'design')" title='aprobar diseño' ng-if="row.productManagement.designStatus == 'por aprobar'">
+                        <a ng-click="approve(row, 'Gerente de Producto', 'design')" title='aprobar diseño' ng-if="row.productManagement.designStatus == 'por aprobar'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a>
                     </div>
@@ -69,7 +69,7 @@
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.productManagement.postProductionStatus != null">
                         {{row.productManagement.postProductionStatus}}
                         <span style="font-size: 20px;" ng-if="row.productManagement.postProductionStatus == 'por aprobar'">|</span>
-                        <a ng-click="approve(row, 'Gerente de Producto', 'postProduction')" title='aprobar post-produccion' ng-if="row.productManagement.postProductionStatus == 'por aprobar'">
+                        <a ng-click="approve(row, 'Gerente de Producto', 'postProduction')" title='aprobar post-produccion' ng-if="row.productManagement.postProductionStatus == 'por aprobar'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a>
                     </div>
