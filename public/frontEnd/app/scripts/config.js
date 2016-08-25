@@ -2,6 +2,6 @@
 
  angular.module('config', [])
 
-.constant('ENV', {name:'development',baseUrl:'http://127.0.0.1:3000'})
+.constant('ENV', {name:'production',baseUrl:'http://192.168.2.45'})
 
 ;
