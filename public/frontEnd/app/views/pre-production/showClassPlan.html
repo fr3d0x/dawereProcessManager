@@ -89,14 +89,14 @@
                             <td data-title="'Id video'" ng-if="row.writable == true">{{row.videoId}}</td>
                             <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
                             <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
-                            <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select id="municipio" ng-model="row.status" ng-options="state.statusIng as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
+                            <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.status" ng-options="state.statusSpa as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
                                 <option value="#">No especifico</option>
                             </select>
                             </td>
                             <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
                             <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                                 <div align="center">
-                                    <a ng-click="saveVdm(row)" title='guardar'>
+                                    <a ng-click="saveVdm(row)" title='guardar' ng-class="{disabled: disableSave == true}">
                                         <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                                     </a><span style="font-size: 20px">|</span>
                                     <a ng-click="remove(row, $data)" title='eliminar'>
