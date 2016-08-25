@@ -11,7 +11,11 @@ app.controller("showClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                     filterOptions: { filterLayout: "horizontal" },
                     dataset: response.data.vdms
                 });
-                $scope.historyTable = new NgTableParams({},{
+                $scope.historyTable = new NgTableParams({
+                    sorting: {
+                        created_at: 'desc'
+                    }
+                },{
                     filterOptions: { filterLayout: "horizontal" },
                     dataset: response.data.changes
                 });
