@@ -146,14 +146,14 @@ ActiveRecord::Schema.define(version: 20160819141150) do
 
   create_table "production_dpts", force: :cascade do |t|
     t.string   "status",     limit: 255
-    t.text     "script",     limit: 65535
+    t.text     "script",     limit: 4294967295
     t.text     "comments",   limit: 65535
     t.boolean  "intro",      limit: 1
     t.boolean  "vidDev",     limit: 1
     t.boolean  "conclu",     limit: 1
     t.integer  "vdm_id",     limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
@@ -223,12 +223,12 @@ ActiveRecord::Schema.define(version: 20160819141150) do
   create_table "vdm_changes", force: :cascade do |t|
     t.date     "changeDate"
     t.text     "changeDetail", limit: 65535
-    t.text     "changedFrom",  limit: 65535
-    t.text     "changedTo",    limit: 65535
+    t.text     "changedFrom",  limit: 4294967295
+    t.text     "changedTo",    limit: 4294967295
     t.integer  "vdm_id",       limit: 4
     t.integer  "user_id",      limit: 4
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.text     "comments",     limit: 65535
     t.string   "uname",        limit: 255
     t.string   "videoId",      limit: 255

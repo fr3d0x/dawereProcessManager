@@ -687,7 +687,11 @@ class VdmsController < ApplicationController
                 vdm.production_dpt.production_dpt_assignment.status = newVdm['prodDept']['assignment']['status']
               end
               vdm.production_dpt.production_dpt_assignment.save!
-              prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
+              if vdm.production_dpt.production_dpt_assignment.status == 'editado'
+                UserNotifier.send_to_approved_to_production(vdm).deliver
+              end
+
+                prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
             end
           end
           VdmChange.transaction do
@@ -774,6 +778,9 @@ class VdmsController < ApplicationController
                 designChanges.push(change)
                 vdm.design_dpt.design_assignment.status = newVdm['designDept']['assignment']['status']
                 vdm.design_dpt.design_assignment.save!
+                if vdm.design_dpt.design_assignment.status == 'diseñado'
+                  UserNotifier.send_to_approved_to_designLeader(vdm).deliver
+                end
               end
             end
             assignment = vdm.design_dpt.design_assignment
@@ -855,6 +862,9 @@ class VdmsController < ApplicationController
                 designChanges.push(change)
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = newVdm['postProdDept']['assignment']['status']
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+                if vdm.post_prod_dpt.post_prod_dpt_assignment.status == 'terminado'
+                  UserNotifier.send_to_approved_to_post_prod_leader(vdm)
+                end
               end
             end
             assignment = vdm.post_prod_dpt.post_prod_dpt_assignment
@@ -1034,6 +1044,7 @@ class VdmsController < ApplicationController
             if params['role'] == 'productManager'
               if vdm.product_management != nil
                 vdm.product_management.productionStatus = 'aprobado'
+                UserNotifier.send_approved_to_production(vdm).deliver
                 vdm.product_management.save!
               end
             end
@@ -1067,6 +1078,7 @@ class VdmsController < ApplicationController
                 vdm.product_management.editionStatus = 'aprobado'
                 vdm.product_management.designStatus = 'asignado'
                 vdm.product_management.save!
+                UserNotifier.send_approved_to_editor(vdm, vdm.production_dpt.production_dpt_assignment.user.employee).deliver
                 design = vdm.design_dpt
                 if design == nil
                   design = DesignDpt.new
@@ -1084,6 +1096,7 @@ class VdmsController < ApplicationController
               if vdm.product_management != nil
                 vdm.product_management.editionStatus = 'por aprobar'
                 vdm.product_management.save!
+                UserNotifier.send_to_approved_to_product_Manager(vdm, 'Edicion').deliver
               end
             end
 
@@ -1099,6 +1112,7 @@ class VdmsController < ApplicationController
           if vdm.design_dpt != nil
             if params['role'] == 'productManager'
               vdm.design_dpt.status = 'aprobado'
+              UserNotifier.send_approved_to_designLeader(vdm).deliver
               vdm.design_dpt.save!
               designStatus = 'aprobado'
               if vdm.product_management != nil
@@ -1113,19 +1127,21 @@ class VdmsController < ApplicationController
               postProd.status = 'asignado'
               postProd.vdm = vdm
               postProd.save!
-              UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
               if postProd.post_prod_dpt_assignment != nil
                 postProd.post_prod_dpt_assignment.status = 'asignado'
                 postProd.post_prod_dpt_assignment.save!
+                UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
               end
             else
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'aprobado'
                 designAsignmentStatus = 'aprobado'
                 vdm.design_dpt.design_assignment.save!
+                UserNotifier.send_approved_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
                 if vdm.product_management != nil
                   vdm.product_management.designStatus = 'por aprobar'
                   vdm.product_management.save!
+                  UserNotifier.send_to_approved_to_product_Manager(vdm, 'Diseño').deliver
                 end
               end
             end
@@ -1154,6 +1170,7 @@ class VdmsController < ApplicationController
             if params['role'] == 'productManager'
               vdm.post_prod_dpt.status = 'aprobado'
               vdm.post_prod_dpt.save!
+              UserNotifier.send_approved_to_post_prod_leader(vdm).deliver
               postProdStatus = 'aprobado'
               if vdm.product_management != nil
                 vdm.product_management.postProductionStatus = 'aprobado'
@@ -1163,11 +1180,13 @@ class VdmsController < ApplicationController
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'aprobado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+                UserNotifier.send_approved_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
                 postProdAssignmentStatus = 'aprobado'
                 vdm.design_dpt.design_assignment.save!
                 if vdm.product_management != nil
                   vdm.product_management.postProductionStatus = 'por aprobar'
                   vdm.product_management.save!
+                  UserNotifier.send_to_approved_to_product_Manager(vdm, 'Post-produccion').deliver
                 end
               end
             end
@@ -1261,6 +1280,7 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.status = 'rechazado'
             vdm.production_dpt.save!
+            UserNotifier.send_rejected_to_production(vdm).deliver
             if vdm.production_dpt != nil
               prdPayload = {
                   status: vdm.production_dpt.status,
@@ -1334,6 +1354,8 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.production_dpt_assignment.status = 'rechazado'
             vdm.production_dpt.production_dpt_assignment.save!
+            user = vdm.production_dpt.production_dpt_assignment.user.employee
+            UserNotifier.send_rejected_to_editor(vdm, user).deliver
             if vdm.product_management != nil
               vdm.product_management.editionStatus = 'rechazado'
               vdm.product_management.designStatus = nil
@@ -1385,14 +1407,17 @@ class VdmsController < ApplicationController
             if params['role'] == 'productManager'
               vdm.design_dpt.status = 'rechazado'
               vdm.design_dpt.save!
+              UserNotifier.send_rejected_to_designLeader(vdm).deliver
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'rechazado'
                 vdm.design_dpt.design_assignment.save!
+                UserNotifier.create_send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
               end
             else
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'rechazado'
                 vdm.design_dpt.design_assignment.save!
+                UserNotifier.create_send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
               end
             end
             if vdm.post_prod_dpt != nil
@@ -1453,14 +1478,17 @@ class VdmsController < ApplicationController
             if params['role'] == 'productManager'
               vdm.post_prod_dpt.status = 'rechazado'
               vdm.post_prod_dpt.save!
+              UserNotifier.send_rejected_to_post_prod_leader(vdm).deliver
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+                UserNotifier.create_send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
             else
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+                UserNotifier.create_send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
             end
             change = VdmChange.new
