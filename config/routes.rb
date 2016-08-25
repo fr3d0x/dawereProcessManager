@@ -29,6 +29,7 @@ Rails.application.routes.draw do
         post :deleteClassPlan
         post :saveCp
         post :editCp
+        post :mergeCp
       end
     end
     resources :subject_planifications do

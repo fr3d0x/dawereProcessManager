@@ -61,45 +61,51 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         var getVdms = function(){
             dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
                 var tableData = [];
+                $scope.emptyResponse = false;
                 $scope.subject = response.subject;
-                $scope.employees = response.employees;
-                switch (localStorageService.get('currentRole')){
-                    case 'contentLeader':
-                        tableData = response.data;
-                        break;
-                    case 'production':
-                        tableData = response.production;
-                        break;
-                    case 'editor':
-                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                        tableData = $filter('vdmsByUser')(response.production, user, localStorageService.get('currentRole'));
-                        break;
-                    case 'productManager':
-                        tableData = response.productManagement;
-                        break;
-                    case 'designLeader':
-                        tableData = response.design;
-                        break;
-                    case 'designer':
-                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                        tableData = $filter('vdmsByUser')(response.design, user, localStorageService.get('currentRole'));
-                        break;
-                    case 'post-producer':
-                        var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                        tableData = $filter('vdmsByUser')(response.postProduction, user, localStorageService.get('currentRole'));
-                        break;
-                    case 'postProLeader':
-                        tableData = response.postProduction;
-                        break;
-                }
-                $scope.tableParams = new NgTableParams({
-                    sorting: {
-                    videoNumber: 'asc'
+                if (response.data != null){
+
+                    $scope.employees = response.employees;
+                    switch (localStorageService.get('currentRole')){
+                        case 'contentLeader':
+                            tableData = response.data;
+                            break;
+                        case 'production':
+                            tableData = response.production;
+                            break;
+                        case 'editor':
+                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                            tableData = $filter('vdmsByUser')(response.production, user, localStorageService.get('currentRole'));
+                            break;
+                        case 'productManager':
+                            tableData = response.productManagement;
+                            break;
+                        case 'designLeader':
+                            tableData = response.design;
+                            break;
+                        case 'designer':
+                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                            tableData = $filter('vdmsByUser')(response.design, user, localStorageService.get('currentRole'));
+                            break;
+                        case 'post-producer':
+                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                            tableData = $filter('vdmsByUser')(response.postProduction, user, localStorageService.get('currentRole'));
+                            break;
+                        case 'postProLeader':
+                            tableData = response.postProduction;
+                            break;
                     }
-                },{
-                    filterOptions: { filterLayout: "horizontal" },
-                    dataset: tableData
-                });
+                    $scope.tableParams = new NgTableParams({
+                        sorting: {
+                            videoNumber: 'asc'
+                        }
+                    },{
+                        filterOptions: { filterLayout: "horizontal" },
+                        dataset: tableData
+                    });
+                }else{
+                    $scope.emptyResponse = true;
+                }
             }, function(error) {
                 alert(error);
             })
@@ -166,8 +172,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             $scope.disableSave = true;
             $("body").css("cursor", "progress");
             if (vdm != null){
+                vdm.role = localStorageService.get('currentRole');
                 if(vdm.id != null){
-                    vdm.role = localStorageService.get('currentRole');
                     dawProcessManagerService.updateVdm(vdm, function (response){
                         swal({
                             title: "Exitoso",
@@ -215,7 +221,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             vdm.id = response.data.id;
                             vdm.videoId = response.data.videoId;
                             vdm.writable = false;
-                            array.splice(vdm.previewsIndex+1, 0,  vdm);
                         }, function(error){
                             $scope.disableSave = false;
                             $("body").css("cursor", "default");

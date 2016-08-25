@@ -6,16 +6,33 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter){
         var getClassesPlan = function(){
             dawProcessManagerService.getClassesPlaning($stateParams.id, function (response)  {
-                var data = response.data;
-                $scope.subjectPlaning = response.data;
-                $scope.subject = data.subject;
-                $scope.tableParams = new NgTableParams({},{
-                    filterOptions: { filterLayout: "horizontal" },
-                    dataset: data.classesPlaning
-                });
+                $scope.subject = response.subject;
+                $scope.emptyResponse = false;
+                if (response.data != null){
+                    var data = response.data;
+                    $scope.subjectPlaning = response.data;
+                    $scope.tableParams = new NgTableParams({},{
+                        filterOptions: { filterLayout: "horizontal" },
+                        dataset: data.classesPlaning
+                    });
+                }else{
+                    $scope.emptyResponse = true;
+                }
             }, function(error) {
                 alert(error);
             })
+        };
+
+        var getCpsToFuse = function(cps, cp){
+            var cpsToFuse = {};
+
+            for (var i = 0; i<cps.length; i++){
+                if(cps[i].id != null && cps[i].topicName != '' && cps[i].topicName != null && cps[i].topicName != cp.topicName ){
+                    cpsToFuse[cps[i].id] = cps[i].topicName
+                }
+            }
+            return cpsToFuse;
+
         };
         $scope.remove = function(element, array){
             if (element != null){
@@ -115,6 +132,63 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                 writable: true,
                 newRow: true
             });
+        };
+
+        $scope.merge = function(cp, data){
+          if(cp != null){
+              if (cp.id != null){
+                  swal({
+                      title: 'Seleccione el plan de clases que quiere fusionar con este',
+                      input: 'select',
+                      inputOptions: getCpsToFuse(data, cp),
+                      inputPlaceholder: 'Seleccione',
+                      showCancelButton: true,
+                      inputValidator: function(value) {
+                          return new Promise(function(resolve, reject) {
+                              if (value != '') {
+                                  resolve();
+                              } else {
+                                  reject('Seleccione un plan de clases o presione cancelar)');
+                              }
+                          });
+                      }
+                  }).then(function(result){
+                      if(result != null){
+                          var request = {};
+                          var cp2 = {};
+                          for (var i = 0; i < data.length; i++){
+                              if(data[i].id == result){
+                                  cp2 = data[i];
+                              }
+                          }
+                          request.merge = cp.id;
+                          request.mergeWith = parseInt(result);
+                          $("body").css("cursor", "progress");
+                          $scope.disableSave = true;
+                          dawProcessManagerService.mergeClassPlans(request, function (response){
+                              $("body").css("cursor", "default");
+                              $scope.disableSave = false;
+                              swal({
+                                  title: "Exitoso",
+                                  text: "Se ha fusionado el plan de clases del tema " + cp.topicName + " con el plan de clases del tema " + cp2.topicname ,
+                                  type: 'success',
+                                  confirmButtonText: "OK",
+                                  confirmButtonColor: "lightskyblue"
+                              });
+                              if(response.data != null){
+                                  cp2.vdms = cp2.vdms.concat(response.data);
+                              }
+                              data.splice(data.indexOf(cp), 1)
+                          }, function(error){
+                              console.log(error);
+                          });
+                      }
+                  }, function(){
+                      $("body").css("cursor", "default");
+                      $scope.disableSave = false;
+                  })
+              }
+          }
         };
         getClassesPlan();
     }]);

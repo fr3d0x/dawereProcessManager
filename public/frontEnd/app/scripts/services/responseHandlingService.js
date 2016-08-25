@@ -10,7 +10,7 @@ app.service('responseHandlingService',function(){
 
         switch (status){
             case "UNAUTHORIZEDLOGIN":
-                title = "Usuario o clave invalida";
+                title = "No autorizado";
                 motive = "warning";
                 break;
             case "FAILED":

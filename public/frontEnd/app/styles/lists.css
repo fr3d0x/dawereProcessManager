@@ -171,3 +171,15 @@
 .approveBtn:hover{
     color: lightgreen;
 }
+
+.mergeBtn{
+    background-color: transparent;
+    position: relative;
+    font-size: 34px;
+    color: #3b3b3b;
+    cursor:pointer;
+}
+
+.mergeBtn:hover{
+    color: lightskyblue;
+}

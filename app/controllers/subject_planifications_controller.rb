@@ -67,29 +67,33 @@ class SubjectPlanificationsController < ApplicationController
 
   def getWholeSubjectPlanning
     if params[:id] != nil
+      payload = nil
       subject_planification = SubjectPlanification.find_by_subject_id(params[:id])
-      cps = []
-      subject_planification.classes_planifications.reject { |r| r.status == 'DESTROYED' }.each do |classPlan|
-        cp = {
-            id: classPlan.id,
-            meGeneralObjective: classPlan.meGeneralObjective,
-            meSpecificObjective: classPlan.meSpecificObjective,
-            meSpecificObjDesc: classPlan.meSpecificObjDesc,
-            topicName: classPlan.topicName,
-            period: classPlan.period,
-            vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
-            vdmsString: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json.to_s
+      subject = Subject.find(params[:id])
+      if subject_planification != nil
+        cps = []
+        subject_planification.classes_planifications.reject { |r| r.status == 'DESTROYED' }.each do |classPlan|
+          cp = {
+              id: classPlan.id,
+              meGeneralObjective: classPlan.meGeneralObjective,
+              meSpecificObjective: classPlan.meSpecificObjective,
+              meSpecificObjDesc: classPlan.meSpecificObjDesc,
+              topicName: classPlan.topicName,
+              period: classPlan.period,
+              vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
+              vdmsString: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json.to_s
 
+          }
+          cps.push(cp)
+        end
+        payload = {
+            id: subject_planification.id,
+            status: subject_planification.status,
+            subject: subject_planification.subject,
+            classesPlaning: cps
         }
-        cps.push(cp)
       end
-      payload = {
-          id: subject_planification.id,
-          status: subject_planification.status,
-          subject: subject_planification.subject,
-          classesPlaning: cps
-      }
-      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+      render :json => { data: payload, subject: subject, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404

@@ -1,5 +1,3 @@
-
-
 <section class="container-fluid">
     <div class="row col-md-10 col-md-offset-1">
 
@@ -16,8 +14,8 @@
             </div>
         </div>
         <div class="clearfix"></div>
-
-        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <span ng-if="!emptyResponse">
+            <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
             <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
             <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
                 <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
@@ -52,6 +50,9 @@
                                 <span style="font-size: 20px" ng-if="$index == ($data.length) - 1">|</span>
                                 <a ng-click="add(row, $data)" title='agregar plan de clases' ng-if="$index == ($data.length) - 1">
                                     <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a><span style="font-size: 20px">|</span>
+                                <a ng-click="merge(row, $data)" title='fusionar plan de clases'>
+                                    <i class="fa fa-compress mergeBtn" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </td>
@@ -73,14 +74,25 @@
                                     <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
                                 </a>
                             </div>
-
                         </td>
-                </table>
+                     </table>
+                </div>
             </div>
-        </div>
-        <div class="col-md-3 col-md-offset-4 col-sm-3 col-sm-offset-4 col-xs-3 col-xs-offset-4 col-lg-3 col-lg-offset-4" style="margin-top: 20px;">
-            <a class="prettyLinkBig" ui-sref="app.preProduction.cpHistory({id: subject.id})">ver historial completo <i class="fa fa-clock-o" aria-hidden="true" style="font-size: 30px"></i></a>
-        </div>
+            <div class="col-md-3 col-md-offset-4 col-sm-3 col-sm-offset-4 col-xs-3 col-xs-offset-4 col-lg-3 col-lg-offset-4" style="margin-top: 20px;">
+                <a class="prettyLinkBig" ui-sref="app.preProduction.cpHistory({id: subject.id})">ver historial completo <i class="fa fa-clock-o" aria-hidden="true" style="font-size: 30px"></i></a>
+            </div>
+        </span>
+        <span ng-if="emptyResponse && currentRole == 'contentLeader'">
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2 col-lg-6 col-lg-offset-3" style="margin-top: 20px; font-size: 22px; font-weight: 300">
+                No hay plan de clases creado, por favor ingrese <a class="prettyLinkBig" ui-sref="app.preProduction.createPlanification">aqui </a> para crear uno nuevo
+
+            </div>
+        </span>
+        <span ng-if="emptyResponse && currentRole != 'contentLeader'">
+            <div class="col-md-6 col-md-offset-3 col-sm-6 col-sm-offset-3 col-xs-8 col-xs-offset-2 col-lg-6 col-lg-offset-3" style="margin-top: 20px; font-size: 22px; font-weight: 300">
+                No hay MDT, por favor dirifirse al lider de contenido para la creacion de uno nuevo
+            </div>
+        </span>
     </div>
 </section>
 

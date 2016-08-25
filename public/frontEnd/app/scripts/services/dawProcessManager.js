@@ -111,5 +111,9 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     this.getGrades = function (success, error){
         $http.get(baseUrl + '/api/grades' ).success(success).error(error);
+    };
+
+    this.mergeClassPlans = function (request, success, error){
+        $http.post(baseUrl + '/api/classes_planifications/mergeCp', request ).success(success).error(error);
     }
 }]);

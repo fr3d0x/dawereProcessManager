@@ -101,7 +101,7 @@ class ClassesPlanificationsController < ApplicationController
           if(vdmCounter != 0)
             vdmCounter = vdmCounter + 1
           else
-            vdmCounter = lastVid.first.max + 1
+            vdmCounter = lastVid.first['MAX(number)'] + 1
           end
         else
           vdmCounter = vdmCounter + 1
@@ -228,6 +228,7 @@ class ClassesPlanificationsController < ApplicationController
         vdmChange.vdm_id = vdm.id
         vdmChange.uname = $currentPetitionUser['username']
         vdmChange.videoId = vdm.videoId
+        vdmChange.department = 'pre-produccion'
         vdmChanges.push(vdmChange)
       end
       Vdm.transaction do
@@ -253,6 +254,22 @@ class ClassesPlanificationsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
+  def mergeCp
+    if request.raw_post != nil
+      params = ActiveSupport::JSON.decode(request.raw_post)
+      payload = []
+      cp1 = ClassesPlanification.find(params['mergeWith'])
+      cp2 = ClassesPlanification.find(params['merge'])
+      cp2.vdms.each do |vdm|
+        vdm.classes_planification_id = cp1.id
+        vdm.save!
+        payload.push(vdm)
+      end
+      cp2.status = 'DESTROYED'
+      cp2.save!
+      render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+    end
+  end
   private
 
     def set_classes_planification
