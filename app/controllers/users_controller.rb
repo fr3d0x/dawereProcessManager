@@ -154,8 +154,11 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((recorded.to_f + approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
                   received: received,
@@ -175,7 +178,7 @@ class UsersController < ApplicationController
               totalVideos = 0
               returned = 0
               approved = 0
-              asigned = 0
+              assigned = 0
               edited = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                 cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
@@ -187,7 +190,7 @@ class UsersController < ApplicationController
                           when 'rechazado'
                             returned += 1
                           when 'asignado'
-                            asigned += 1
+                            assigned += 1
                           when 'editado'
                             edited += 1
                           when 'aprobado'
@@ -199,11 +202,14 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
-                  asigned: asigned,
+                  assigned: assigned,
                   returned: returned,
                   approved: approved,
                   effectiveness: effectiveness
@@ -217,12 +223,15 @@ class UsersController < ApplicationController
             subjectPlannings.each do |sp|
               totalVideos = 0
               returned = 0
-              received = 0
+              assigned = 0
               approved = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                 cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                   if vdm.design_dpt != nil
                     totalVideos += 1
+                  end
+                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'asignado'
+                    assigned += 1
                   end
                   if vdm.design_dpt != nil && vdm.design_dpt.status == 'rechazado'
                     returned += 1
@@ -233,11 +242,14 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
-                  received: received,
+                  assigned: assigned,
                   returned: returned,
                   effectiveness: effectiveness,
                   approved: approved
@@ -251,7 +263,7 @@ class UsersController < ApplicationController
             subjectPlannings.each do |sp|
               totalVideos = 0
               returned = 0
-              asigned = 0
+              assigned = 0
               approved = 0
               designed = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
@@ -263,7 +275,7 @@ class UsersController < ApplicationController
 
                         case vdm.design_dpt.design_assignment.status
                           when 'asignado'
-                            asigned += 1
+                            assigned += 1
                           when 'diseñado'
                             designed += 1
                           when 'rechazado'
@@ -277,11 +289,14 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
-                  asigned: asigned,
+                  assigned: assigned,
                   returned: returned,
                   effectiveness: effectiveness,
                   approved: approved,
@@ -296,12 +311,15 @@ class UsersController < ApplicationController
             subjectPlannings.each do |sp|
               totalVideos = 0
               returned = 0
-              received = 0
+              assigned = 0
               approved = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                 cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                   if vdm.post_prod_dpt != nil
                     totalVideos += 1
+                  end
+                  if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.status == 'asignado'
+                    assigned += 1
                   end
                   if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.status == 'rechazado'
                     returned += 1
@@ -312,11 +330,14 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
-                  received: received,
+                  assigned: assigned,
                   returned: returned,
                   effectiveness: effectiveness,
                   approved: approved
@@ -330,7 +351,7 @@ class UsersController < ApplicationController
             subjectPlannings.each do |sp|
               totalVideos = 0
               returned = 0
-              received = 0
+              assigned = 0
               approved = 0
               finished = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
@@ -341,7 +362,7 @@ class UsersController < ApplicationController
                         totalVideos += 1
                         case vdm.post_prod_dpt.post_prod_dpt_assignment.status
                           when 'asignado'
-                            received += 1
+                            assigned += 1
                           when 'rechazado'
                             returned += 1
                           when 'aprobado'
@@ -355,11 +376,14 @@ class UsersController < ApplicationController
                 end
               end
               effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
               payload[i] ={
-                  subject: sp.subject,
+                  subject: subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
-                  received: received,
+                  assigned: assigned,
                   returned: returned,
                   effectiveness: effectiveness,
                   approved: approved,

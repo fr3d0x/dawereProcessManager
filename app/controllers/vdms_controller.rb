@@ -287,8 +287,7 @@ class VdmsController < ApplicationController
         if user.employee != nil
           employees.push({
                id: user.id,
-               name: user.employee.firstName,
-               lastName: user.employee.firstSurname,
+               name: user.employee.firstName + ' ' + user.employee.firstSurname,
                username: user.username,
                roles: user.roles
            })
@@ -809,7 +808,7 @@ class VdmsController < ApplicationController
             assignment.assignedName = newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
             assignment.status = 'asignado'
             assignment.save!
-            user = User.find(newVdm['dAsigned']['id'])
+            user = User.find(newVdm['ppAsigned']['id'])
             UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
             change = VdmChange.new
             change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
@@ -1411,13 +1410,13 @@ class VdmsController < ApplicationController
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'rechazado'
                 vdm.design_dpt.design_assignment.save!
-                UserNotifier.create_send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
+                UserNotifier.send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
               end
             else
               if vdm.design_dpt.design_assignment != nil
                 vdm.design_dpt.design_assignment.status = 'rechazado'
                 vdm.design_dpt.design_assignment.save!
-                UserNotifier.create_send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
+                UserNotifier.send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
               end
             end
             if vdm.post_prod_dpt != nil
@@ -1482,13 +1481,13 @@ class VdmsController < ApplicationController
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
-                UserNotifier.create_send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
+                UserNotifier.send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
             else
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'rechazado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
-                UserNotifier.create_send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
+                UserNotifier.send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
             end
             change = VdmChange.new
