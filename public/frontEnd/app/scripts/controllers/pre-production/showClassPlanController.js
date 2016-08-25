@@ -73,8 +73,11 @@ app.controller("showClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
             }
         };
 
-        $scope.saveVdm = function(vdm){
+        $scope.saveVdm = function(vdm, array){
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
             if (vdm != null){
+                vdm.role = localStorageService.get('currentRole');
                 if(vdm.id != null){
                     dawProcessManagerService.updateVdm(vdm, function (response){
                         swal({
@@ -84,17 +87,32 @@ app.controller("showClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightskyblue"
                         });
+                        $scope.disableSave = false;
+                        $("body").css("cursor", "default");
+                        if (response.data.designDept != null){
+                            vdm.designDept = response.data.designDept;
+                        }
+                        if (response.data.postProdDept != null){
+                            vdm.postProdDept = response.data.postProdDept;
+                        }
                         vdm.writable = false;
                     }, function(error){
+                        $scope.disableSave = false;
+                        $("body").css("cursor", "default");
                         console.log(error)
                     })
                 }else{
+                    $scope.disableSave = false;
+                    $("body").css("cursor", "default");
+
                     swal({
                         title: 'Justificar creacion',
                         input: 'textarea',
                         type: 'question',
                         showCancelButton: true
                     }).then(function(text) {
+                        $scope.disableSave = true;
+                        $("body").css("cursor", "progress");
                         vdm.justification = text;
                         dawProcessManagerService.addVdm(vdm, function(response){
                             swal({
@@ -103,13 +121,20 @@ app.controller("showClassPlanController",['$scope', 'ENV', 'dawProcessManagerSer
                                 type: 'success',
                                 confirmButtonText: "OK"
                             });
+                            $scope.disableSave = false;
+                            $("body").css("cursor", "default");
                             vdm.id = response.data.id;
                             vdm.videoId = response.data.videoId;
-                            vdm.writable = false
+                            vdm.writable = false;
                         }, function(error){
+                            $scope.disableSave = false;
+                            $("body").css("cursor", "default");
                             console.log(error)
                         })
-                    }, function(){});
+                    }, function(){
+                        $scope.disableSave = false;
+                        $("body").css("cursor", "default");
+                    });
 
                 }
 
