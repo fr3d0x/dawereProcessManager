@@ -69,10 +69,10 @@ class UsersController < ApplicationController
           token = JWT.encode(payload, $secretKey, 'HS256')
           render :json => { data: token, status: 'SUCCESS'}, :status => 200
         else
-          render :json => { data: 'El password del usuario no es correcto.'}
+          render :json => { msg: 'El password del usuario no es correcto.', status: 'UNAUTHORIZEDLOGIN'}, :status => :unauthorized
         end
       else
-        render :json => { data: 'Usuario no encontrado.'}
+        render :json => { msg: 'Usuario no encontrado.', status: 'UNAUTHORIZEDLOGIN'}, :status => 404
       end
     else
     render :json => { status: 'UNAUTHORIZED', msg: 'No Autorizado'}, :status => :unauthorized
@@ -88,7 +88,7 @@ class UsersController < ApplicationController
         role = params[:role]
         case request['role']
           when 'contentLeader'
-            subjectPlannings = SubjectPlanification.where(:user_id => $currentPetitionUser['id']).all
+            subjectPlannings = SubjectPlanification.all
             payload = []
             i = 0
             subjectPlannings.each do |sp|
@@ -132,6 +132,8 @@ class UsersController < ApplicationController
               returned = 0
               received = 0
               recorded = 0
+              assigned = 0
+              approved = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                 cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                   if vdm.production_dpt != nil
@@ -143,15 +145,23 @@ class UsersController < ApplicationController
                   if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
                     recorded += 1
                   end
+                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
+                    assigned += 1
+                  end
+                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
+                    approved += 1
+                  end
                 end
               end
-              effectiveness = number_with_precision(((recorded.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              effectiveness = number_with_precision(((recorded.to_f + approved.to_f)/totalVideos.to_f)*100, :precision => 2)
               payload[i] ={
                   subject: sp.subject,
                   teacher: sp.teacher,
                   totalVideos: totalVideos,
                   received: received,
                   returned: returned,
+                  assigned: assigned,
+                  approved: approved,
                   effectiveness: effectiveness,
                   recorded: recorded
               }
@@ -222,7 +232,7 @@ class UsersController < ApplicationController
                   end
                 end
               end
-              effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
               payload[i] ={
                   subject: sp.subject,
                   teacher: sp.teacher,
@@ -301,7 +311,7 @@ class UsersController < ApplicationController
                   end
                 end
               end
-              effectiveness = number_with_precision(((approved.to_f - returned.to_f)/totalVideos.to_f)*100, :precision => 2)
+              effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
               payload[i] ={
                   subject: sp.subject,
                   teacher: sp.teacher,

@@ -17,9 +17,11 @@
             <tr>
                 <th>Materia</th>
                 <th>Profesor</th>
+                <th>Total (Cantidad)</th>
                 <th>Asignados (Cantidad)</th>
                 <th>Devueltos (Cantidad)</th>
                 <th>Grabado</th>
+                <th>Aprobados (Cantidad)</th>
                 <th>Efectividad</th>
             </tr>
 
@@ -27,8 +29,10 @@
                 <td>{{row.subject.name}}</td>
                 <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
                 <td>{{row.totalVideos}}</td>
+                <td>{{row.assigned}}</td>
                 <td>{{row.returned}}</td>
                 <td>{{row.recorded}}</td>
+                <td>{{row.approved}}</td>
                 <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
                 <td ng-if="row.effectiveness == 'NaN'">0%</td>
 

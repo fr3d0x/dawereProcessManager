@@ -223,8 +223,8 @@ ActiveRecord::Schema.define(version: 20160819141150) do
   create_table "vdm_changes", force: :cascade do |t|
     t.date     "changeDate"
     t.text     "changeDetail", limit: 65535
-    t.string   "changedFrom",  limit: 255
-    t.string   "changedTo",    limit: 255
+    t.text     "changedFrom",  limit: 65535
+    t.text     "changedTo",    limit: 65535
     t.integer  "vdm_id",       limit: 4
     t.integer  "user_id",      limit: 4
     t.datetime "created_at",                 null: false

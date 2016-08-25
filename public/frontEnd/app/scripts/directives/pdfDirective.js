@@ -13,7 +13,7 @@ app.directive('pdf', function() {
   link: function(scope, element, attrs) {
       var construction = function(){
         var height = scope.height;
-        element.html('<object type="application/pdf" data="data:application/pdf;base64, ' + scope.data + ' " style="width:100%; height: '+scope.height+ 'px ;margin-top:20px;margin-bottom:20px"></object>');
+        element.html('<iframe type="application/pdf" src="data:application/pdf;base64, ' + scope.data + ' " style="width:100%; height: '+scope.height+ 'px ;margin-top:20px;margin-bottom:20px"></iframe>');
       };
       scope.$watch("data", function () {
           if(scope.data != undefined && scope.data != null){

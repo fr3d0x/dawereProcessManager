@@ -9,7 +9,7 @@ use Rack::Cors do
     # regular expressions can be used here
 
     resource '/public/*', :headers => :any, :methods => :get
-    resource 'frontEnd/app/*', :headers => :any, :methods => :get
+    resource '/frontEnd/app/*', :headers => :any, :methods => :get
     resource '/file/list_all/', :headers => 'x-domain-token'
     resource '/file/at/*',
              :methods => [:get, :post, :delete, :put, :patch, :options, :head],
