@@ -139,7 +139,7 @@ class ClassesPlanificationsController < ApplicationController
       changes = []
       if cp.meGeneralObjective != edition['meGeneralObjective']
         change = CpChange.new
-        change.changeDetail = 'cambio de Objetivo General'
+        change.changeDetail = 'Cambio de Objetivo General'
         change.changedFrom = cp.meGeneralObjective
         change.changedTo = edition['meGeneralObjective']
         change.user_id = $currentPetitionUser['id']
@@ -163,7 +163,7 @@ class ClassesPlanificationsController < ApplicationController
       end
       if cp.meSpecificObjDesc != edition['meSpecificObjDesc']
         change = CpChange.new
-        change.changeDetail = 'cambio de descripcion de objetivo especifico'
+        change.changeDetail = 'Cambio de descripcion de objetivo especifico'
         change.changedFrom = cp.meSpecificObjDesc
         change.changedTo = edition['meSpecificObjDesc']
         change.user_id = $currentPetitionUser['id']
@@ -175,8 +175,8 @@ class ClassesPlanificationsController < ApplicationController
       end
       if cp.topicName != edition['topicName']
         change = CpChange.new
-        change.changeDetail = 'cambio de nombre de tema'
-        change.changedFrom = cp.meSpecificObjDesc
+        change.changeDetail = 'Cambio de nombre de tema'
+        change.changedFrom = cp.topicName
         change.changedTo = edition['topicName']
         change.user_id = $currentPetitionUser['id']
         change.uname = $currentPetitionUser['username']
