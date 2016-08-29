@@ -130,6 +130,7 @@ class SubjectPlanificationsController < ApplicationController
         cp.videos = array[i]['videos']
         cp.period = array[i]['period']
         cp.subject_planification_id = subjectPlan.id
+        cp.topicNumber = i + 1
         cps.push(cp)
       end
       ClassesPlanification.transaction do

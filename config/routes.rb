@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :qa_analists, except: [:new, :edit]
+  resources :qa_dpts, except: [:new, :edit]
   scope(:path => '/api') do
     resources :post_prod_dpt_assignments, except: [:new, :edit]
     resources :post_prod_dpts, except: [:new, :edit]

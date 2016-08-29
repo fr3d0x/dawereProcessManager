@@ -9,7 +9,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
             for (var i = 0; i<editors.length; i++){
-                var name = editors[i].name + " " + editors[i].lastName;
+                var name = editors[i].name;
                 editorsJson[editors[i].id] = name;
             }
             return editorsJson
@@ -93,6 +93,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'postProLeader':
                             tableData = response.postProduction;
                             break;
+                        case 'qa':
+                            tableData = response.qaDpt;
+                            break;
                     }
                     $scope.tableParams = new NgTableParams({
                         sorting: {
@@ -100,7 +103,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         }
                     },{
                         filterOptions: { filterLayout: "horizontal" },
-                        dataset: tableData
+                        dataset: tableData,
+                        groupBy: 'cpId'
                     });
                 }else{
                     $scope.emptyResponse = true;
@@ -518,7 +522,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             showCancelButton: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightcoral"
-                        })
+                        });
                         $("body").css("cursor", "default");
                         $scope.disableSave = false;
                     }else{

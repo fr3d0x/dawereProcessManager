@@ -75,7 +75,7 @@ class ClassesPlanificationsController < ApplicationController
       parameters = ActiveSupport::JSON.decode(request.raw_post)
       cp = ClassesPlanification.new
       subject = Subject.find(parameters['subjectId'])
-      subjectPlan = SubjectPlanification.find(parameters['subjectPlanId'])
+      maxTopicNumber = SubjectPlanification.find(parameters['subjectPlanId']).classes_planifications.maximum('topicNumber')
       vdms = []
       cp.meGeneralObjective = parameters['meGeneralObjective']
       cp.meSpecificObjective = parameters['meSpecificObjective']
@@ -83,6 +83,7 @@ class ClassesPlanificationsController < ApplicationController
       cp.topicName = parameters['topicName']
       cp.period = parameters['period']
       cp.videos = parameters['videos']
+      cp.topicNumber = maxTopicNumber + 1
       cp.subject_planification_id = parameters['subjectPlanId']
       change = CpChange.new
       change.changeDetail = 'Creacion'
@@ -265,7 +266,21 @@ class ClassesPlanificationsController < ApplicationController
         vdm.save!
         payload.push(vdm)
       end
+
+      subjectPlan = cp2.subject_planification
+      subjectPlan.classes_planifications.each do |cp|
+
+        if cp.topicNumber != nil && cp2.topicNumber != nil
+          if cp.topicNumber > cp2.topicNumber
+            cp.topicNumber = cp.topicNumber - 1
+            cp.save!
+          end
+        end
+
+
+      end
       cp2.status = 'DESTROYED'
+      cp2.topicNumber = nil
       cp2.save!
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
