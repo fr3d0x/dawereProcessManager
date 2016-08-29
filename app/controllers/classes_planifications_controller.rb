@@ -124,6 +124,7 @@ class ClassesPlanificationsController < ApplicationController
       payload = {
           id: cp.id,
           topicName: cp.topicName,
+          topicNumber: cp.topicNumber,
           videos: cp.vdms.where("status != 'DESTROYED'").as_json
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
