@@ -79,6 +79,7 @@ class SubjectPlanificationsController < ApplicationController
               meSpecificObjective: classPlan.meSpecificObjective,
               meSpecificObjDesc: classPlan.meSpecificObjDesc,
               topicName: classPlan.topicName,
+              topicNumber: classPlan.topicNumber,
               period: classPlan.period,
               vdms: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json,
               vdmsString: classPlan.vdms.reject { |r| r.status == 'DESTROYED' }.as_json.to_s

@@ -156,11 +156,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 text: "Se ha eliminado el MDT del video " + response.data.videoId,
                                 type: 'success',
                                 confirmButtonText: "OK"
-                            });
+                            }).then(function(){
+                                location.reload();
+                            }, function(){});
                             element.id = response.data.id;
                             element.videoId = response.data.videoId;
                             element.writable = false;
                             array.splice(array.indexOf(element), 1);
+
                         }, function(error){
                             console.log(error)
                         })

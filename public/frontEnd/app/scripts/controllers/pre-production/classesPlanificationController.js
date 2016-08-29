@@ -174,7 +174,9 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                                   type: 'success',
                                   confirmButtonText: "OK",
                                   confirmButtonColor: "lightskyblue"
-                              });
+                              }).then(function(){
+                                  location.reload();
+                              }, function(){});
                               if(response.data != null){
                                   cp2.vdms = cp2.vdms.concat(response.data);
                               }

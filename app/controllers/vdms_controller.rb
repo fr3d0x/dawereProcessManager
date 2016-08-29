@@ -288,6 +288,7 @@ class VdmsController < ApplicationController
                  cpId: cp.id,
                  prodDept: vdm.production_dpt,
                  videoNumber: vdm.number,
+                 topicNumber: cp.topicNumber,
                  productManagement: vdm.product_management
              })
             i+=1
