@@ -99,7 +99,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }
                     $scope.tableParams = new NgTableParams({
                         sorting: {
-                            videoNumber: 'asc'
+                            topicNumber: 'asc'
                         }
                     },{
                         filterOptions: { filterLayout: "horizontal" },
@@ -823,6 +823,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
+
         $scope.close = function(vdm, arr){
             if(vdm.id != null){
                 vdm.writable = false;
@@ -1146,5 +1147,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
+
         getVdms();
     }]);

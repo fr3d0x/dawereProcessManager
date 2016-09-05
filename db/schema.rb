@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(version: 20160826225502) do
 
   create_table "vdm_changes", force: :cascade do |t|
     t.date     "changeDate"
-    t.text     "changeDetail", limit: 4294967295
+    t.text     "changeDetail", limit: 65535
     t.text     "changedFrom",  limit: 4294967295
     t.text     "changedTo",    limit: 4294967295
     t.integer  "vdm_id",       limit: 4
@@ -277,7 +277,7 @@ ActiveRecord::Schema.define(version: 20160826225502) do
 
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
 
-  add_foreign_key "classes_planifications", "subject_planifications"
+  add_foreign_key "classes_planifications", "subject_planifications", on_delete: :cascade
   add_foreign_key "cp_changes", "classes_planifications"
   add_foreign_key "cp_changes", "users"
   add_foreign_key "design_assignments", "design_dpts"
@@ -294,12 +294,12 @@ ActiveRecord::Schema.define(version: 20160826225502) do
   add_foreign_key "qa_analists", "users"
   add_foreign_key "qa_dpts", "vdms"
   add_foreign_key "roles", "users"
-  add_foreign_key "subject_planifications", "subjects"
-  add_foreign_key "subject_planifications", "teachers"
-  add_foreign_key "subject_planifications", "users"
-  add_foreign_key "subjects", "grades"
+  add_foreign_key "subject_planifications", "subjects", on_delete: :cascade
+  add_foreign_key "subject_planifications", "teachers", on_delete: :cascade
+  add_foreign_key "subject_planifications", "users", on_delete: :cascade
+  add_foreign_key "subjects", "grades", on_delete: :cascade
   add_foreign_key "users", "employees"
   add_foreign_key "vdm_changes", "users"
-  add_foreign_key "vdm_changes", "vdms"
-  add_foreign_key "vdms", "classes_planifications"
+  add_foreign_key "vdm_changes", "vdms", on_delete: :cascade
+  add_foreign_key "vdms", "classes_planifications", on_delete: :cascade
 end
