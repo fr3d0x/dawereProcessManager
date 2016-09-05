@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819141150) do
+ActiveRecord::Schema.define(version: 20160826225502) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20160819141150) do
     t.datetime "updated_at",                             null: false
     t.string   "status",                   limit: 255
     t.integer  "period",                   limit: 4
+    t.integer  "topicNumber",              limit: 4
   end
 
   add_index "classes_planifications", ["subject_planification_id"], name: "index_classes_planifications_on_subject_planification_id", using: :btree
@@ -158,6 +159,29 @@ ActiveRecord::Schema.define(version: 20160819141150) do
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
 
+  create_table "qa_analists", force: :cascade do |t|
+    t.string   "status",       limit: 255
+    t.text     "comments",     limit: 65535
+    t.string   "assignedName", limit: 255
+    t.integer  "qa_dpt_id",    limit: 4
+    t.integer  "user_id",      limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "qa_analists", ["qa_dpt_id"], name: "index_qa_analists_on_qa_dpt_id", using: :btree
+  add_index "qa_analists", ["user_id"], name: "index_qa_analists_on_user_id", using: :btree
+
+  create_table "qa_dpts", force: :cascade do |t|
+    t.string   "status",     limit: 255
+    t.text     "comments",   limit: 65535
+    t.integer  "vdm_id",     limit: 4
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "qa_dpts", ["vdm_id"], name: "index_qa_dpts_on_vdm_id", using: :btree
+
   create_table "roles", force: :cascade do |t|
     t.string   "role",       limit: 255
     t.integer  "user_id",    limit: 4
@@ -248,11 +272,12 @@ ActiveRecord::Schema.define(version: 20160819141150) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.integer  "number",                   limit: 4
+    t.float    "duration",                 limit: 24
   end
 
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
 
-  add_foreign_key "classes_planifications", "subject_planifications"
+  add_foreign_key "classes_planifications", "subject_planifications", on_delete: :cascade
   add_foreign_key "cp_changes", "classes_planifications"
   add_foreign_key "cp_changes", "users"
   add_foreign_key "design_assignments", "design_dpts"
@@ -265,13 +290,16 @@ ActiveRecord::Schema.define(version: 20160819141150) do
   add_foreign_key "production_dpt_assignments", "production_dpts"
   add_foreign_key "production_dpt_assignments", "users"
   add_foreign_key "production_dpts", "vdms"
+  add_foreign_key "qa_analists", "qa_dpts"
+  add_foreign_key "qa_analists", "users"
+  add_foreign_key "qa_dpts", "vdms"
   add_foreign_key "roles", "users"
-  add_foreign_key "subject_planifications", "subjects"
-  add_foreign_key "subject_planifications", "teachers"
-  add_foreign_key "subject_planifications", "users"
-  add_foreign_key "subjects", "grades"
+  add_foreign_key "subject_planifications", "subjects", on_delete: :cascade
+  add_foreign_key "subject_planifications", "teachers", on_delete: :cascade
+  add_foreign_key "subject_planifications", "users", on_delete: :cascade
+  add_foreign_key "subjects", "grades", on_delete: :cascade
   add_foreign_key "users", "employees"
   add_foreign_key "vdm_changes", "users"
-  add_foreign_key "vdm_changes", "vdms"
-  add_foreign_key "vdms", "classes_planifications"
+  add_foreign_key "vdm_changes", "vdms", on_delete: :cascade
+  add_foreign_key "vdms", "classes_planifications", on_delete: :cascade
 end

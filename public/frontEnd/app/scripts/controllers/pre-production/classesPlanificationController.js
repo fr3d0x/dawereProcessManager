@@ -80,6 +80,7 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                             confirmButtonColor: "lightskyblue"
                         });
                         cp.writable = false;
+                        cp.topicNumber = response.data.topicNumber
                     }, function(error){
                         console.log(error)
                     })
@@ -101,6 +102,7 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                             cp.id = response.data.id;
                             cp.vdms = response.data.videos;
                             cp.writable = false;
+                            cp.topicNumber = response.data.topicNumber
                             cp.newRow = false;
                         }, function(error){
                             console.log(error)
@@ -174,7 +176,9 @@ app.controller("classesPlanificationController",['$scope', 'ENV', 'dawProcessMan
                                   type: 'success',
                                   confirmButtonText: "OK",
                                   confirmButtonColor: "lightskyblue"
-                              });
+                              }).then(function(){
+                                  location.reload();
+                              }, function(){});
                               if(response.data != null){
                                   cp2.vdms = cp2.vdms.concat(response.data);
                               }

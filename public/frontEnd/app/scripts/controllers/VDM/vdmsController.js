@@ -9,7 +9,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
             for (var i = 0; i<editors.length; i++){
-                var name = editors[i].name + " " + editors[i].lastName;
+                var name = editors[i].name;
                 editorsJson[editors[i].id] = name;
             }
             return editorsJson
@@ -93,14 +93,18 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'postProLeader':
                             tableData = response.postProduction;
                             break;
+                        case 'qa':
+                            tableData = response.qaDpt;
+                            break;
                     }
                     $scope.tableParams = new NgTableParams({
                         sorting: {
-                            videoNumber: 'asc'
+                            topicNumber: 'asc'
                         }
                     },{
                         filterOptions: { filterLayout: "horizontal" },
-                        dataset: tableData
+                        dataset: tableData,
+                        groupBy: 'cpId'
                     });
                 }else{
                     $scope.emptyResponse = true;
@@ -152,11 +156,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 text: "Se ha eliminado el MDT del video " + response.data.videoId,
                                 type: 'success',
                                 confirmButtonText: "OK"
-                            });
+                            }).then(function(){
+                                location.reload();
+                            }, function(){});
                             element.id = response.data.id;
                             element.videoId = response.data.videoId;
                             element.writable = false;
                             array.splice(array.indexOf(element), 1);
+
                         }, function(error){
                             console.log(error)
                         })
@@ -518,7 +525,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             showCancelButton: false,
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightcoral"
-                        })
+                        });
                         $("body").css("cursor", "default");
                         $scope.disableSave = false;
                     }else{
@@ -816,6 +823,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
+
         $scope.close = function(vdm, arr){
             if(vdm.id != null){
                 vdm.writable = false;
@@ -1139,5 +1147,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
+
         getVdms();
     }]);

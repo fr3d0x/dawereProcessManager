@@ -138,7 +138,7 @@ class VdmsController < ApplicationController
       designPayload = nil
       productManagementPayload = nil
       postProdPayload = nil
-
+      qaPayload = nil
       if sp != nil
         i = 0
         payload = []
@@ -265,6 +265,18 @@ class VdmsController < ApplicationController
                   productManagement: vdm.product_management
               })
             end
+            if vdm.qa_dpt
+              qaPayload = {
+                  id: vdm.id,
+                  videoId: vdm.videoId,
+                  videoTittle: vdm.videoTittle,
+                  videoContent: vdm.videoContent,
+                  status: vdm.status,
+                  comments: vdm.comments,
+                  cp: cp.as_json,
+                  qa: vdm.qa_dpt
+              }
+            end
             payload.push({
                  id: vdm.id,
                  videoId: vdm.videoId,
@@ -273,8 +285,10 @@ class VdmsController < ApplicationController
                  status: vdm.status,
                  comments: vdm.comments,
                  cp: cp.as_json,
+                 cpId: cp.id,
                  prodDept: vdm.production_dpt,
                  videoNumber: vdm.number,
+                 topicNumber: cp.topicNumber,
                  productManagement: vdm.product_management
              })
             i+=1
@@ -293,7 +307,7 @@ class VdmsController < ApplicationController
            })
         end
       end
-      render :json => { data: payload, subject: subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, postProduction: postProdPayload, status: 'SUCCESS'}, :status => 200
+      render :json => { data: payload, subject: subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, postProduction: postProdPayload, qaDpt: qaPayload, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -721,13 +735,13 @@ class VdmsController < ApplicationController
             end
             assignment.design_dpt_id = vdm.design_dpt.id
             assignment.user_id = newVdm['dAsigned']['id']
-            assignment.assignedName = newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
+            assignment.assignedName = newVdm['dAsigned']['name']
             assignment.status = 'asignado'
             assignment.save!
             user = User.find(newVdm['dAsigned']['id'])
             UserNotifier.send_assigned_to_designer(vdm, user.employee).deliver
             change = VdmChange.new
-            change.changeDetail = "Asignado video a diseñador " + newVdm['dAsigned']['name'] + ' ' + newVdm['dAsigned']['lastName']
+            change.changeDetail = "Asignado video a diseñador " + newVdm['dAsigned']['name']
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -805,13 +819,13 @@ class VdmsController < ApplicationController
             end
             assignment.post_prod_dpt_id = vdm.post_prod_dpt.id
             assignment.user_id = newVdm['ppAsigned']['id']
-            assignment.assignedName = newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
+            assignment.assignedName = newVdm['ppAsigned']['name']
             assignment.status = 'asignado'
             assignment.save!
             user = User.find(newVdm['ppAsigned']['id'])
             UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
             change = VdmChange.new
-            change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name'] + ' ' + newVdm['ppAsigned']['lastName']
+            change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name']
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -1175,6 +1189,13 @@ class VdmsController < ApplicationController
                 vdm.product_management.postProductionStatus = 'aprobado'
                 vdm.product_management.save!
               end
+              qa = vdm.qa_dpt
+              if vdm.qa_dpt == nil
+                qa = QaDpt.new
+              end
+              qa.status = 'por aprobar'
+              qa.vdm_id = vdm.id
+              qa.save!
             else
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'aprobado'
