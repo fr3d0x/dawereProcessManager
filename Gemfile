@@ -7,7 +7,7 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'pg'
+#gem 'pg'
 
 gem 'mysql2', '~> 0.3.18'
 

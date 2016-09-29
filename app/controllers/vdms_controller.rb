@@ -146,6 +146,7 @@ class VdmsController < ApplicationController
         productManagementPayload = []
         designPayload = []
         postProdPayload = []
+        qaPayload = []
         sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
           cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
             productionDept = {}
@@ -266,7 +267,7 @@ class VdmsController < ApplicationController
               })
             end
             if vdm.qa_dpt
-              qaPayload = {
+              qaPayload.push({
                   id: vdm.id,
                   videoId: vdm.videoId,
                   videoTittle: vdm.videoTittle,
@@ -275,7 +276,7 @@ class VdmsController < ApplicationController
                   comments: vdm.comments,
                   cp: cp.as_json,
                   qa: vdm.qa_dpt
-              }
+              })
             end
             payload.push({
                  id: vdm.id,

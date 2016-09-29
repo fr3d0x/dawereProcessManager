@@ -59,7 +59,6 @@ GEM
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
     pdf-core (0.6.1)
-    pg (0.18.4)
     pkg-config (1.1.7)
     prawn (2.1.0)
       pdf-core (~> 0.6.1)
@@ -117,10 +116,12 @@ PLATFORMS
 DEPENDENCIES
   jwt
   mysql2 (~> 0.3.18)
-  pg
   prawn
   prawn-table
   rack-cors
   rails (= 4.2.1)
   rails-api
   spring
+
+BUNDLED WITH
+   1.13.1
