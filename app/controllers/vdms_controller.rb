@@ -152,6 +152,7 @@ class VdmsController < ApplicationController
             productionDept = {}
             designDept = {}
             postProdDept = {}
+            qaDept = {}
             productionStatus = 'no asignado'
             editionStatus = 'no asignado'
             designStatus = 'no asignado'
@@ -266,16 +267,30 @@ class VdmsController < ApplicationController
                   productManagement: vdm.product_management
               })
             end
-            if vdm.qa_dpt
+            if vdm.qa_dpt != nil
+              qaResponsable = 'no asignado'
+              if vdm.qa_dpt.qa_analist != nil
+                qaResponsable = vdm.qa_dpt.qa_analist.assignedName
+                qaDept = {
+                    id: vdm.qa_dpt.id,
+                    status: vdm.qa_dpt.status,
+                    comments: vdm.qa_dpt.comments,
+                    assignment: vdm.qa_dpt.qa_analist
+                }
+              else
+                qaDept = vdm.qa_dpt
+
+              end
               qaPayload.push({
                   id: vdm.id,
                   videoId: vdm.videoId,
                   videoTittle: vdm.videoTittle,
                   videoContent: vdm.videoContent,
-                  status: vdm.status,
+                  status: vdm.qa_dpt.status,
                   comments: vdm.comments,
                   cp: cp.as_json,
-                  qa: vdm.qa_dpt
+                  qaDept: qaDept,
+                  qaResponsable: qaResponsable
               })
             end
             payload.push({
@@ -1194,7 +1209,7 @@ class VdmsController < ApplicationController
               if vdm.qa_dpt == nil
                 qa = QaDpt.new
               end
-              qa.status = 'por aprobar'
+              qa.status = 'asignado'
               qa.vdm_id = vdm.id
               qa.save!
             else
