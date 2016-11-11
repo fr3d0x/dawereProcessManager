@@ -96,6 +96,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'qa':
                             tableData = response.qaDpt;
                             break;
+                        case 'qaAnalist':
+                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
+                            tableData = response.qaDpt;
+                            break;
                     }
                     $scope.tableParams = new NgTableParams({
                         sorting: {

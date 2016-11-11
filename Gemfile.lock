@@ -122,6 +122,3 @@ DEPENDENCIES
   rails (= 4.2.1)
   rails-api
   spring
-
-BUNDLED WITH
-   1.13.1

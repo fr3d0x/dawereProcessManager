@@ -1,9 +1,7 @@
 /**
  * Created by fr3d0 on 8/5/16.
  */
-/**
- * Created by fr3d0 on 4/12/16.
- */
+
 app.directive('pdflink', function() {
     return {
         restrict: 'E',
