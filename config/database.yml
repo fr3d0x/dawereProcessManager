@@ -1,8 +1,7 @@
-# pg version 0.18.4
-#   gem install pg
+#   gem install mysql2
 #
 #   Ensure the pg gem is defined in your Gemfile
-#   gem 'pg'
+#   gem 'mysql2'
 #
 
 default: &default

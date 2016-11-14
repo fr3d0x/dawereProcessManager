@@ -115,5 +115,10 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     this.mergeClassPlans = function (request, success, error){
         $http.post(baseUrl + '/api/classes_planifications/mergeCp', request ).success(success).error(error);
-    }
+    };
+
+    this.assignSubject = function (subject, success, error) {
+        $http.post(baseUrl + '/api/subjects/assignSubject', subject).success(success).error(error);
+
+    };
 }]);
