@@ -118,7 +118,6 @@ class SubjectPlanificationsController < ApplicationController
       subjectPlan.status = 'active'
       subjectPlan.teacher_id = teacher.id
       subjectPlan.subject_id = parameters['subjectId']
-      subjectPlan.user_id = $currentPetitionUser['id']
       subjectPlan.firstPeriodCompleted = false
       subjectPlan.save!
       array = parameters['cps']

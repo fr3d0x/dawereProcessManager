@@ -87,6 +87,43 @@ class UsersController < ApplicationController
       if params[:role] != nil
         role = params[:role]
         case request['role']
+          when 'contentAnalist'
+            user = User.find($currentPetitionUser['id'])
+            subjectPlannings = user.subject_planifications
+            payload = []
+            i = 0
+            subjectPlannings.each do |sp|
+              totalVideos = 0
+              returned = 0
+              processed = 0
+              received = 0
+              notReceived = 0
+              recorded = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                totalVideos = totalVideos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                notReceived = notReceived + cp.vdms.where(:status => 'no recibido').count
+                returned = returned + cp.vdms.where(:status => 'rechazado').count
+                processed = processed + cp.vdms.where(:status => 'procesado').count
+                received = received + cp.vdms.where(:status => 'recibido').count
+                recorded = recorded + ProductionDpt.find_by_sql("Select * from production_dpts pdpt, vdms v where v.classes_planification_id = " + cp.id.to_s + " and pdpt.vdm_id = v.id and pdpt.status = 'recorded'").count
+              end
+              effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
+              payload[i] ={
+                  subject: subject,
+                  teacher: sp.teacher,
+                  totalVideos: totalVideos,
+                  received: received,
+                  returned: returned,
+                  processed: processed,
+                  notReceived: notReceived,
+                  effectiveness: effectiveness,
+                  recorded: recorded
+              }
+              i += 1
+            end
           when 'contentLeader'
             subjectPlannings = SubjectPlanification.all
             payload = []

@@ -69,6 +69,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'contentLeader':
                             tableData = response.data;
                             break;
+                        case 'contentAnalist':
+                            tableData = response.data;
+                            break;
                         case 'production':
                             tableData = response.production;
                             break;
@@ -122,6 +125,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
         $scope.designerStates = [{statusIng: 'designed', statusSpa: 'diseñado'}];
         $scope.postProducerStates = [{statusIng: 'post-produced', statusSpa: 'terminado'}];
+        $scope.vdmTypes = [{typeIng: 'exercises', typeSpa: 'ejercicios'}, {typeIng: 'theoretical', typeSpa: 'teorico'}, {typeIng: 'descriptive', typeSpa: 'narrativo'}, {typeIng: 'experimental', typeSpa: 'experimental'}];
+
 
         $scope.add = function(vdm, data){
             data.splice(data.indexOf(vdm)+1, 0, {

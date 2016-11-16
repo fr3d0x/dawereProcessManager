@@ -1,5 +1,5 @@
 <!--PreProduction role Vdm View-->
-<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" ng-if="currentRole == 'contentLeader'">
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12" ng-if="currentRole == 'contentLeader' || currentRole == 'contentAnalist'">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
@@ -9,18 +9,28 @@
                 <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
                 <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicNumber}}</td>
 
-                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row">
+                <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
                         {{row.videoContent | limitTo : 300}}...
                     </div>
                 </td>
+                <td data-title="'Documento'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemMissing" ng-if="row.classDoc == null || row.classDoc ==''">
+                        No guardado
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc != null">
+                        Guardado
+                    </div>
+                </td>
                 <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                <td data-title="'Tipo'" filter="{type: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.type | translate}}</td>
+
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
                         {{row.comments | limitTo : 300}}...
                     </div>
@@ -48,11 +58,24 @@
                 <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicNumber}}</td>
                 <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
                 <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
+                <td data-title="'Documento'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemMissing" ng-if="row.classDoc == null || row.classDoc ==''">
+                        No guardado
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc != null">
+                        Guardado
+                    </div>
+                </td>
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.status" ng-options="state.statusSpa as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >
                     <option value="#">No especifico</option>
                 </select>
                 </td>
+                <td data-title="'Tipo'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.type" ng-options="type.typeSpa as type.typeSpa for type in vdmTypes" style="height:2.2em; margin-top: 6px;" >
+                    <option value="#">No especifico</option>
+                </select>
+                </td>
                 <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
+
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
                         <a ng-click="saveVdm(row)" title='guardar' ng-class="{disabled: disableSave == true}">
@@ -63,7 +86,12 @@
                         </a><span style="font-size: 20px">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a>
+                        </a><span style="font-size: 20px">|</span>
+                        <label for="upload" title="subir documento de clase">
+                            <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px">
+                                <input id="upload" type="file" ngf-select ng-model="file" name="file" ngf-max-size="5MB" style="display: none">
+                            </i>
+                        </label>
                     </div>
                 </td>
             </tr>

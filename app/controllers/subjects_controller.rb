@@ -69,8 +69,11 @@ class SubjectsController < ApplicationController
     if request.raw_post != ""
       parameters = ActiveSupport::JSON.decode(request.raw_post)
       subject = Subject.find(parameters['id'])
-      subject.user = User.find(parameters['user_id'])
+      user = User.find(parameters['user_id'])
+      subject.user = user
       subject.save!
+      subject.subject_planification.user = user
+      subject.subject_planification.save!
       u = nil
       if subject.user != nil
         u = { id: subject.user.id,
