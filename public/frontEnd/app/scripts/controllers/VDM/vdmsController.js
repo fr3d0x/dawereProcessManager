@@ -183,6 +183,64 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             }
         };
 
+        var standarVdmSave = function(vdm){
+            dawProcessManagerService.updateVdm(vdm, function (response){
+                swal({
+                    title: "Exitoso",
+                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                    type: 'success',
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "lightskyblue"
+                });
+                $scope.disableSave = false;
+                $("body").css("cursor", "default");
+                if (response.data.designDept != null){
+                    vdm.designDept = response.data.designDept;
+                }
+                if (response.data.postProdDept != null){
+                    vdm.postProdDept = response.data.postProdDept;
+                }
+                vdm.writable = false;
+            }, function(error){
+                $scope.disableSave = false;
+                $("body").css("cursor", "default");
+                console.log(error)
+            })
+        };
+
+        var justifiedSave = function(vdm){
+            swal({
+                title: 'Justificar creacion',
+                input: 'textarea',
+                type: 'question',
+                showCancelButton: true
+            }).then(function(text) {
+                $scope.disableSave = true;
+                $("body").css("cursor", "progress");
+                vdm.justification = text;
+                dawProcessManagerService.addVdm(vdm, function(response){
+                    swal({
+                        title: "Exitoso",
+                        text: "Se ha guardado el MDT del video " + response.data.videoId,
+                        type: 'success',
+                        confirmButtonText: "OK"
+                    });
+                    $scope.disableSave = false;
+                    $("body").css("cursor", "default");
+                    vdm.id = response.data.id;
+                    vdm.videoId = response.data.videoId;
+                    vdm.writable = false;
+                }, function(error){
+                    $scope.disableSave = false;
+                    $("body").css("cursor", "default");
+                    console.log(error)
+                })
+            }, function(){
+                $scope.disableSave = false;
+                $("body").css("cursor", "default");
+            });
+        };
+
         $scope.saveVdm = function(vdm, array){
             $scope.disableSave = true;
             $("body").css("cursor", "progress");
@@ -250,6 +308,151 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
             }
         };
+
+        $scope.saveVdmPre = function(vdm, file){
+            $scope.disableSave = true;
+            $("body").css("cursor", "progress");
+            if (vdm != null){
+                vdm.role = localStorageService.get('currentRole');
+                var valid = true;
+                var invalidMsg = '';
+                if(vdm.id != null){
+                    if(file != undefined && file != null ) {
+                        var fileReader = new FileReader();
+                        fileReader.readAsDataURL(file);
+                        fileReader.onload = function (e) {
+                            var dataUrl;
+                            dataUrl = e.target.result;
+                            vdm.classDoc = dataUrl.split(',')[1];
+                            if (file.size > 5000000) {
+                                invalidMsg = "El archivo es demasiado grande para ser guardado, por favor asegurese que los documentos de clase no pesen mas de 5MB";
+                                valid = false;
+                            }
+                            if (file.type != 'application/vnd.ms-powerpoint') {
+                                invalidMsg = "Los guiones deben ser presentaciones powerpoint para ser guardados";
+                                valid = false;
+                            }
+                            if(vdm.status == 'procesado'){
+                                if(vdm.type == null || vdm.type == undefined){
+                                    invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
+                                    valid = false;
+                                }
+                            }
+                            if (valid == false) {
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                                swal({
+                                    title: 'Aviso',
+                                    text: invalidMsg,
+                                    type: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                })
+                            }else{
+                                standarVdmSave(vdm)
+                            }
+                        }
+                    }else{
+                        if(vdm.status == 'procesado'){
+                            if(vdm.classDoc == null || vdm.classDoc == undefined){
+                                invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
+                                valid = false;
+                            }
+                            if(vdm.type == null || vdm.type == undefined){
+                                invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
+                                valid = false;
+                            }
+                            if (valid == false) {
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                                swal({
+                                    title: 'Aviso',
+                                    text: invalidMsg,
+                                    type: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                })
+                            }else{
+                                standarVdmSave(vdm);
+                            }
+                        }else{
+                            standarVdmSave(vdm)
+                        }
+                    }
+                }else{
+                    $scope.disableSave = false;
+                    $("body").css("cursor", "default");
+                    if(file != undefined && file != null ) {
+                        var fileReader = new FileReader();
+                        fileReader.readAsDataURL(file);
+                        fileReader.onload = function (e) {
+                            var dataUrl;
+                            dataUrl = e.target.result;
+                            vdm.classDoc = dataUrl.split(',')[1];
+                            if (file.size > 5000000) {
+                                invalidMsg = "El archivo es demasiado grande para ser guardado, por favor asegurese que los documentos de clase no pesen mas de 5MB";
+                                valid = false;
+                            }
+                            if (file.type != 'application/vnd.ms-powerpoint') {
+                                invalidMsg = "Los guiones deben ser presentaciones powerpoint para ser guardados";
+                                valid = false;
+                            }
+                            if(vdm.status == 'procesado'){
+                                if(vdm.type == null || vdm.type == undefined){
+                                    invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
+                                    valid = false;
+                                }
+                            }
+                            if (valid == false) {
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                                swal({
+                                    title: 'Aviso',
+                                    text: invalidMsg,
+                                    type: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                })
+                            }else{
+                                justifiedSave(vdm)
+                            }
+                        }
+                    }else{
+                        if(vdm.status == 'procesado'){
+                            if(vdm.classDoc == null || vdm.classDoc == undefined){
+                                invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
+                                valid = false;
+                            }
+                            if(vdm.type == null || vdm.type == undefined){
+                                invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
+                                valid = false;
+                            }
+                            if (valid == false) {
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                                swal({
+                                    title: 'Aviso',
+                                    text: invalidMsg,
+                                    type: 'warning',
+                                    showCancelButton: false,
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                })
+                            }else{
+                                justifiedSave(vdm);
+                            }
+                        }else{
+                            justifiedSave(vdm)
+                        }
+                    }
+                }
+
+            }
+        };
+
 
         $scope.saveVdmProd = function(vdm, file){
             $scope.disableSave = true;

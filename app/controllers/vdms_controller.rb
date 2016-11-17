@@ -361,7 +361,7 @@ class VdmsController < ApplicationController
       prodAssignedPayload = nil
       designPayload = nil
       postProdPayload = nil
-      if newVdm['role'] == 'contentLeader'
+      if newVdm['role'] == 'contentLeader' || newVdm['role'] == 'contentAnalist'
         if vdm.videoContent != newVdm['videoContent']
           change = VdmChange.new
           change.changeDetail = "Cambio de contenido"
@@ -909,12 +909,15 @@ class VdmsController < ApplicationController
             assignment: assignment
         }
       end
-      if newVdm['role'] == 'contentLeader'
+      if newVdm['role'] == 'contentLeader' || newVdm['role'] == 'contentAnalist'
         vdm.videoContent = newVdm['videoContent']
         vdm.videoTittle = newVdm['videoTittle']
         vdm.status = newVdm['status']
         vdm.comments = newVdm['comments']
-        vdm.save
+        vdm.save!
+        if prdPayload == nil
+          prdPayload = ProductionDpt.find_by_vdm_id(vdm.id)
+        end
       end
 
       payload = {

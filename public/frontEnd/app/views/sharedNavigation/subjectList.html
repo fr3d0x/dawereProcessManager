@@ -36,13 +36,14 @@
                                 <div ng-if="subject.user == null && currentRole == 'contentLeader'" class="col-xs-12 col-sm-12 col-md-12" align="right"><a class="prettyLinkSmall pull-right" ng-click="assignSubject(subject)">asignar</a></div>
                                 <div ng-if="subject.user != null && currentRole == 'contentLeader'" class="col-xs-12 col-sm-12 col-md-12" align="right"><a class="prettyLinkSmall pull-right" ng-click="assignSubject(subject)">analista de contenido: {{subject.user.name}} </a></div>
                                 <div ng-if="subject.user != null && currentRole != 'contentLeader'" class="col-xs-12 col-sm-12 col-md-12 pull-right" align="right" style="font-size: 14px; font-weight: 400; text-decoration: none !important;">analista de contenido: {{subject.user.name}} </div>
-                                <p class="col-xs-4 col-xs-offset-4 col-sm-8 col-sm-offset-3 col-md-8 col-md-offset-3">{{subject.name}} </p>
+                                <div align="center" class="col-xs-12 col-sm-12 col-md-12"><p>{{subject.name}} </p></div>
                             </div>
-
-                            <button class="col-sm-3 col-sm-offset-1 col-md-3 col-md-offset-0 subjectButton" ui-sref="app.preProduction.classesPlanification({id: subject.id})" ng-disabled="currentRole == 'contentAnalist' && subject.user.id != currentUser.id">Plan de clases</button>
-                            <button class="col-sm-3 col-md-3 subjectButton" ui-sref="app.vdm.vdmList({id: subject.id})" ng-disabled="currentRole == 'contentAnalist' && subject.user.id != currentUser.id">MDT</button>
-                            <button class="col-sm-3 col-md-3 subjectButton" ng-disabled="currentRole == 'contentAnalist' && subject.user.id != currentUser.id">Consolidación</button>
-                        </span>
+                            <div align="center" class="col-xs-12 col-sm-12 col-md-12 row">
+                                <button class="col-sm-3 col-md-3 col-lg-3 col-xs-3 subjectButton" ui-sref="app.preProduction.classesPlanification({id: subject.id})" ng-class="{disabled: currentRole == 'contentAnalist' && subject.user.id != currentUser.id}">Plan de clases</button>
+                                <button class="col-sm-3 col-md-3 col-lg-3 col-xs-3 subjectButton" ui-sref="app.vdm.vdmList({id: subject.id})" ng-class="{disabled: currentRole == 'contentAnalist' && subject.user.id != currentUser.id}">MDT</button>
+                                <button class="col-sm-3 col-md-3 col-lg-3 col-xs-3 subjectButton" ng-class="{disabled: currentRole == 'contentAnalist' && subject.user.id != currentUser.id}">Consolidación</button>
+                            </div>
+                            </span>
                         <span ng-if="currentRole != 'contentLeader' && currentRole != 'contentAnalist'">
                              <div align="center">
                                  <div ng-if="subject.user != null" class="col-xs-12 col-sm-12 col-md-12 pull-right" align="right" style="font-size: 14px; font-weight: 400; text-decoration: none !important;">analista de contenido: {{subject.user.name}} </div>
