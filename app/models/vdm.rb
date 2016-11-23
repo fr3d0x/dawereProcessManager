@@ -6,4 +6,6 @@ class Vdm < ActiveRecord::Base
   has_one :product_management
   has_one :post_prod_dpt
   has_one :qa_dpt
+  has_many :documents
+  attr_accessor :document_data
 end

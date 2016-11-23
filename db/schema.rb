@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161116194436) do
+ActiveRecord::Schema.define(version: 20161123190740) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -69,6 +69,16 @@ ActiveRecord::Schema.define(version: 20161116194436) do
   end
 
   add_index "design_dpts", ["vdm_id"], name: "index_design_dpts_on_vdm_id", using: :btree
+
+  create_table "documents", force: :cascade do |t|
+    t.integer  "vdm_id",     limit: 4
+    t.string   "file",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "docType",    limit: 255
+  end
+
+  add_index "documents", ["vdm_id"], name: "index_documents_on_vdm_id", using: :btree
 
   create_table "employees", force: :cascade do |t|
     t.string   "firstName",     limit: 255
@@ -288,6 +298,7 @@ ActiveRecord::Schema.define(version: 20161116194436) do
   add_foreign_key "design_assignments", "design_dpts"
   add_foreign_key "design_assignments", "users"
   add_foreign_key "design_dpts", "vdms"
+  add_foreign_key "documents", "vdms"
   add_foreign_key "post_prod_dpt_assignments", "post_prod_dpts"
   add_foreign_key "post_prod_dpt_assignments", "users"
   add_foreign_key "post_prod_dpts", "vdms"

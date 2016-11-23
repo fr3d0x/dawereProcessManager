@@ -19,6 +19,10 @@ gem 'prawn'
 
 gem 'prawn-table'
 
+gem 'carrierwave'
+
+gem 'carrierwave-base64'
+
 #gem 'sqlite3'
 
 

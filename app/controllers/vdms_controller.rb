@@ -469,6 +469,29 @@ class VdmsController < ApplicationController
           change.department = 'pre-produccion'
           changes.push(change)
         end
+
+        if vdm.classDoc != newVdm['classDoc']
+          change = VdmChange.new
+          change.changeDetail = "Cambio de documento"
+          if vdm.classDoc != nil
+            change.changedFrom = vdm.classDoc
+          else
+            change.changedFrom = "vacio"
+          end
+
+          change.changedTo = newVdm['classDoc']
+          change.vdm_id = vdm.id
+          change.user_id = $currentPetitionUser['id']
+          change.uname = $currentPetitionUser['username']
+          change.videoId = vdm.videoId
+          change.changeDate = Time.now
+          change.department = 'pre-produccion'
+          changes.push(change)
+
+
+          vdm.documents.create!(:file => newVdm['classDoc'], :docType => 'classDoc') #create a document associated with the item that has just been created end
+
+        end
         VdmChange.transaction do
           changes.each(&:save!)
         end
@@ -1583,6 +1606,6 @@ class VdmsController < ApplicationController
     end
 
     def vdm_params
-      params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :comments, :description)
+      params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :comments, :description, :document_data => [])
     end
 end

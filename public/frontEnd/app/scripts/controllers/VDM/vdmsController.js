@@ -323,7 +323,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         fileReader.onload = function (e) {
                             var dataUrl;
                             dataUrl = e.target.result;
-                            vdm.classDoc = dataUrl.split(',')[1];
+                            vdm.classDoc = dataUrl;
                             if (file.size > 5000000) {
                                 invalidMsg = "El archivo es demasiado grande para ser guardado, por favor asegurese que los documentos de clase no pesen mas de 5MB";
                                 valid = false;
