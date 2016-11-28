@@ -479,7 +479,6 @@ class VdmsController < ApplicationController
             change.changedFrom = "vacio"
           end
 
-          change.changedTo = newVdm['classDoc']
           change.vdm_id = vdm.id
           change.user_id = $currentPetitionUser['id']
           change.uname = $currentPetitionUser['username']
@@ -487,9 +486,8 @@ class VdmsController < ApplicationController
           change.changeDate = Time.now
           change.department = 'pre-produccion'
           changes.push(change)
-
-
-          vdm.documents.create!(:file => newVdm['classDoc'], :docType => 'classDoc') #create a document associated with the item that has just been created end
+          vdm.classDoc = newVdm['classDoc'] #create a document associated with the item that has just been created end
+          change.changedTo = vdm.classDoc
 
         end
         VdmChange.transaction do
@@ -950,6 +948,7 @@ class VdmsController < ApplicationController
           videoContent: vdm.videoContent,
           status: vdm.status,
           comments: vdm.comments,
+          classDoc: vdm.classDoc,
           subject: vdm.classes_planification.subject_planification.subject,
           prodDept: prdPayload,
           designDept: designPayload,

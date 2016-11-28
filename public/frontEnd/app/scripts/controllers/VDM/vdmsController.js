@@ -201,6 +201,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     vdm.postProdDept = response.data.postProdDept;
                 }
                 vdm.writable = false;
+                vdm.classDoc = response.data.classDoc;
             }, function(error){
                 $scope.disableSave = false;
                 $("body").css("cursor", "default");
@@ -229,6 +230,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     $("body").css("cursor", "default");
                     vdm.id = response.data.id;
                     vdm.videoId = response.data.videoId;
+                    vdm.classDoc = response.data.classDoc;
                     vdm.writable = false;
                 }, function(error){
                     $scope.disableSave = false;
@@ -264,6 +266,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             vdm.postProdDept = response.data.postProdDept;
                         }
                         vdm.writable = false;
+                        vdm.classDoc = response.data.classDoc;
                     }, function(error){
                         $scope.disableSave = false;
                         $("body").css("cursor", "default");
@@ -293,6 +296,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             $("body").css("cursor", "default");
                             vdm.id = response.data.id;
                             vdm.videoId = response.data.videoId;
+                            vdm.classDoc = response.data.classDoc;
                             vdm.writable = false;
                         }, function(error){
                             $scope.disableSave = false;
