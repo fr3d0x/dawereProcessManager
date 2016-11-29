@@ -20,10 +20,6 @@ module DawereProcessManager
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    #set carrierwave new root folder
-    CarrierWave.configure do |config|
-      config.root = '/home/fr3d0/Desktop/railsUploads/'
-    end
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
     config.middleware.insert_before 0, "Rack::Cors" do

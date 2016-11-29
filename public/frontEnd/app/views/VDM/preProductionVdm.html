@@ -24,7 +24,8 @@
                         No guardado
                     </div>
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc.classDoc.url != null">
-                        Guardado
+                        Guardado<br>
+                        <a href="{{uploadFolder + row.classDoc.classDoc.url}}" download class="prettyLinkSmall">Descargar</a>
                     </div>
                 </td>
                 <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
@@ -63,7 +64,10 @@
                         No guardado
                     </div>
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc.classDoc.url != null">
-                        Guardado
+                        Guardado<br>
+                        <a href="{{uploadFolder + row.classDoc.classDoc.url}}" download class="prettyLinkSmall">Descargar</a>
+
+
                     </div>
                 </td>
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.status" ng-options="state.statusSpa as state.statusSpa for state in states" style="height:2.2em; margin-top: 6px;" >

@@ -43,17 +43,13 @@
                 </td>
                 <td data-title="'Guion'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
-                        <span ng-if="row.prodDept.script == null || row.prodDept.script == ''">
+                        <div ng-if="row.prodDept.script == null || row.prodDept.script == ''" class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemMissing">
                             no posee
-                        </span>
-                        <span ng-if="row.prodDept.script != null && row.prodDept.script != ''">
-                            <span ng-if="row.script == 'cambiado'">
-                                cambiado
-                            </span>
-                            <span ng-if="row.script != 'cambiado'">
-                                guardado
-                            </span>
-                        </span>
+                        </div>
+                        <div ng-if="row.prodDept.script != null && row.prodDept.script != ''" class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent">
+                            Guardado<br>
+                            <a href="{{uploadFolder + row.script.url}}" class="prettyLinkSmall">Descargar</a>
+                        </div>
                     </div>
                 </td>
                 <td data-title="'Intro'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">

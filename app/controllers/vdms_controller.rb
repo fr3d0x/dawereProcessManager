@@ -473,11 +473,6 @@ class VdmsController < ApplicationController
         if vdm.classDoc != newVdm['classDoc']
           change = VdmChange.new
           change.changeDetail = "Cambio de documento"
-          if vdm.classDoc != nil
-            change.changedFrom = vdm.classDoc
-          else
-            change.changedFrom = "vacio"
-          end
 
           change.vdm_id = vdm.id
           change.user_id = $currentPetitionUser['id']
@@ -519,14 +514,10 @@ class VdmsController < ApplicationController
             end
 
             if vdm.production_dpt.script != newVdm['prodDept']['script']
-              if newVdm['prodDept']['script'].length > 10
+              if newVdm['prodDept']['script'] != nil
                 change = VdmChange.new
                 change.changeDetail = "Cambio de Guion de produccion"
-                if vdm.production_dpt.script != nil
-                  change.changedFrom = vdm.production_dpt.script
-                else
-                  change.changedFrom = "vacio"
-                end
+
                 change.changedTo = newVdm['prodDept']['script']
                 change.vdm_id = vdm.id
                 change.user_id = $currentPetitionUser['id']
@@ -535,7 +526,8 @@ class VdmsController < ApplicationController
                 change.changeDate = Time.now
                 change.department = 'produccion'
                 prodDeptChanges.push(change)
-                script = 'cambiado'
+                vdm.production_dpt.script = newVdm['prodDept']['script']
+
               end
             end
             if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
@@ -689,9 +681,6 @@ class VdmsController < ApplicationController
             vdm.production_dpt.conclu = newVdm['conclu']
             vdm.production_dpt.vidDev = newVdm['vidDev']
             vdm.production_dpt.comments = newVdm['prodDept']['comments']
-            if newVdm['prodDept']['script'] != nil && newVdm['prodDept']['script'].length > 10
-              vdm.production_dpt.script = newVdm['prodDept']['script']
-            end
             vdm.production_dpt.save!
           end
 

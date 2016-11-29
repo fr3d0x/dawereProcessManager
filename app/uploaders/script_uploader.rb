@@ -12,7 +12,7 @@ class ScriptUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    'guiones/uploads'
+    'guiones'
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -44,8 +44,8 @@ class ScriptUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-  # def filename
-  #   "something.jpg" if original_filename
-  # end
+   def filename
+     "guion_clase_#{model.vdm.videoId}.pdf"
+   end
 
 end
