@@ -22,11 +22,22 @@ var app = angular.module('app', [
   'config',
   'LocalStorageModule',
   'ngTable',
-  'ngFileUpload'
+  'ngFileUpload',
+  'naif.base64'
 ])
   .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
     $rootScope.$state = $state;
     $rootScope.$stateParams = $stateParams;
+
+    $rootScope.setLoader = function(val){
+      if(val == true){
+          $("html").append('<div id="shadowBox" class="shadowBox"><div id="loader" class="sk-cube-grid centered"> <div class="sk-cube sk-cube1"></div> <div class="sk-cube sk-cube2"></div> <div class="sk-cube sk-cube3"></div> <div class="sk-cube sk-cube4"></div> <div class="sk-cube sk-cube5"></div> <div class="sk-cube sk-cube6"></div> <div class="sk-cube sk-cube7"></div> <div class="sk-cube sk-cube8"></div> <div class="sk-cube sk-cube9"></div> </div></div>').addClass("disabled");
+      }else{
+          $("html").removeClass("disabled");
+          $("#loader").remove();
+          $("#shadowBox").remove();
+      }
+    };
     $rootScope.$on('$stateChangeSuccess', function(event, toState) {
 
       event.targetScope.$watch('$viewContentLoaded', function () {
@@ -43,6 +54,8 @@ var app = angular.module('app', [
       });
       $rootScope.containerClass = toState.containerClass;
     });
+
+
   }])
 
   .config(['uiSelectConfig', function (uiSelectConfig) {

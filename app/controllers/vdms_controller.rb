@@ -306,6 +306,7 @@ class VdmsController < ApplicationController
                  videoNumber: vdm.number,
                  topicNumber: cp.topicNumber,
                  classDoc: vdm.classDoc,
+                 teacherFiles: vdm.teacher_files,
                  productManagement: vdm.product_management
              })
             i+=1
@@ -483,6 +484,32 @@ class VdmsController < ApplicationController
           changes.push(change)
           vdm.classDoc = newVdm['classDoc'] #create a document associated with the item that has just been created end
           change.changedTo = vdm.classDoc
+
+        end
+        if newVdm['teacherFiles']
+          change = VdmChange.new
+          change.changeDetail = "Creacion de material de profesor"
+
+          change.vdm_id = vdm.id
+          change.user_id = $currentPetitionUser['id']
+          change.uname = $currentPetitionUser['username']
+          change.videoId = vdm.videoId
+          change.changeDate = Time.now
+          change.department = 'pre-produccion'
+          changes.push(change)
+          teacherFiles = []
+          newVdm['teacherFiles'].each do |tf|
+            file = TeacherFile.new
+            file.file = tf['base64']
+            file.vdm_id = vdm.id
+            file.name = tf['filename']
+            teacherFiles.push(file)
+          end
+          if teacherFiles.count >= 1
+            TeacherFile.transaction do
+              teacherFiles.each(&:save!)
+            end
+          end
 
         end
         VdmChange.transaction do
@@ -938,6 +965,7 @@ class VdmsController < ApplicationController
           status: vdm.status,
           comments: vdm.comments,
           classDoc: vdm.classDoc,
+          teacherFiles: vdm.teacher_files,
           subject: vdm.classes_planification.subject_planification.subject,
           prodDept: prdPayload,
           designDept: designPayload,

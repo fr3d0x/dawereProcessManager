@@ -1,7 +1,7 @@
 # encoding: utf-8
 
-class ClassDocUploader < CarrierWave::Uploader::Base
-
+class EditedVideoUploader < CarrierWave::Uploader::Base
+  include CarrierWave::Video
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
@@ -13,7 +13,7 @@ class ClassDocUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "#{model.classes_planification.subject_planification.subject.name}/#{model.videoId}/documentos_clase/"
+    'video_clases/'
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -38,15 +38,14 @@ class ClassDocUploader < CarrierWave::Uploader::Base
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-   def extension_white_list
+  # def extension_white_list
   #   %w(jpg jpeg gif png)
-     %w(pdf powerpoint doc text txt odc)
-   end
+  # end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-   def filename
-     "documento_clase_#{model.videoId}.ppt"
-   end
+  def filename
+    "video_editado_#{model.videoId}.mp4"
+  end
 
 end

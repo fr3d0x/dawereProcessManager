@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161128195213) do
+ActiveRecord::Schema.define(version: 20170404155808) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -224,6 +224,15 @@ ActiveRecord::Schema.define(version: 20161128195213) do
   add_index "subjects", ["grade_id"], name: "index_subjects_on_grade_id", using: :btree
   add_index "subjects", ["user_id"], name: "index_subjects_on_user_id", using: :btree
 
+  create_table "teacher_files", force: :cascade do |t|
+    t.string   "file",       limit: 255
+    t.integer  "vdm_id",     limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "teacher_files", ["vdm_id"], name: "index_teacher_files_on_vdm_id", using: :btree
+
   create_table "teachers", force: :cascade do |t|
     t.text     "cvLong",     limit: 65535
     t.text     "cvShort",    limit: 65535
@@ -304,6 +313,7 @@ ActiveRecord::Schema.define(version: 20161128195213) do
   add_foreign_key "subject_planifications", "users", on_delete: :cascade
   add_foreign_key "subjects", "grades", on_delete: :cascade
   add_foreign_key "subjects", "users"
+  add_foreign_key "teacher_files", "vdms"
   add_foreign_key "users", "employees"
   add_foreign_key "vdm_changes", "users"
   add_foreign_key "vdm_changes", "vdms", on_delete: :cascade

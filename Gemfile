@@ -23,6 +23,8 @@ gem 'carrierwave'
 
 gem 'carrierwave-base64'
 
+gem 'carrierwave-video'
+
 #gem 'sqlite3'
 
 
