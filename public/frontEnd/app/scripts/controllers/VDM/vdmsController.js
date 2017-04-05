@@ -193,9 +193,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     confirmButtonColor: "lightskyblue"
                 });
 
-                $scope.disableSave = false;
-                $rootScope.setLoader(false);
-                $("body").css("cursor", "default");
                 if (response.data.designDept != null){
                     vdm.designDept = response.data.designDept;id
                 }
@@ -204,15 +201,19 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
                 vdm.writable = false;
                 vdm.classDoc = response.data.classDoc;
+                vdm.class_doc_name = response.data.class_doc_name;
+                vdm.teacherFiles = response.data.teacherFiles;
+                $scope.disableSave = false;
+                $rootScope.setLoader(false);
             }, function(error){
                 $scope.disableSave = false;
                 $rootScope.setLoader(false);
-                $("body").css("cursor", "default");
                 console.log(error)
             })
         };
 
         var justifiedSave = function(vdm){
+            $rootScope.setLoader(false);
             swal({
                 title: 'Justificar creacion',
                 input: 'textarea',
@@ -220,7 +221,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 showCancelButton: true
             }).then(function(text) {
                 $scope.disableSave = true;
-                $("body").css("cursor", "progress");
+                $rootScope.setLoader(true);
                 vdm.justification = text;
                 dawProcessManagerService.addVdm(vdm, function(response){
                     swal({
@@ -229,20 +230,22 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         type: 'success',
                         confirmButtonText: "OK"
                     });
-                    $scope.disableSave = false;
-                    $("body").css("cursor", "default");
                     vdm.id = response.data.id;
                     vdm.videoId = response.data.videoId;
                     vdm.classDoc = response.data.classDoc;
+                    vdm.class_doc_name = response.data.class_doc_name;
+                    vdm.teacherFiles = response.data.teacherFiles;
                     vdm.writable = false;
+                    $scope.disableSave = false;
+                    $rootScope.setLoader(false);
                 }, function(error){
                     $scope.disableSave = false;
-                    $("body").css("cursor", "default");
+                    $rootScope.setLoader(false);
                     console.log(error)
                 })
             }, function(){
                 $scope.disableSave = false;
-                $("body").css("cursor", "default");
+                $rootScope.setLoader(false);
             });
         };
 
@@ -323,127 +326,77 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 vdm.role = localStorageService.get('currentRole');
                 var valid = true;
                 var invalidMsg = '';
-                if(vdm.id != null){
-                    if(vdm.class_doc != undefined && vdm.class_doc != null ) {
-                        if (vdm.class_doc.filetype != 'application/vnd.ms-powerpoint') {
+                if(vdm.class_doc != undefined && vdm.class_doc != null ) {
+                    switch (vdm.class_doc.filetype){
+                        case 'application/vnd.ms-powerpoint':
+                            vdm.class_doc.base64 = 'data:'+vdm.class_doc.filetype+';base64,'+vdm.class_doc.base64;
+                            break;
+                        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
+                            vdm.class_doc.base64 = 'data:'+vdm.class_doc.filetype+';base64,'+vdm.class_doc.base64;
+                            break;
+
+                        default:
                             invalidMsg = "Los guiones deben ser presentaciones powerpoint para ser guardados";
                             valid = false;
-                        }else{
-                            vdm.classDoc = 'data:'+vdm.class_doc.filetype+';base64,'+vdm.class_doc.base64;
-                        }
-                        delete vdm.class_doc;
+                            break;
                     }
-                    if(vdm.teacher_files && vdm.teacher_files.length) {
-                        vdm.teacherFiles = [];
-                        for (var i = 0; i < vdm.teacher_files.length; i++) {
-                            if (vdm.teacher_files[i].filetype != 'application/pdf') {
-                                invalidMsg = "Los guiones deben ser presentaciones powerpoint para ser guardados";
-                                valid = false;
-                            }else{
+                }
+                if(vdm.teacher_files && vdm.teacher_files.length) {
+                    for (var i = 0; i < vdm.teacher_files.length; i++) {
+                        switch (vdm.teacher_files[i].filetype){
+                            case 'application/pdf':
                                 vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
-                                vdm.teacherFiles.push(vdm.teacher_files[i]);
-                            }
-                        }
-                        delete vdm.teacher_files;
-                    }
+                                break;
+                            case 'application/msword':
+                                vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
+                                break;
+                            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+                                vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
+                                break;
 
-                    if(vdm.status == 'procesado'){
-                        if(vdm.classDoc == null || vdm.classDoc == undefined){
-                            invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
-                            valid = false;
-                        }
-                        if(vdm.teacher_files == null || vdm.teacher_files == undefined){
-                            invalidMsg = "No se puede procesar un video sin primero haber subido al menos un material de profesor";
-                            valid = false;
-                        }
-                        if(vdm.type == null || vdm.type == undefined){
-                            invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
-                            valid = false;
-                        }
-                    }
-
-                    if (valid == false) {
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
-                        $rootScope.setLoader(false);
-                        swal({
-                            title: 'Aviso',
-                            text: invalidMsg,
-                            type: 'warning',
-                            showCancelButton: false,
-                            confirmButtonText: "OK",
-                            confirmButtonColor: "lightcoral"
-                        })
-                    }else{
-                        standarVdmSave(vdm)
-                    }
-                }else{
-                    $scope.disableSave = false;
-                    $("body").css("cursor", "default");
-                    if(cass_doc != undefined && cass_doc != null ) {
-                        fileReader.readAsDataURL(cass_doc);
-                        fileReader.onload = function (e) {
-                            var dataUrl;
-                            dataUrl = e.target.result;
-                            vdm.classDoc = dataUrl;
-                            if (cass_doc.size > 5000000) {
-                                invalidMsg = "El archivo es demasiado grande para ser guardado, por favor asegurese que los documentos de clase no pesen mas de 5MB";
+                            default:
+                                invalidMsg = "Los guiones deben ser presentaciones powerpoint o word para ser guardados";
                                 valid = false;
-                            }
-                            if (cass_doc.type != 'application/vnd.ms-powerpoint') {
-                                invalidMsg = "Los guiones deben ser presentaciones powerpoint para ser guardados";
-                                valid = false;
-                            }
-                            if(vdm.status == 'procesado'){
-                                if(vdm.type == null || vdm.type == undefined){
-                                    invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
-                                    valid = false;
-                                }
-                            }
-                            if (valid == false) {
-                                $("body").css("cursor", "default");
-                                $scope.disableSave = false;
-                                swal({
-                                    title: 'Aviso',
-                                    text: invalidMsg,
-                                    type: 'warning',
-                                    showCancelButton: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "lightcoral"
-                                })
-                            }else{
-                                justifiedSave(vdm)
-                            }
-                        }
-                    }else{
-                        if(vdm.status == 'procesado'){
-                            if(vdm.classDoc == null || vdm.classDoc == undefined){
-                                invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
-                                valid = false;
-                            }
-                            if(vdm.type == null || vdm.type == undefined){
-                                invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
-                                valid = false;
-                            }
-                            if (valid == false) {
-                                $("body").css("cursor", "default");
-                                $scope.disableSave = false;
-                                swal({
-                                    title: 'Aviso',
-                                    text: invalidMsg,
-                                    type: 'warning',
-                                    showCancelButton: false,
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "lightcoral"
-                                })
-                            }else{
-                                justifiedSave(vdm);
-                            }
-                        }else{
-                            justifiedSave(vdm)
+                                break;
                         }
                     }
                 }
+
+                if(vdm.status == 'procesado'){
+                    if(vdm.classDoc == null || vdm.classDoc == undefined){
+                        invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
+                        valid = false;
+                    }
+                    if(vdm.teacher_files == null || vdm.teacher_files == undefined){
+                        invalidMsg = "No se puede procesar un video sin primero haber subido al menos un material de profesor";
+                        valid = false;
+                    }
+                    if(vdm.type == null || vdm.type == undefined){
+                        invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
+                        valid = false;
+                    }
+                }
+
+                if (valid == false) {
+                    $scope.disableSave = false;
+                    $rootScope.setLoader(false);
+                    swal({
+                        title: 'Aviso',
+                        text: invalidMsg,
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightcoral"
+                    })
+                }else{
+                    if(vdm.id != null){
+                        standarVdmSave(vdm)
+                    }else{
+                        justifiedSave(vdm)
+                    }
+                    
+                }
+                
 
             }
         };

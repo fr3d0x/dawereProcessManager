@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170404155808) do
+ActiveRecord::Schema.define(version: 20170405142537) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 20170404155808) do
     t.integer  "vdm_id",     limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
+    t.string   "file_name",  limit: 255
   end
 
   add_index "teacher_files", ["vdm_id"], name: "index_teacher_files_on_vdm_id", using: :btree
@@ -287,6 +288,7 @@ ActiveRecord::Schema.define(version: 20170404155808) do
     t.float    "duration",                 limit: 24
     t.string   "type",                     limit: 255
     t.text     "classDoc",                 limit: 65535
+    t.string   "class_doc_name",           limit: 255
   end
 
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree

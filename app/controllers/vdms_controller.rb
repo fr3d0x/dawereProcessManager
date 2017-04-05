@@ -306,6 +306,7 @@ class VdmsController < ApplicationController
                  videoNumber: vdm.number,
                  topicNumber: cp.topicNumber,
                  classDoc: vdm.classDoc,
+                 class_doc_name: vdm.class_doc_name,
                  teacherFiles: vdm.teacher_files,
                  productManagement: vdm.product_management
              })
@@ -471,7 +472,7 @@ class VdmsController < ApplicationController
           changes.push(change)
         end
 
-        if vdm.classDoc != newVdm['classDoc']
+        if newVdm['class_doc']
           change = VdmChange.new
           change.changeDetail = "Cambio de documento"
 
@@ -481,12 +482,13 @@ class VdmsController < ApplicationController
           change.videoId = vdm.videoId
           change.changeDate = Time.now
           change.department = 'pre-produccion'
-          changes.push(change)
-          vdm.classDoc = newVdm['classDoc'] #create a document associated with the item that has just been created end
+          vdm.classDoc = newVdm['class_doc']['base64'] #create a document associated with the item that has just been created end
+          vdm.class_doc_name = newVdm['class_doc']['filename']
           change.changedTo = vdm.classDoc
+          changes.push(change)
 
         end
-        if newVdm['teacherFiles']
+        if newVdm['teacher_files']
           change = VdmChange.new
           change.changeDetail = "Creacion de material de profesor"
 
@@ -498,11 +500,11 @@ class VdmsController < ApplicationController
           change.department = 'pre-produccion'
           changes.push(change)
           teacherFiles = []
-          newVdm['teacherFiles'].each do |tf|
+          newVdm['teacher_files'].each do |tf|
             file = TeacherFile.new
             file.file = tf['base64']
             file.vdm_id = vdm.id
-            file.name = tf['filename']
+            file.file_name = tf['filename']
             teacherFiles.push(file)
           end
           if teacherFiles.count >= 1
@@ -965,6 +967,7 @@ class VdmsController < ApplicationController
           status: vdm.status,
           comments: vdm.comments,
           classDoc: vdm.classDoc,
+          class_doc_name: vdm.class_doc_name,
           teacherFiles: vdm.teacher_files,
           subject: vdm.classes_planification.subject_planification.subject,
           prodDept: prdPayload,
