@@ -93,3 +93,12 @@
     font-weight: 200;
     text-decoration: none !important;
 }
+
+.logoutButtonHover:hover{
+    background-color: #369291 !important;
+    font-weight: 600 !important;
+}
+.buttonHover:hover{
+    font-weight: 400 !important;
+    color: black  !important;
+}

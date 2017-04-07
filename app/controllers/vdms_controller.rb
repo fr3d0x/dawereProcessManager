@@ -4,7 +4,6 @@ class VdmsController < ApplicationController
   before_action :only => [:addVdm, :deleteVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
   include ActionView::Helpers::TextHelper
 
-
   # GET /vdms
   # GET /vdms.json
   def index
@@ -181,21 +180,21 @@ class VdmsController < ApplicationController
               desarrollo = vdm.production_dpt.vidDev
 
               productionPayload.push({
-                   id: vdm.id,
-                   videoId: vdm.videoId,
-                   videoTittle: vdm.videoTittle,
-                   videoContent: vdm.videoContent,
-                   status: vdm.status,
-                   comments: vdm.comments,
-                   cp: cp.as_json,
-                   prodDept: productionDept,
-                   intro: introduccion,
-                   conclu: conclusion,
-                   vidDev: desarrollo,
-                   videoNumber: vdm.number,
-                   prodDeptStatus: prodDeptStatus,
-                   prodDeptResponsable: prodDeptResponsable
-               })
+                                         id: vdm.id,
+                                         videoId: vdm.videoId,
+                                         videoTittle: vdm.videoTittle,
+                                         videoContent: vdm.videoContent,
+                                         status: vdm.status,
+                                         comments: vdm.comments,
+                                         cp: cp.as_json,
+                                         prodDept: productionDept,
+                                         intro: introduccion,
+                                         conclu: conclusion,
+                                         vidDev: desarrollo,
+                                         videoNumber: vdm.number,
+                                         prodDeptStatus: prodDeptStatus,
+                                         prodDeptResponsable: prodDeptResponsable
+                                     })
             end
 
             if vdm.design_dpt != nil
@@ -213,13 +212,13 @@ class VdmsController < ApplicationController
                 designDept = vdm.design_dpt
               end
               designPayload.push({
-                   id: vdm.id,
-                   videoId: vdm.videoId,
-                   videoTittle: vdm.videoTittle,
-                   videoNumber: vdm.number,
-                   prodDept: productionDept,
-                   designDept: designDept
-               })
+                                     id: vdm.id,
+                                     videoId: vdm.videoId,
+                                     videoTittle: vdm.videoTittle,
+                                     videoNumber: vdm.number,
+                                     prodDept: productionDept,
+                                     designDept: designDept
+                                 })
             end
 
             if vdm.post_prod_dpt != nil
@@ -237,35 +236,35 @@ class VdmsController < ApplicationController
                 postProdDept = vdm.post_prod_dpt
               end
               postProdPayload.push({
-                   id: vdm.id,
-                   videoId: vdm.videoId,
-                   videoTittle: vdm.videoTittle,
-                   videoNumber: vdm.number,
-                   prodDept: productionDept,
-                   designDept: designDept,
-                   postProdDept: postProdDept
-               })
+                                       id: vdm.id,
+                                       videoId: vdm.videoId,
+                                       videoTittle: vdm.videoTittle,
+                                       videoNumber: vdm.number,
+                                       prodDept: productionDept,
+                                       designDept: designDept,
+                                       postProdDept: postProdDept
+                                   })
             end
 
             if vdm.product_management != nil
               productManagementPayload.push({
-                  id: vdm.id,
-                  videoId: vdm.videoId,
-                  videoTittle: vdm.videoTittle,
-                  videoContent: vdm.videoContent,
-                  videoNumber: vdm.number,
-                  status: vdm.status,
-                  comments: vdm.comments,
-                  cp: cp.as_json,
-                  prodDept: productionDept,
-                  designDept: designDept,
-                  postProdDept: postProdDept,
-                  productionStatus: productionStatus,
-                  editionStatus: editionStatus,
-                  designStatus: designStatus,
-                  postProdStatus: postProdStatus,
-                  productManagement: vdm.product_management
-              })
+                                                id: vdm.id,
+                                                videoId: vdm.videoId,
+                                                videoTittle: vdm.videoTittle,
+                                                videoContent: vdm.videoContent,
+                                                videoNumber: vdm.number,
+                                                status: vdm.status,
+                                                comments: vdm.comments,
+                                                cp: cp.as_json,
+                                                prodDept: productionDept,
+                                                designDept: designDept,
+                                                postProdDept: postProdDept,
+                                                productionStatus: productionStatus,
+                                                editionStatus: editionStatus,
+                                                designStatus: designStatus,
+                                                postProdStatus: postProdStatus,
+                                                productManagement: vdm.product_management
+                                            })
             end
             if vdm.qa_dpt != nil
               qaResponsable = 'no asignado'
@@ -282,34 +281,34 @@ class VdmsController < ApplicationController
 
               end
               qaPayload.push({
-                  id: vdm.id,
-                  videoId: vdm.videoId,
-                  videoTittle: vdm.videoTittle,
-                  videoContent: vdm.videoContent,
-                  status: vdm.qa_dpt.status,
-                  comments: vdm.comments,
-                  cp: cp.as_json,
-                  qaDept: qaDept,
-                  qaResponsable: qaResponsable
-              })
+                                 id: vdm.id,
+                                 videoId: vdm.videoId,
+                                 videoTittle: vdm.videoTittle,
+                                 videoContent: vdm.videoContent,
+                                 status: vdm.qa_dpt.status,
+                                 comments: vdm.comments,
+                                 cp: cp.as_json,
+                                 qaDept: qaDept,
+                                 qaResponsable: qaResponsable
+                             })
             end
             payload.push({
-                 id: vdm.id,
-                 videoId: vdm.videoId,
-                 videoTittle: vdm.videoTittle,
-                 videoContent: vdm.videoContent,
-                 status: vdm.status,
-                 comments: vdm.comments,
-                 cp: cp.as_json,
-                 cpId: cp.id,
-                 prodDept: vdm.production_dpt,
-                 videoNumber: vdm.number,
-                 topicNumber: cp.topicNumber,
-                 classDoc: vdm.classDoc,
-                 class_doc_name: vdm.class_doc_name,
-                 teacherFiles: vdm.teacher_files,
-                 productManagement: vdm.product_management
-             })
+                             id: vdm.id,
+                             videoId: vdm.videoId,
+                             videoTittle: vdm.videoTittle,
+                             videoContent: vdm.videoContent,
+                             status: vdm.status,
+                             comments: vdm.comments,
+                             cp: cp.as_json,
+                             cpId: cp.id,
+                             prodDept: vdm.production_dpt,
+                             videoNumber: vdm.number,
+                             topicNumber: cp.topicNumber,
+                             classDoc: vdm.classDoc,
+                             class_doc_name: vdm.class_doc_name,
+                             teacherFiles: vdm.teacher_files,
+                             productManagement: vdm.product_management
+                         })
             i+=1
           end
         end
@@ -319,11 +318,11 @@ class VdmsController < ApplicationController
       users.each do |user|
         if user.employee != nil
           employees.push({
-               id: user.id,
-               name: user.employee.firstName + ' ' + user.employee.firstSurname,
-               username: user.username,
-               roles: user.roles
-           })
+                             id: user.id,
+                             name: user.employee.firstName + ' ' + user.employee.firstSurname,
+                             username: user.username,
+                             roles: user.roles
+                         })
         end
       end
       render :json => { data: payload, subject: subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, postProduction: postProdPayload, qaDpt: qaPayload, status: 'SUCCESS'}, :status => 200
@@ -357,606 +356,18 @@ class VdmsController < ApplicationController
     if request.raw_post != nil
       newVdm = ActiveSupport::JSON.decode(request.raw_post)
       vdm = Vdm.find(newVdm['id'])
-      changes = []
-      script = ''
-      prdPayload = nil
-      prodAssignedPayload = nil
-      designPayload = nil
-      postProdPayload = nil
-      if newVdm['role'] == 'contentLeader' || newVdm['role'] == 'contentAnalist'
-        if vdm.videoContent != newVdm['videoContent']
-          change = VdmChange.new
-          change.changeDetail = "Cambio de contenido"
-          if vdm.videoContent != nil
-            change.changedFrom = vdm.videoContent
-          else
-            change.changedFrom = "vacio"
-          end
-          change.changedTo = newVdm['videoContent']
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.department = 'pre-produccion'
-          change.changeDate = Time.now
-          changes.push(change)
-        end
-        if vdm.videoTittle != newVdm['videoTittle']
-          change = VdmChange.new
-          change.changeDetail = "Cambio de Titulo"
-          if vdm.videoTittle != nil
-            change.changedFrom = vdm.videoTittle
-          else
-            change.changedFrom = "vacio"
-          end
-
-          change.changedTo = newVdm['videoTittle']
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.changeDate = Time.now
-          change.department = 'pre-produccion'
-          changes.push(change)
-        end
-
-        if vdm.status != newVdm['status']
-          change = VdmChange.new
-          change.changeDetail = "Cambio de estado"
-          change.changedFrom = vdm.status
-          change.changedTo = newVdm['status']
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.changeDate = Time.now
-          change.department = 'pre-produccion'
-          changes.push(change)
-          if newVdm['status'] == 'procesado'
-            if vdm.classes_planification.subject_planification.firstPeriodCompleted == false
-              vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id and v.status != 'DESTROYED'")
-              vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
-              if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
-                productionDpt = []
-                vdmsEmail = []
-                vdm.classes_planification.subject_planification.firstPeriodCompleted = true
-                vdmsProcessed.each do |v|
-                  pdpt = vdm.production_dpt
-                  if pdpt == nil
-                    pdpt = ProductionDpt.new
-                  end
-                  pdpt.status = 'asignado'
-                  pdpt.vdm_id = v.id
-                  productionDpt.push(pdpt)
-                  vdmsEmail.push(v)
-                end
-                #Agrego a la lista el que traigo del frontEnd que no esta en BD
-                pdpt = ProductionDpt.new
-                pdpt.status = 'asignado'
-                pdpt.vdm_id = newVdm['id']
-                productionDpt.push(pdpt)
-                vdmsEmail.push(newVdm)
-                ProductionDpt.transaction do
-                  productionDpt.each(&:save!)
-                end
-                UserNotifier.send_assigned_to_production(vdmsEmail).deliver
-              end
-            else
-              production_dpt = vdm.production_dpt
-              if production_dpt == nil
-                production_dpt = ProductionDpt.new
-              end
-              production_dpt.status = 'asignado'
-              production_dpt.vdm_id = newVdm['id']
-              production_dpt.save!
-              UserNotifier.send_assigned_to_production(vdm).deliver
-            end
-            vdm.classes_planification.subject_planification.save!
-          end
-        end
-        if vdm.comments != newVdm['comments']
-          change = VdmChange.new
-          change.changeDetail = "Cambio de comentarios"
-          if vdm.videoTittle != nil
-            change.changedFrom = vdm.comments
-          else
-            change.changedFrom = "vacio"
-          end
-          change.changedTo = newVdm['comments']
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.changeDate = Time.now
-          change.department = 'pre-produccion'
-          changes.push(change)
-        end
-
-        if newVdm['class_doc']
-          change = VdmChange.new
-          change.changeDetail = "Cambio de documento"
-
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.changeDate = Time.now
-          change.department = 'pre-produccion'
-          vdm.classDoc = newVdm['class_doc']['base64'] #create a document associated with the item that has just been created end
-          vdm.class_doc_name = newVdm['class_doc']['filename']
-          change.changedTo = vdm.classDoc
-          changes.push(change)
-
-        end
-        if newVdm['teacher_files']
-          change = VdmChange.new
-          change.changeDetail = "Creacion de material de profesor"
-
-          change.vdm_id = vdm.id
-          change.user_id = $currentPetitionUser['id']
-          change.uname = $currentPetitionUser['username']
-          change.videoId = vdm.videoId
-          change.changeDate = Time.now
-          change.department = 'pre-produccion'
-          changes.push(change)
-          teacherFiles = []
-          newVdm['teacher_files'].each do |tf|
-            file = TeacherFile.new
-            file.file = tf['base64']
-            file.vdm_id = vdm.id
-            file.file_name = tf['filename']
-            teacherFiles.push(file)
-          end
-          if teacherFiles.count >= 1
-            TeacherFile.transaction do
-              teacherFiles.each(&:save!)
-            end
-          end
-
-        end
-        VdmChange.transaction do
-          changes.each(&:save!)
-        end
-      end
-
-      if newVdm['prodDept'] != nil
-        prodDeptChanges = []
-        script = 'guardado'
-        if vdm.production_dpt != nil
-          if newVdm['role'] == 'production'
-            if vdm.production_dpt.comments != newVdm['prodDept']['comments']
-              change = VdmChange.new
-              change.changeDetail = "Cambio de comentarios de produccion"
-              if vdm.production_dpt.comments != nil
-                change.changedFrom = vdm.production_dpt.comments
-              else
-                change.changedFrom = "vacio"
-              end
-              change.changedTo = newVdm['prodDept']['comments']
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-            end
-
-            if vdm.production_dpt.script != newVdm['prodDept']['script']
-              if newVdm['prodDept']['script'] != nil
-                change = VdmChange.new
-                change.changeDetail = "Cambio de Guion de produccion"
-
-                change.changedTo = newVdm['prodDept']['script']
-                change.vdm_id = vdm.id
-                change.user_id = $currentPetitionUser['id']
-                change.uname = $currentPetitionUser['username']
-                change.videoId = vdm.videoId
-                change.changeDate = Time.now
-                change.department = 'produccion'
-                prodDeptChanges.push(change)
-                vdm.production_dpt.script = newVdm['prodDept']['script']
-
-              end
-            end
-            if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "Grabacion completa"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.comments = 'Se grabo el video completo'
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              vdm.production_dpt.status = 'grabado'
-              if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-                vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-                vdm.production_dpt.production_dpt_assignment.save!
-              else
-                assignment = ProductionDptAssignment.new
-                assignment.production_dpt_id = vdm.production_dpt.id
-                assignment.status = 'asignado'
-                assignment.save!
-              end
-              if vdm.product_management != nil
-                vdm.product_management.productionStatus = 'por aprobar'
-                vdm.product_management.save!
-              else
-                management = ProductManagement.new
-                management.productionStatus = 'por aprobar'
-                management.vdm_id = vdm.id
-                management.save!
-              end
-              prodDeptChanges.push(change)
-            end
-            if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo intro y conclucion"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-            end
-            if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo intro y desarrollo"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-
-            end
-            if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo conclusion y desarrollo"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-
-            end
-            if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo desarrollo"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-
-            end
-            if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo intro"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-
-            end
-            if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
-              change = VdmChange.new
-              change.changeDetail = "se grabo solo conclusion"
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              if newVdm['prodDept']['justification'] != nil
-                change.comments = newVdm['prodDept']['justification']
-              end
-              change.changeDate = Time.now
-              change.department = 'produccion'
-              prodDeptChanges.push(change)
-              checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
-            end
-            if newVdm['asigned'] != nil || newVdm['asignedId'] != nil
-              if newVdm['asignedId'] != nil
-                user = User.find(newVdm['asignedId'])
-              else
-                user = User.find(newVdm['asigned']['id'])
-              end
-              if vdm.production_dpt.production_dpt_assignment != nil
-                if vdm.production_dpt.production_dpt_assignment.user_id == nil
-                  vdm.production_dpt.production_dpt_assignment.user_id = user.id
-                  vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-                  vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-                  vdm.production_dpt.production_dpt_assignment.save!
-                  UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
-                end
-                prodAssignedPayload = {
-                    id: vdm.production_dpt.production_dpt_assignment.id,
-                    assignedName: vdm.production_dpt.production_dpt_assignment.assignedName,
-                    status: vdm.production_dpt.production_dpt_assignment.status,
-                    user_id: vdm.production_dpt.production_dpt_assignment.user_id
-                }
-              end
-            end
-            vdm.production_dpt.intro = newVdm['intro']
-            vdm.production_dpt.conclu = newVdm['conclu']
-            vdm.production_dpt.vidDev = newVdm['vidDev']
-            vdm.production_dpt.comments = newVdm['prodDept']['comments']
-            vdm.production_dpt.save!
-          end
-
-          if newVdm['prodDept']['assignment'] != nil
-            if newVdm['role'] == 'editor'
-              if vdm.production_dpt.production_dpt_assignment.comments != newVdm['prodDept']['assignment']['comments']
-                change = VdmChange.new
-                change.changeDetail = "Cambio de comentarios de editor"
-                if vdm.production_dpt.production_dpt_assignment.comments != nil
-                  change.changedFrom = vdm.production_dpt.production_dpt_assignment.comments
-                else
-                  change.changedFrom = "vacio"
-                end
-                change.changedTo = newVdm['prodDept']['assignment']['comments']
-                change.vdm_id = vdm.id
-                change.user_id = $currentPetitionUser['id']
-                change.uname = $currentPetitionUser['username']
-                change.videoId = vdm.videoId
-                change.changeDate = Time.now
-                change.department = 'edicion'
-                prodDeptChanges.push(change)
-              end
-              if vdm.production_dpt.production_dpt_assignment.status != newVdm['prodDept']['assignment']['status']
-                if newVdm['prodDept']['assignment']['status'] != 'no asignado'
-                  change = VdmChange.new
-                  change.changeDetail = "Cambio de estado de editor"
-                  if vdm.production_dpt.production_dpt_assignment.status != nil
-                    change.changedFrom = vdm.production_dpt.production_dpt_assignment.status
-                  else
-                    change.changedFrom = "vacio"
-                  end
-                  change.changedTo = newVdm['prodDept']['assignment']['status']
-                  change.vdm_id = vdm.id
-                  change.user_id = $currentPetitionUser['id']
-                  change.uname = $currentPetitionUser['username']
-                  change.videoId = vdm.videoId
-                  change.changeDate = Time.now
-                  change.department = 'edicion'
-                  prodDeptChanges.push(change)
-                end
-              end
-              vdm.production_dpt.production_dpt_assignment.comments = newVdm['prodDept']['assignment']['comments']
-              if newVdm['prodDept']['assignment']['status'] != 'no asignado'
-                vdm.production_dpt.production_dpt_assignment.status = newVdm['prodDept']['assignment']['status']
-              end
-              vdm.production_dpt.production_dpt_assignment.save!
-              if vdm.production_dpt.production_dpt_assignment.status == 'editado'
-                UserNotifier.send_to_approved_to_production(vdm).deliver
-              end
-
-                prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
-            end
-          end
-          VdmChange.transaction do
-            prodDeptChanges.uniq.each(&:save!)
-          end
-        end
-        if prodAssignedPayload == nil && vdm.production_dpt.production_dpt_assignment != nil
-          prodAssignedPayload = vdm.production_dpt.production_dpt_assignment
-        end
-        prdPayload = {
-            status: vdm.production_dpt.status,
-            script: script,
-            comments: vdm.production_dpt.comments,
-            intro: vdm.production_dpt.intro,
-            conclu: vdm.production_dpt.conclu,
-            vidDev: vdm.production_dpt.vidDev,
-            assignment: prodAssignedPayload
-        }
-      end
-      if newVdm['designDept'] != nil
-        designChanges = []
-        assignment= {}
-        if newVdm['dAsigned'] != nil
-          if newVdm['role'] == 'designLeader'
-            assignment = vdm.design_dpt.design_assignment
-            if assignment == nil
-              assignment = DesignAssignment.new
-            end
-            assignment.design_dpt_id = vdm.design_dpt.id
-            assignment.user_id = newVdm['dAsigned']['id']
-            assignment.assignedName = newVdm['dAsigned']['name']
-            assignment.status = 'asignado'
-            assignment.save!
-            user = User.find(newVdm['dAsigned']['id'])
-            UserNotifier.send_assigned_to_designer(vdm, user.employee).deliver
-            change = VdmChange.new
-            change.changeDetail = "Asignado video a diseñador " + newVdm['dAsigned']['name']
-            change.vdm_id = vdm.id
-            change.user_id = $currentPetitionUser['id']
-            change.uname = $currentPetitionUser['username']
-            change.videoId = vdm.videoId
-            change.changeDate = Time.now
-            change.department = 'diseño'
-            designChanges.push(change)
-          end
-        end
-        if newVdm['designDept']['assignment']
-          if newVdm['role'] == 'designer'
-            if vdm.design_dpt.design_assignment.comments != newVdm['designDept']['assignment']['comments']
-              change = VdmChange.new
-              change.changeDetail = "Cambio de comentarios de diseñador"
-              if vdm.design_dpt.design_assignment.comments != nil
-                change.changedFrom = vdm.design_dpt.design_assignment.comments
-              else
-                change.changedFrom = "vacio"
-              end
-              change.changedTo = newVdm['designDept']['assignment']['comments']
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.changeDate = Time.now
-              change.department = 'diseño'
-              designChanges.push(change)
-              vdm.design_dpt.design_assignment.comments = newVdm['designDept']['assignment']['comments']
-              vdm.design_dpt.design_assignment.save!
-            end
-            if vdm.design_dpt.design_assignment.status != newVdm['designDept']['assignment']['status']
-              if newVdm['designDept']['assignment']['status'] != 'no asignado'
-                change = VdmChange.new
-                change.changeDetail = "Cambio de estado de diseñador"
-                if vdm.design_dpt.design_assignment.status != nil
-                  change.changedFrom = vdm.design_dpt.design_assignment.status
-                else
-                  change.changedFrom = "vacio"
-                end
-                change.changedTo = newVdm['designDept']['assignment']['status']
-                change.vdm_id = vdm.id
-                change.user_id = $currentPetitionUser['id']
-                change.uname = $currentPetitionUser['username']
-                change.videoId = vdm.videoId
-                change.changeDate = Time.now
-                change.department = 'diseño'
-                designChanges.push(change)
-                vdm.design_dpt.design_assignment.status = newVdm['designDept']['assignment']['status']
-                vdm.design_dpt.design_assignment.save!
-                if vdm.design_dpt.design_assignment.status == 'diseñado'
-                  UserNotifier.send_to_approved_to_designLeader(vdm).deliver
-                end
-              end
-            end
-            assignment = vdm.design_dpt.design_assignment
-          end
-        end
-        VdmChange.transaction do
-          designChanges.uniq.each(&:save!)
-        end
-        designPayload = {
-            status: vdm.design_dpt.status,
-            comments: vdm.design_dpt.comments,
-            assignment: assignment
-        }
-      end
-      if newVdm['postProdDept'] != nil
-        postProdChanges = []
-        assignment= {}
-        if newVdm['ppAsigned'] != nil
-          if newVdm['role'] == 'postProLeader'
-            assignment = vdm.post_prod_dpt.post_prod_dpt_assignment
-            if assignment == nil
-              assignment = PostProdDptAssignment.new
-            end
-            assignment.post_prod_dpt_id = vdm.post_prod_dpt.id
-            assignment.user_id = newVdm['ppAsigned']['id']
-            assignment.assignedName = newVdm['ppAsigned']['name']
-            assignment.status = 'asignado'
-            assignment.save!
-            user = User.find(newVdm['ppAsigned']['id'])
-            UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
-            change = VdmChange.new
-            change.changeDetail = "Asignado video a post-produccion " + newVdm['ppAsigned']['name']
-            change.vdm_id = vdm.id
-            change.user_id = $currentPetitionUser['id']
-            change.uname = $currentPetitionUser['username']
-            change.videoId = vdm.videoId
-            change.changeDate = Time.now
-            change.department = 'post-produccion'
-            postProdChanges.push(change)
-          end
-        end
-        if newVdm['postProdDept']['assignment']
-          if newVdm['role'] == 'post-producer'
-            if vdm.post_prod_dpt.post_prod_dpt_assignment.comments != newVdm['postProdDept']['assignment']['comments']
-              change = VdmChange.new
-              change.changeDetail = "Cambio de comentarios de post-productor"
-              if vdm.post_prod_dpt.post_prod_dpt_assignment.comments != nil
-                change.changedFrom = vdm.post_prod_dpt.post_prod_dpt_assignment.comments
-              else
-                change.changedFrom = "vacio"
-              end
-              change.changedTo = newVdm['postProdDept']['assignment']['comments']
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.changeDate = Time.now
-              change.department = 'post-produccion'
-              postProdChanges.push(change)
-              vdm.post_prod_dpt.post_prod_dpt_assignment.comments = newVdm['postProdDept']['assignment']['comments']
-              vdm.post_prod_dpt.post_prod_dpt_assignment.save!
-            end
-            if vdm.post_prod_dpt.post_prod_dpt_assignment.status != newVdm['postProdDept']['assignment']['status']
-              if newVdm['postProdDept']['assignment']['status'] != 'no asignado'
-                change = VdmChange.new
-                change.changeDetail = "Cambio de estado de post-productor"
-                if vdm.post_prod_dpt.post_prod_dpt_assignment.status != nil
-                  change.changedFrom = vdm.post_prod_dpt.post_prod_dpt_assignment.status
-                else
-                  change.changedFrom = "vacio"
-                end
-                change.changedTo = newVdm['postProdDept']['assignment']['status']
-                change.vdm_id = vdm.id
-                change.user_id = $currentPetitionUser['id']
-                change.uname = $currentPetitionUser['username']
-                change.videoId = vdm.videoId
-                change.changeDate = Time.now
-                change.department = 'post-produccion'
-                designChanges.push(change)
-                vdm.post_prod_dpt.post_prod_dpt_assignment.status = newVdm['postProdDept']['assignment']['status']
-                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
-                if vdm.post_prod_dpt.post_prod_dpt_assignment.status == 'terminado'
-                  UserNotifier.send_to_approved_to_post_prod_leader(vdm)
-                end
-              end
-            end
-            assignment = vdm.post_prod_dpt.post_prod_dpt_assignment
-          end
-        end
-        VdmChange.transaction do
-          designChanges.uniq.each(&:save!)
-        end
-        postProdPayload = {
-            status: vdm.post_prod_dpt.status,
-            comments: vdm.post_prod_dpt.comments,
-            assignment: assignment
-        }
-      end
-      if newVdm['role'] == 'contentLeader' || newVdm['role'] == 'contentAnalist'
-        vdm.videoContent = newVdm['videoContent']
-        vdm.videoTittle = newVdm['videoTittle']
-        vdm.status = newVdm['status']
-        vdm.comments = newVdm['comments']
-        vdm.save!
-        if prdPayload == nil
-          prdPayload = ProductionDpt.find_by_vdm_id(vdm.id)
-        end
+      prd_payload = nil
+      design_payload = nil
+      post_prod_payload = nil
+      case newVdm['role']
+        when 'contentLeader', 'contentAnalist'
+          update_pre_prod_content(vdm, newVdm)
+        when 'production', 'editor'
+          prd_payload = ProductionDptsController.update_production_content(vdm, newVdm)
+        when 'designLeader', 'designer'
+          design_payload = DesignDptController.update_design_changes(vdm, newVdm)
+        when 'postProLeader', 'post-producer'
+          post_prod_payload = PostProdDptsController.update_post_prod_content(vdm, newVdm)
       end
 
       payload = {
@@ -970,10 +381,9 @@ class VdmsController < ApplicationController
           class_doc_name: vdm.class_doc_name,
           teacherFiles: vdm.teacher_files,
           subject: vdm.classes_planification.subject_planification.subject,
-          prodDept: prdPayload,
-          designDept: designPayload,
-          postProdDept: postProdPayload
-
+          prodDept: prd_payload,
+          designDept: design_payload,
+          postProdDept: post_prod_payload
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -981,39 +391,170 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
-  def checkForCompleteRecording(intro, vidDev, conclu, vdm, array)
-    if intro == true && conclu == true && vidDev == true
+  def update_pre_prod_content(vdm, newVdm)
+    changes = []
+    if vdm.videoContent != newVdm['videoContent']
       change = VdmChange.new
-      change.changeDetail = "Grabacion completa"
+      change.changeDetail = "Cambio de contenido"
+      if vdm.videoContent != nil
+        change.changedFrom = vdm.videoContent
+      else
+        change.changedFrom = "vacio"
+      end
+      change.changedTo = newVdm['videoContent']
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
       change.videoId = vdm.videoId
-      change.comments = 'Se grabo el video completo'
+      change.department = 'pre-produccion'
       change.changeDate = Time.now
-      change.department = 'produccion'
-      vdm.production_dpt.status = 'grabado'
-      if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-        vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-        vdm.production_dpt.production_dpt_assignment.save!
-      else
-        assignment = ProductionDptAssignment.new
-        assignment.production_dpt_id = vdm.production_dpt.id
-        assignment.status = 'asignado'
-        assignment.save!
-      end
-      if vdm.product_management != nil
-        vdm.product_management.productionStatus = 'por aprobar'
-        vdm.product_management.save!
-      else
-        management = ProductManagement.new
-        management.productionStatus = 'por aprobar'
-        management.vdm_id = vdm.id
-        management.save!
-      end
-      array.push(change)
+      changes.push(change)
     end
+    if vdm.videoTittle != newVdm['videoTittle']
+      change = VdmChange.new
+      change.changeDetail = "Cambio de Titulo"
+      if vdm.videoTittle != nil
+        change.changedFrom = vdm.videoTittle
+      else
+        change.changedFrom = "vacio"
+      end
+
+      change.changedTo = newVdm['videoTittle']
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      changes.push(change)
+    end
+
+    if vdm.status != newVdm['status']
+      change = VdmChange.new
+      change.changeDetail = "Cambio de estado"
+      change.changedFrom = vdm.status
+      change.changedTo = newVdm['status']
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      changes.push(change)
+      if newVdm['status'] == 'procesado'
+        if !vdm.classes_planification.subject_planification.firstPeriodCompleted
+          vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id and v.status != 'DESTROYED'")
+          vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
+          if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
+            productionDpt = []
+            vdmsEmail = []
+            vdm.classes_planification.subject_planification.firstPeriodCompleted = true
+            vdmsProcessed.each do |v|
+              pdpt = vdm.production_dpt
+              if pdpt == nil
+                pdpt = ProductionDpt.new
+              end
+              pdpt.status = 'asignado'
+              pdpt.vdm_id = v.id
+              productionDpt.push(pdpt)
+              vdmsEmail.push(v)
+            end
+            #Agrego a la lista el que traigo del frontEnd que no esta en BD
+            pdpt = ProductionDpt.new
+            pdpt.status = 'asignado'
+            pdpt.vdm_id = newVdm['id']
+            productionDpt.push(pdpt)
+            vdmsEmail.push(newVdm)
+            ProductionDpt.transaction do
+              productionDpt.each(&:save!)
+            end
+            UserNotifier.send_assigned_to_production(vdmsEmail).deliver
+          end
+        else
+          production_dpt = vdm.production_dpt
+          if production_dpt == nil
+            production_dpt = ProductionDpt.new
+          end
+          production_dpt.status = 'asignado'
+          production_dpt.vdm_id = newVdm['id']
+          production_dpt.save!
+          UserNotifier.send_assigned_to_production(vdm).deliver
+        end
+        vdm.classes_planification.subject_planification.save!
+      end
+    end
+    if vdm.comments != newVdm['comments']
+      change = VdmChange.new
+      change.changeDetail = "Cambio de comentarios"
+      if vdm.videoTittle != nil
+        change.changedFrom = vdm.comments
+      else
+        change.changedFrom = "vacio"
+      end
+      change.changedTo = newVdm['comments']
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      changes.push(change)
+    end
+
+    if newVdm['class_doc']
+      change = VdmChange.new
+      change.changeDetail = "Cambio de documento"
+
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      vdm.classDoc = newVdm['class_doc']['base64'] #create a document associated with the item that has just been created end
+      vdm.class_doc_name = newVdm['class_doc']['filename']
+      change.changedTo = vdm.classDoc
+      changes.push(change)
+
+    end
+    if newVdm['teacher_files']
+      change = VdmChange.new
+      change.changeDetail = "Creacion de material de profesor"
+
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      changes.push(change)
+      teacher_files = []
+      newVdm['teacher_files'].each do |tf|
+        file = TeacherFile.new
+        file.file = tf['base64']
+        file.vdm_id = vdm.id
+        file.file_name = tf['filename']
+        teacher_files.push(file)
+      end
+      if teacher_files.count >= 1
+        TeacherFile.transaction do
+          teacher_files.each(&:save!)
+        end
+      end
+
+    end
+    VdmChange.transaction do
+      changes.each(&:save!)
+    end
+
+    vdm.videoContent = newVdm['videoContent']
+    vdm.videoTittle = newVdm['videoTittle']
+    vdm.status = newVdm['status']
+    vdm.comments = newVdm['comments']
+    vdm.save!
   end
+
+
   def getDawereVdms
 
     sp = SubjectPlanification.find_by_subject_id(100)
@@ -1022,15 +563,15 @@ class VdmsController < ApplicationController
     sp.classes_planifications.each do |cp|
       cp.vdms.reject{ |r| r.status == 'DESTROYED' }.each do |vdm|
         payload.push({
-           id: vdm.id,
-           videoId: vdm.videoId,
-           videoTittle: vdm.videoTittle,
-           videoContent: vdm.videoContent,
-           status: vdm.status,
-           comments: vdm.comments,
-           cp: cp.as_json,
-           prodDpt: vdm.production_dpt
-        })
+                         id: vdm.id,
+                         videoId: vdm.videoId,
+                         videoTittle: vdm.videoTittle,
+                         videoContent: vdm.videoContent,
+                         status: vdm.status,
+                         comments: vdm.comments,
+                         cp: cp.as_json,
+                         prodDpt: vdm.production_dpt
+                     })
         i+=1
       end
     end
@@ -1620,11 +1161,11 @@ class VdmsController < ApplicationController
   end
   private
 
-    def set_vdm
-      @vdm = Vdm.find(params[:id])
-    end
+  def set_vdm
+    @vdm = Vdm.find(params[:id])
+  end
 
-    def vdm_params
-      params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :comments, :description, :document_data => [])
-    end
+  def vdm_params
+    params.require(:vdm).permit(:videoId, :videoTittle, :videoContent, :status, :comments, :description, :document_data => [])
+  end
 end

@@ -1,5 +1,5 @@
 CarrierWave.configure do |config|
   #set carrierwave new root folder
-  config.root = '/Users/fr3d0/projects/uploads/railsDpmUploads/'
-  config.cache_dir = '/Users/fr3d0/projects/uploads/railsDpmUploads/tmp/uploads'
+  config.root = '/home/dawere/Projects/dawereProcessManager'
+  config.cache_dir = '/home/dawere/Projects/dawereProcessManager/tmp/uploads'
 end

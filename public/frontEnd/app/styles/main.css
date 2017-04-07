@@ -103,3 +103,12 @@ a:hover, a:focus {
 .over-x{
     overflow-x: scroll;
 }
+
+.active{
+    background-color: #135C60;
+    color: white !important;
+}
+
+.active:hover{
+    background-color: #008762 !important;
+}
