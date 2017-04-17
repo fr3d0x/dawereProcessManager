@@ -1,11 +1,6 @@
 class UserNotifier < ApplicationMailer
   default :from => 'DawereProcessManager.com'
 
-  def send_mail
-    mail( :to => ['alfredoescalante89@gmail.com'],
-          :subject => 'mail prueba de dawereProcessManager' )
-  end
-
   def send_assigned_to_production(vdmList)
     @vdmList = vdmList
     @employees = Employee.find_by_sql("Select e.email from employees e, users u, roles r where r.role = 'production' and u.id = r.user_id and e.id = u.employee_id")

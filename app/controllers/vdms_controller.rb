@@ -368,6 +368,8 @@ class VdmsController < ApplicationController
           design_payload = DesignDptController.update_design_changes(vdm, newVdm)
         when 'postProLeader', 'post-producer'
           post_prod_payload = PostProdDptsController.update_post_prod_content(vdm, newVdm)
+        else
+          raise Exceptions::InvalidRoleException
       end
 
       payload = {
@@ -389,11 +391,13 @@ class VdmsController < ApplicationController
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
+  rescue Exceptions::InvalidRoleException
+    render :json => { status: 'UNAUTHORIZED', msg: 'No Autorizado'}, :status => :unauthorized
   end
 
-  def update_pre_prod_content(vdm, newVdm)
+  def update_pre_prod_content(vdm, new_vdm)
     changes = []
-    if vdm.videoContent != newVdm['videoContent']
+    if vdm.videoContent != new_vdm['videoContent']
       change = VdmChange.new
       change.changeDetail = "Cambio de contenido"
       if vdm.videoContent != nil
@@ -401,7 +405,7 @@ class VdmsController < ApplicationController
       else
         change.changedFrom = "vacio"
       end
-      change.changedTo = newVdm['videoContent']
+      change.changedTo = new_vdm['videoContent']
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
@@ -410,7 +414,7 @@ class VdmsController < ApplicationController
       change.changeDate = Time.now
       changes.push(change)
     end
-    if vdm.videoTittle != newVdm['videoTittle']
+    if vdm.videoTittle != new_vdm['videoTittle']
       change = VdmChange.new
       change.changeDetail = "Cambio de Titulo"
       if vdm.videoTittle != nil
@@ -419,7 +423,7 @@ class VdmsController < ApplicationController
         change.changedFrom = "vacio"
       end
 
-      change.changedTo = newVdm['videoTittle']
+      change.changedTo = new_vdm['videoTittle']
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
@@ -429,7 +433,7 @@ class VdmsController < ApplicationController
       changes.push(change)
     end
 
-    if vdm.status != newVdm['status']
+    if vdm.status != new_vdm['status']
       change = VdmChange.new
       change.changeDetail = "Cambio de estado"
       change.changedFrom = vdm.status
@@ -441,11 +445,11 @@ class VdmsController < ApplicationController
       change.changeDate = Time.now
       change.department = 'pre-produccion'
       changes.push(change)
-      if newVdm['status'] == 'procesado'
+      if new_vdm['status'] == 'procesado'
         if !vdm.classes_planification.subject_planification.firstPeriodCompleted
           vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id and v.status != 'DESTROYED'")
           vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
-          if checkFirstPeriodProcessed(vdmsFromFirstPeriod, newVdm, vdm)
+          if checkFirstPeriodProcessed(vdmsFromFirstPeriod, new_vdm, vdm)
             productionDpt = []
             vdmsEmail = []
             vdm.classes_planification.subject_planification.firstPeriodCompleted = true
@@ -462,9 +466,9 @@ class VdmsController < ApplicationController
             #Agrego a la lista el que traigo del frontEnd que no esta en BD
             pdpt = ProductionDpt.new
             pdpt.status = 'asignado'
-            pdpt.vdm_id = newVdm['id']
+            pdpt.vdm_id = new_vdm['id']
             productionDpt.push(pdpt)
-            vdmsEmail.push(newVdm)
+            vdmsEmail.push(new_vdm)
             ProductionDpt.transaction do
               productionDpt.each(&:save!)
             end
@@ -476,14 +480,14 @@ class VdmsController < ApplicationController
             production_dpt = ProductionDpt.new
           end
           production_dpt.status = 'asignado'
-          production_dpt.vdm_id = newVdm['id']
+          production_dpt.vdm_id = new_vdm['id']
           production_dpt.save!
           UserNotifier.send_assigned_to_production(vdm).deliver
         end
         vdm.classes_planification.subject_planification.save!
       end
     end
-    if vdm.comments != newVdm['comments']
+    if vdm.comments != new_vdm['comments']
       change = VdmChange.new
       change.changeDetail = "Cambio de comentarios"
       if vdm.videoTittle != nil
@@ -491,7 +495,7 @@ class VdmsController < ApplicationController
       else
         change.changedFrom = "vacio"
       end
-      change.changedTo = newVdm['comments']
+      change.changedTo = new_vdm['comments']
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
@@ -501,7 +505,7 @@ class VdmsController < ApplicationController
       changes.push(change)
     end
 
-    if newVdm['class_doc']
+    if new_vdm['class_doc']
       change = VdmChange.new
       change.changeDetail = "Cambio de documento"
 
@@ -511,13 +515,13 @@ class VdmsController < ApplicationController
       change.videoId = vdm.videoId
       change.changeDate = Time.now
       change.department = 'pre-produccion'
-      vdm.classDoc = newVdm['class_doc']['base64'] #create a document associated with the item that has just been created end
-      vdm.class_doc_name = newVdm['class_doc']['filename']
+      vdm.classDoc = new_vdm['class_doc']['base64'] #create a document associated with the item that has just been created end
+      vdm.class_doc_name = new_vdm['class_doc']['filename']
       change.changedTo = vdm.classDoc
       changes.push(change)
 
     end
-    if newVdm['teacher_files']
+    if new_vdm['teacher_files']
       change = VdmChange.new
       change.changeDetail = "Creacion de material de profesor"
 
@@ -529,7 +533,7 @@ class VdmsController < ApplicationController
       change.department = 'pre-produccion'
       changes.push(change)
       teacher_files = []
-      newVdm['teacher_files'].each do |tf|
+      new_vdm['teacher_files'].each do |tf|
         file = TeacherFile.new
         file.file = tf['base64']
         file.vdm_id = vdm.id
@@ -547,10 +551,10 @@ class VdmsController < ApplicationController
       changes.each(&:save!)
     end
 
-    vdm.videoContent = newVdm['videoContent']
-    vdm.videoTittle = newVdm['videoTittle']
-    vdm.status = newVdm['status']
-    vdm.comments = newVdm['comments']
+    vdm.videoContent = new_vdm['videoContent']
+    vdm.videoTittle = new_vdm['videoTittle']
+    vdm.status = new_vdm['status']
+    vdm.comments = new_vdm['comments']
     vdm.save!
   end
 
