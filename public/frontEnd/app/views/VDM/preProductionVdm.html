@@ -5,25 +5,25 @@
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data">
 
-                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
-                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
-                <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicNumber}}</td>
+                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.cp.topicName}}</div></td>
+                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.cp.topicNumber}}</div></td>
 
-                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                <td data-title="'Titulo'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div>
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Contenido'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                <td data-title="'Contenido'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div>
                         {{row.videoContent | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Archivos'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
+                <td data-title="'Archivos'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
                         No Posee
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
+                    <div class="itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
                         <div ng-if="row.classDoc.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
@@ -37,20 +37,18 @@
                                 <a href="{{uploadFolder + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
-
-
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.status | translate}}</td>
-                <td data-title="'Tipo'" filter="{type: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.type | translate}}</td>
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.status | translate}}</div></td>
+                <td data-title="'Tipo'" filter="{type: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.vdm_type}}</div></td>
 
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12">
+                <td data-title="'Comentarios'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div>
                         {{row.comments | limitTo : 300}}...
                     </div>
                 </td>
 
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="row" style="vertical-align:middle">
                     <div align="center">
                         <a ng-click="editRow(row)" title='editar'>
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
@@ -67,17 +65,17 @@
                     </div>
                 </td>
 
-                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicName}}</td>
-                <td data-title="'Id video'" ng-if="row.writable == true">{{row.videoId}}</td>
-                <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.cp.topicNumber}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
-                <td data-title="'Contenido'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
-                <td data-title="'Archivos'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
+                <td data-title="'Tema'" filter="{topicName: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">{{row.cp.topicName}}</td>
+                <td data-title="'Id video'" ng-if="row.writable == true" style="vertical-align:middle">{{row.videoId}}</td>
+                <td data-title="'N Tema'" filter="{topicNumber: 'text'}" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">{{row.cp.topicNumber}}</td>
+                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle" style="vertical-align:middle"><input type="text"  style="font-weight: bold"  ng-model="row.videoTittle"/></td>
+                <td data-title="'Contenido'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
+                <td data-title="'Archivos'" ng-if="row.writable == true" class="row" style="vertical-align:middle">
 
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
+                    <div class="itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
                         No Posee
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
+                    <div class="itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
                         <div ng-if="row.classDoc.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
@@ -100,11 +98,11 @@
                     <option value="#">No especifico</option>
                 </select>
                 </td>
-                <td data-title="'Tipo'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.type" ng-options="type.typeSpa as type.typeSpa for type in vdmTypes" style="height:2.2em; margin-top: 6px;" >
+                <td data-title="'Tipo'" ng-if="row.writable == true"  style="vertical-align:middle"><select ng-model="row.vdm_type" ng-options="type.typeSpa as type.typeSpa for type in vdmTypes" style="height:2.2em; margin-top: 6px;" >
                     <option value="#">No especifico</option>
                 </select>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.comments"></textarea></td>
 
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center" ng-if="row.uploadFiles != true">

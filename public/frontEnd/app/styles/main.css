@@ -101,7 +101,7 @@ a:hover, a:focus {
 }
 
 .over-x{
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .active{

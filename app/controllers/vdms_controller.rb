@@ -131,186 +131,118 @@ class VdmsController < ApplicationController
   def getVdmsBySubject
     if params[:id] != nil
       sp = SubjectPlanification.find_by_subject_id(params[:id])
+      role = params[:role]
       subject = Subject.find(params[:id])
       payload = nil
       employees = []
-      productionPayload = nil
-      designPayload = nil
-      productManagementPayload = nil
-      postProdPayload = nil
-      qaPayload = nil
       if sp != nil
-        i = 0
         payload = []
-        productionPayload = []
-        productManagementPayload = []
-        designPayload = []
-        postProdPayload = []
-        qaPayload = []
         sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
           cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
-            productionDept = {}
-            designDept = {}
-            postProdDept = {}
-            qaDept = {}
-            productionStatus = 'no asignado'
-            editionStatus = 'no asignado'
-            designStatus = 'no asignado'
-            postProdStatus = 'no asignado'
-            if vdm.production_dpt != nil
-              prodDeptResponsable = 'no asignado'
-              prodDeptStatus = vdm.production_dpt.status
-              if vdm.production_dpt.production_dpt_assignment != nil
-                prodDeptResponsable = vdm.production_dpt.production_dpt_assignment.assignedName
-                editionStatus = vdm.production_dpt.production_dpt_assignment.status
-                productionDept = {
-                    id: vdm.production_dpt.id,
-                    status: vdm.production_dpt.status,
-                    script: vdm.production_dpt.script,
-                    comments: vdm.production_dpt.comments,
-                    intro: vdm.production_dpt.intro,
-                    vidDev: vdm.production_dpt.vidDev,
-                    conclu: vdm.production_dpt.conclu,
-                    assignment: vdm.production_dpt.production_dpt_assignment
-                }
+            payload_item = {
+                id: vdm.id,
+                videoId: vdm.videoId,
+                videoTittle: vdm.videoTittle,
+                videoContent: vdm.videoContent,
+                status: vdm.status,
+                comments: vdm.comments,
+                vdm_type: vdm.vdm_type,
+                cp: cp.as_json,
+                cpId: cp.id,
+                videoNumber: vdm.number,
+                topicNumber: cp.topicNumber,
+                classDoc: vdm.classDoc,
+                class_doc_name: vdm.class_doc_name,
+                teacherFiles: vdm.teacher_files,
+            }
+            case role
+              when 'contentLeader', 'contentAnalist'
+                payload_item['prodDept'] = vdm.production_dpt
+              when 'production', 'editor'
+                if vdm.production_dpt != nil
+                  responsable = 'no asignado'
+                  production_dpt = {
+                      id: vdm.production_dpt.id,
+                      status: vdm.production_dpt.status,
+                      script: vdm.production_dpt.script,
+                      comments: vdm.production_dpt.comments,
+                      intro: vdm.production_dpt.intro,
+                      vidDev: vdm.production_dpt.vidDev,
+                      conclu: vdm.production_dpt.conclu,
+                  }
+                  if vdm.production_dpt.production_dpt_assignment != nil
+                    responsable = vdm.production_dpt.production_dpt_assignment.assignedName
+                    production_dpt['assignment'] = vdm.production_dpt.production_dpt_assignment
+                  end
+                  payload_item['intro'] = vdm.production_dpt.intro
+                  payload_item['conclu'] = vdm.production_dpt.conclu
+                  payload_item['vidDev'] = vdm.production_dpt.vidDev
+                  payload_item['prodDeptStatus'] = vdm.production_dpt.status
+                  payload_item['prodDeptResponsable'] = responsable
+                  payload_item['prodDept'] = production_dpt
+                end
+              when 'designLeader', 'designer'
+                if vdm.design_dpt != nil
+                  design_dpt = {
+                      id: vdm.design_dpt.id,
+                      status: vdm.design_dpt.status,
+                      comments: vdm.design_dpt.comments,
+                  }
+                  if vdm.design_dpt.design_assignment != nil
+                    design_dpt['assignment'] = vdm.design_dpt.design_assignment
+                  end
+                  payload_item['prodDept'] = vdm.production_dpt
+                  payload_item['designDept'] = design_dpt
+                end
+              when 'postProLeader', 'post-producer'
+                if vdm.post_prod_dpt != nil
+                  post_prod_dpt = {
+                      id: vdm.post_prod_dpt.id,
+                      status: vdm.post_prod_dpt.status,
+                      comments: vdm.post_prod_dpt.comments,
+                  }
+                  if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                    post_prod_dpt['assignment'] = vdm.post_prod_dpt.post_prod_dpt_assignment
+                  end
+                  payload_item['prodDept'] = vdm.production_dpt
+                  payload_item['designDept'] = vdm.design_dpt
+                  payload_item['postProdDept'] = post_prod_dpt
+                end
+              when 'productManager'
+                if vdm.product_management != nil
+                  payload_item['prodDept'] = vdm.production_dpt
+                  payload_item['designDept'] = vdm.design_dpt
+                  payload_item['postProdDept'] = vdm.post_prod_dpt
+                  payload_item['productManagement'] = vdm.product_management
+                  payload_item['productionStatus'] = vdm.production_dpt.status
+                  if vdm.production_dpt != nil && vdm.production_dpt.production_dpt_assignment != nil
+                    payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+                  else
+                    payload_item['editionStatus'] = 'no asignado'
+                  end
+                  payload_item['designStatus'] = vdm.design_dpt.status
+                  payload_item['postProdStatus'] = vdm.post_prod_dpt.status
+                end
+              when 'qa', 'qaAnalist'
+                if vdm.qa_dpt != nil
+                  responsable = 'no asignado'
+                  qa_dept = {
+                      id: vdm.qa_dpt.id,
+                      status: vdm.qa_dpt.status,
+                      comments: vdm.qa_dpt.comments,
+                  }
+                  if vdm.qa_dpt.qa_analist != nil
+                    responsable = vdm.qa_dpt.qa_analist.assignedName
+                    qa_dept['assignment'] = vdm.qa_dpt.qa_analist
+                  end
+                  payload_item['qaDept'] = qa_dept
+                  payload_item['qaResponsable'] = responsable
+                end
               else
-                productionDept = vdm.production_dpt
-              end
-              introduccion = vdm.production_dpt.intro
-              conclusion = vdm.production_dpt.conclu
-              desarrollo = vdm.production_dpt.vidDev
-
-              productionPayload.push({
-                                         id: vdm.id,
-                                         videoId: vdm.videoId,
-                                         videoTittle: vdm.videoTittle,
-                                         videoContent: vdm.videoContent,
-                                         status: vdm.status,
-                                         comments: vdm.comments,
-                                         cp: cp.as_json,
-                                         prodDept: productionDept,
-                                         intro: introduccion,
-                                         conclu: conclusion,
-                                         vidDev: desarrollo,
-                                         videoNumber: vdm.number,
-                                         prodDeptStatus: prodDeptStatus,
-                                         prodDeptResponsable: prodDeptResponsable
-                                     })
+                raise Exceptions::InvalidRoleException
             end
 
-            if vdm.design_dpt != nil
-              designResponsable = 'no asignado'
-              designStatus = vdm.design_dpt.status
-              if vdm.design_dpt.design_assignment != nil
-                designResponsable = vdm.design_dpt.design_assignment.assignedName
-                designDept = {
-                    id: vdm.design_dpt.id,
-                    status: vdm.design_dpt.status,
-                    comments: vdm.design_dpt.comments,
-                    assignment: vdm.design_dpt.design_assignment
-                }
-              else
-                designDept = vdm.design_dpt
-              end
-              designPayload.push({
-                                     id: vdm.id,
-                                     videoId: vdm.videoId,
-                                     videoTittle: vdm.videoTittle,
-                                     videoNumber: vdm.number,
-                                     prodDept: productionDept,
-                                     designDept: designDept
-                                 })
-            end
-
-            if vdm.post_prod_dpt != nil
-              postProdResponsable = 'no asignado'
-              postProdStatus = vdm.post_prod_dpt.status
-              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
-                postProdResponsable = vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName
-                postProdDept = {
-                    id: vdm.post_prod_dpt.id,
-                    status: vdm.post_prod_dpt.status,
-                    comments: vdm.post_prod_dpt.comments,
-                    assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
-                }
-              else
-                postProdDept = vdm.post_prod_dpt
-              end
-              postProdPayload.push({
-                                       id: vdm.id,
-                                       videoId: vdm.videoId,
-                                       videoTittle: vdm.videoTittle,
-                                       videoNumber: vdm.number,
-                                       prodDept: productionDept,
-                                       designDept: designDept,
-                                       postProdDept: postProdDept
-                                   })
-            end
-
-            if vdm.product_management != nil
-              productManagementPayload.push({
-                                                id: vdm.id,
-                                                videoId: vdm.videoId,
-                                                videoTittle: vdm.videoTittle,
-                                                videoContent: vdm.videoContent,
-                                                videoNumber: vdm.number,
-                                                status: vdm.status,
-                                                comments: vdm.comments,
-                                                cp: cp.as_json,
-                                                prodDept: productionDept,
-                                                designDept: designDept,
-                                                postProdDept: postProdDept,
-                                                productionStatus: productionStatus,
-                                                editionStatus: editionStatus,
-                                                designStatus: designStatus,
-                                                postProdStatus: postProdStatus,
-                                                productManagement: vdm.product_management
-                                            })
-            end
-            if vdm.qa_dpt != nil
-              qaResponsable = 'no asignado'
-              if vdm.qa_dpt.qa_analist != nil
-                qaResponsable = vdm.qa_dpt.qa_analist.assignedName
-                qaDept = {
-                    id: vdm.qa_dpt.id,
-                    status: vdm.qa_dpt.status,
-                    comments: vdm.qa_dpt.comments,
-                    assignment: vdm.qa_dpt.qa_analist
-                }
-              else
-                qaDept = vdm.qa_dpt
-
-              end
-              qaPayload.push({
-                                 id: vdm.id,
-                                 videoId: vdm.videoId,
-                                 videoTittle: vdm.videoTittle,
-                                 videoContent: vdm.videoContent,
-                                 status: vdm.qa_dpt.status,
-                                 comments: vdm.comments,
-                                 cp: cp.as_json,
-                                 qaDept: qaDept,
-                                 qaResponsable: qaResponsable
-                             })
-            end
-            payload.push({
-                             id: vdm.id,
-                             videoId: vdm.videoId,
-                             videoTittle: vdm.videoTittle,
-                             videoContent: vdm.videoContent,
-                             status: vdm.status,
-                             comments: vdm.comments,
-                             cp: cp.as_json,
-                             cpId: cp.id,
-                             prodDept: vdm.production_dpt,
-                             videoNumber: vdm.number,
-                             topicNumber: cp.topicNumber,
-                             classDoc: vdm.classDoc,
-                             class_doc_name: vdm.class_doc_name,
-                             teacherFiles: vdm.teacher_files,
-                             productManagement: vdm.product_management
-                         })
-            i+=1
+            payload.push(payload_item)
           end
         end
       end
@@ -319,14 +251,14 @@ class VdmsController < ApplicationController
       users.each do |user|
         if user.employee != nil
           employees.push({
-                             id: user.id,
-                             name: user.employee.firstName + ' ' + user.employee.firstSurname,
-                             username: user.username,
-                             roles: user.roles
-                         })
+             id: user.id,
+             name: user.employee.firstName + ' ' + user.employee.firstSurname,
+             username: user.username,
+             roles: user.roles
+           })
         end
       end
-      render :json => { data: payload, subject: subject, employees: employees, production: productionPayload, productManagement: productManagementPayload, design: designPayload, postProduction: postProdPayload, qaDpt: qaPayload, status: 'SUCCESS'}, :status => 200
+      render :json => { data: payload, subject: subject, employees: employees, status: 'SUCCESS'}, :status => 200
     end
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
@@ -434,7 +366,7 @@ class VdmsController < ApplicationController
       changes.push(change)
     end
 
-    if vdm.vdm_type != new_vdm['type']
+    if vdm.vdm_type != new_vdm['vdm_type']
       change = VdmChange.new
       change.changeDetail = "Cambio de tipo"
       if vdm.vdm_type != nil
@@ -450,7 +382,7 @@ class VdmsController < ApplicationController
       change.videoId = vdm.videoId
       change.changeDate = Time.now
       change.department = 'pre-produccion'
-      vdm.vdm_type = new_vdm['type']
+      vdm.vdm_type = new_vdm['vdm_type']
       changes.push(change)
     end
 

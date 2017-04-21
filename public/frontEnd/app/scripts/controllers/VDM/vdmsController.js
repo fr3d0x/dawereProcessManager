@@ -60,7 +60,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             return departments
         };
         var getVdms = function(){
-            dawProcessManagerService.getVdmsBySubject($stateParams.id, function (response)  {
+            $rootScope.setLoader(true);
+            dawProcessManagerService.getVdmsBySubject($stateParams.id, localStorageService.get('currentRole'),function (response)  {
                 var tableData = [];
                 $scope.emptyResponse = false;
                 $scope.subject = response.subject;
@@ -68,42 +69,21 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     $scope.employees = response.employees;
                     switch (localStorageService.get('currentRole')){
                         case 'contentLeader':
-                            tableData = response.data;
-                            break;
                         case 'contentAnalist':
-                            tableData = response.data;
-                            break;
                         case 'production':
-                            tableData = response.production;
+                        case 'designLeader':
+                        case 'productManager':
+                        case 'postProLeader':
+                        case 'qa':
+                        case 'qaAnalist':
+                            tableData = response.data;
                             break;
                         case 'editor':
-                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                            tableData = $filter('vdmsByUser')(response.production, user, localStorageService.get('currentRole'));
-                            break;
-                        case 'productManager':
-                            tableData = response.productManagement;
-                            break;
-                        case 'designLeader':
-                            tableData = response.design;
-                            break;
                         case 'designer':
-                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                            tableData = $filter('vdmsByUser')(response.design, user, localStorageService.get('currentRole'));
-                            break;
                         case 'post-producer':
-                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                            tableData = $filter('vdmsByUser')(response.postProduction, user, localStorageService.get('currentRole'));
+                            tableData = $filter('vdmsByUser')(response.design, JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])), localStorageService.get('currentRole'));
                             break;
-                        case 'postProLeader':
-                            tableData = response.postProduction;
-                            break;
-                        case 'qa':
-                            tableData = response.qaDpt;
-                            break;
-                        case 'qaAnalist':
-                            var user = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
-                            tableData = response.qaDpt;
-                            break;
+                        
                     }
                     $scope.tableParams = new NgTableParams({
                         sorting: {
@@ -117,7 +97,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }else{
                     $scope.emptyResponse = true;
                 }
+                $rootScope.setLoader(false);
             }, function(error) {
+                $rootScope.setLoader(false);
                 alert(error);
             })
         };
@@ -126,7 +108,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
         $scope.designerStates = [{statusIng: 'designed', statusSpa: 'diseñado'}];
         $scope.postProducerStates = [{statusIng: 'post-produced', statusSpa: 'terminado'}];
-        $scope.vdmTypes = [{typeIng: 'wacom', typeSpa: 'wacom'}, {typeIng: 'exercises', typeSpa: 'ejercicios'}, {typeIng: 'theoretical', typeSpa: 'teorico'}, {typeIng: 'descriptive', typeSpa: 'narrativo'}, {typeIng: 'experimental', typeSpa: 'experimental'}];
+        $scope.vdmTypes = [{typeIng: 'wacom', typeSpa: 'wacom'}, {typeIng: 'exercises', typeSpa: 'ejercicios'}, {typeIng: 'descriptive', typeSpa: 'narrativo'}, {typeIng: 'experimental', typeSpa: 'experimental'}, {typeIng: 'mixed', typeSpa: 'mixto'}];
 
 
         $scope.add = function(vdm, data){
@@ -372,7 +354,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         invalidMsg = "No se puede procesar un video sin primero haber subido al menos un material de profesor";
                         valid = false;
                     }
-                    if(vdm.type == null || vdm.type == undefined){
+                    if(vdm.vdm_type == null || vdm.vdm_type == undefined){
                         invalidMsg = "No se puede procesar un video sin primero indicar su tipo";
                         valid = false;
                     }
@@ -401,7 +383,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
             }
         };
-
 
         $scope.saveVdmProd = function(vdm, file){
             $scope.disableSave = true;
@@ -1310,4 +1291,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         };
 
         getVdms();
+        
+        $scope.$watch('localStorageService.get("currentRole")', function (newVal, oldVal) {
+            if(newVal !== oldVal){
+                getVdms();
+            }
+
+        })
     }]);
