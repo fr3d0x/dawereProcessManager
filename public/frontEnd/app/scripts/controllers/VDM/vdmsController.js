@@ -5,6 +5,7 @@
 app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope){
         $scope.assignmentStatus = null;
+
         var getEditorsJson = function (employees) {
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
@@ -125,7 +126,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.editorStates = [{statusIng: 'edited', statusSpa: 'editado'}];
         $scope.designerStates = [{statusIng: 'designed', statusSpa: 'diseñado'}];
         $scope.postProducerStates = [{statusIng: 'post-produced', statusSpa: 'terminado'}];
-        $scope.vdmTypes = [{typeIng: 'exercises', typeSpa: 'ejercicios'}, {typeIng: 'theoretical', typeSpa: 'teorico'}, {typeIng: 'descriptive', typeSpa: 'narrativo'}, {typeIng: 'experimental', typeSpa: 'experimental'}];
+        $scope.vdmTypes = [{typeIng: 'wacom', typeSpa: 'wacom'}, {typeIng: 'exercises', typeSpa: 'ejercicios'}, {typeIng: 'theoretical', typeSpa: 'teorico'}, {typeIng: 'descriptive', typeSpa: 'narrativo'}, {typeIng: 'experimental', typeSpa: 'experimental'}];
 
 
         $scope.add = function(vdm, data){

@@ -108,7 +108,7 @@
 
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center" ng-if="row.uploadFiles != true">
-                        <a ng-click="saveVdmPre(row)" title='guardar' ng-class="{disabled: disableSave == true || row.prodDept != null}">
+                        <a ng-click="saveVdmPre(row)" title='guardar'>
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px">|</span>
                         <a ng-click="remove(row, $data)" title='eliminar'>

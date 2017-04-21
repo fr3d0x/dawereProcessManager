@@ -3,7 +3,7 @@ class ApplicationController < ActionController::API
   require 'jwt'
   require 'json'
   $secretKey = "d@w3r3's_$3cr3t_k3y"
-
+  $files_copy_route = '/Users/fr3d0/projects/uploads/railsDpmUploads/copies'
   def authenticate
     token = request.headers['AUTHORIZATION']
     $currentPetitionUser = JWT.decode(token, $secretKey, true, { :algorithm => 'HS256' })[0]

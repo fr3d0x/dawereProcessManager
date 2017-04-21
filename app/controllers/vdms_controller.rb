@@ -3,6 +3,7 @@ class VdmsController < ApplicationController
   before_action :authenticate
   before_action :only => [:addVdm, :deleteVdm] {validateRole([Roles::SUPER, Roles::CONTENT_LEADER],$currentPetitionUser)}
   include ActionView::Helpers::TextHelper
+  require 'fileutils'
 
   # GET /vdms
   # GET /vdms.json
@@ -433,11 +434,31 @@ class VdmsController < ApplicationController
       changes.push(change)
     end
 
+    if vdm.vdm_type != new_vdm['type']
+      change = VdmChange.new
+      change.changeDetail = "Cambio de tipo"
+      if vdm.vdm_type != nil
+        change.changedFrom = vdm.vdm_type
+      else
+        change.changedFrom = "vacio"
+      end
+
+      change.changedTo = new_vdm['type']
+      change.vdm_id = vdm.id
+      change.user_id = $currentPetitionUser['id']
+      change.uname = $currentPetitionUser['username']
+      change.videoId = vdm.videoId
+      change.changeDate = Time.now
+      change.department = 'pre-produccion'
+      vdm.vdm_type = new_vdm['type']
+      changes.push(change)
+    end
+
     if vdm.status != new_vdm['status']
       change = VdmChange.new
       change.changeDetail = "Cambio de estado"
       change.changedFrom = vdm.status
-      change.changedTo = newVdm['status']
+      change.changedTo = new_vdm['status']
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
@@ -446,51 +467,56 @@ class VdmsController < ApplicationController
       change.department = 'pre-produccion'
       changes.push(change)
       if new_vdm['status'] == 'procesado'
-        if !vdm.classes_planification.subject_planification.firstPeriodCompleted
-          vdmsFromFirstPeriod = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and cp.period = 1 and v.classes_planification_id = cp.id and v.status != 'DESTROYED'")
-          vdmsProcessed = Vdm.find_by_sql("Select v.* from vdms v, classes_planifications cp, subject_planifications sp where sp.id = " + vdm.classes_planification.subject_planification.id.to_s + " and cp.subject_planification_id = sp.id and v.status = 'procesado' and v.classes_planification_id = cp.id")
-          if checkFirstPeriodProcessed(vdmsFromFirstPeriod, new_vdm, vdm)
-            productionDpt = []
-            vdmsEmail = []
-            vdm.classes_planification.subject_planification.firstPeriodCompleted = true
-            vdmsProcessed.each do |v|
-              pdpt = vdm.production_dpt
-              if pdpt == nil
-                pdpt = ProductionDpt.new
-              end
-              pdpt.status = 'asignado'
-              pdpt.vdm_id = v.id
-              productionDpt.push(pdpt)
-              vdmsEmail.push(v)
+        case vdm.vdm_type
+          when 'ejercicios', 'teorico', 'narrativo', 'experimental'
+            production_dpt = vdm.production_dpt
+            if production_dpt == nil
+              production_dpt = ProductionDpt.new
             end
-            #Agrego a la lista el que traigo del frontEnd que no esta en BD
-            pdpt = ProductionDpt.new
-            pdpt.status = 'asignado'
-            pdpt.vdm_id = new_vdm['id']
-            productionDpt.push(pdpt)
-            vdmsEmail.push(new_vdm)
-            ProductionDpt.transaction do
-              productionDpt.each(&:save!)
+            production_dpt.status = 'asignado'
+            production_dpt.vdm_id = new_vdm['id']
+            production_dpt.save!
+            vdm.classes_planification.subject_planification.save!
+            assignment = production_dpt.production_dpt_assignment
+            if  assignment == nil
+              assignment = ProductionDptAssignment.new
             end
-            UserNotifier.send_assigned_to_production(vdmsEmail).deliver
-          end
-        else
-          production_dpt = vdm.production_dpt
-          if production_dpt == nil
-            production_dpt = ProductionDpt.new
-          end
-          production_dpt.status = 'asignado'
-          production_dpt.vdm_id = new_vdm['id']
-          production_dpt.save!
-          UserNotifier.send_assigned_to_production(vdm).deliver
+            user = assign_task_to('production')
+            assignment.user_id = user.id
+            assignment.status = 'asignado'
+            assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
+            assignment.production_dpt_id = production_dpt.id
+            assignment.save!
+            UserNotifier.send_assigned_to_production(vdm).deliver
+            UserNotifier.send_assigned_to_editor(vdm, user).deliver
+          when 'wacom'
+            design_dpt = vdm.design_dpt
+            if design_dpt == nil
+              design_dpt = DesignDpt.new
+            end
+            design_dpt.status = 'asignado'
+            design_dpt.vdm_id = new_vdm['id']
+            design_dpt.save!
+            assignment = design_dpt.design__assignment
+            if  assignment == nil
+              assignment = DesignAssignment.new
+            end
+            user = assign_task_to('design')
+            assignment.user_id = user.id
+            assignment.status = 'asignado'
+            assignment.assignedName = u.employee.firstName + ' ' + u.employee.firstSurname
+            assignment.design_dpt_id = design_dpt.id
+            assignment.save!
+            UserNotifier.send_assigned_to_designLeader(vdm).deliver
+            UserNotifier.create_send_assigned_to_designer(vdm, user).deliver
+          else
         end
-        vdm.classes_planification.subject_planification.save!
       end
     end
     if vdm.comments != new_vdm['comments']
       change = VdmChange.new
       change.changeDetail = "Cambio de comentarios"
-      if vdm.videoTittle != nil
+      if vdm.comments != nil
         change.changedFrom = vdm.comments
       else
         change.changedFrom = "vacio"
@@ -507,8 +533,7 @@ class VdmsController < ApplicationController
 
     if new_vdm['class_doc']
       change = VdmChange.new
-      change.changeDetail = "Cambio de documento"
-
+      change.changeDetail = 'Cambio de documento'
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']
@@ -519,11 +544,11 @@ class VdmsController < ApplicationController
       vdm.class_doc_name = new_vdm['class_doc']['filename']
       change.changedTo = vdm.classDoc
       changes.push(change)
-
+      FileUtils.cp(vdm.classDoc.path, $files_copy_route+'/'+new_vdm['class_doc']['filename'])
     end
     if new_vdm['teacher_files']
       change = VdmChange.new
-      change.changeDetail = "Creacion de material de profesor"
+      change.changeDetail = 'Creacion de material de profesor'
 
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
@@ -539,6 +564,7 @@ class VdmsController < ApplicationController
         file.vdm_id = vdm.id
         file.file_name = tf['filename']
         teacher_files.push(file)
+        FileUtils.cp(file.file.path, $files_copy_route+'/'+tf['filename'])
       end
       if teacher_files.count >= 1
         TeacherFile.transaction do
@@ -557,7 +583,6 @@ class VdmsController < ApplicationController
     vdm.comments = new_vdm['comments']
     vdm.save!
   end
-
 
   def getDawereVdms
 
@@ -1163,6 +1188,43 @@ class VdmsController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
+
+  def assign_task_to(department)
+    assignments = nil
+    employee = nil
+    users = User.joins(:roles).where(:roles => {:role => department})
+    users.each do |u|
+      case department
+        when 'production'
+          if assignments == nil
+            assignments = u.production_dpt_assignments.count
+          else
+            if u.production_dpt_assignments.count <= assignments
+              employee = u
+            end
+          end
+        when 'design'
+          if assignments == nil
+            assignments = u.dessign_assignments.count
+          else
+            if u.dessign_assignments.count <= assignments
+              employee = u
+            end
+          end
+        when 'post_production'
+          if assignments == nil
+            assignments = u.post_prod_dpt_assignments.count
+          else
+            if u.post_prod_dpt_assignments.count <= assignments
+              employee = u
+            end
+          end
+      end
+    end
+    return employee
+  end
+
+
   private
 
   def set_vdm
