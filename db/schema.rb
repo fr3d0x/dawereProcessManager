@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170405142537) do
+ActiveRecord::Schema.define(version: 20170422020643) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -147,15 +147,18 @@ ActiveRecord::Schema.define(version: 20170405142537) do
   add_index "production_dpt_assignments", ["user_id"], name: "index_production_dpt_assignments_on_user_id", using: :btree
 
   create_table "production_dpts", force: :cascade do |t|
-    t.string   "status",     limit: 255
-    t.text     "script",     limit: 4294967295
-    t.text     "comments",   limit: 65535
-    t.boolean  "intro",      limit: 1
-    t.boolean  "vidDev",     limit: 1
-    t.boolean  "conclu",     limit: 1
-    t.integer  "vdm_id",     limit: 4
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "status",           limit: 255
+    t.text     "script",           limit: 4294967295
+    t.text     "comments",         limit: 65535
+    t.boolean  "intro",            limit: 1
+    t.boolean  "vidDev",           limit: 1
+    t.boolean  "conclu",           limit: 1
+    t.integer  "vdm_id",           limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "screen_play",      limit: 255
+    t.string   "screen_play_name", limit: 255
+    t.string   "script_name",      limit: 255
   end
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
@@ -286,7 +289,7 @@ ActiveRecord::Schema.define(version: 20170405142537) do
     t.datetime "updated_at",                             null: false
     t.integer  "number",                   limit: 4
     t.float    "duration",                 limit: 24
-    t.string   "type",                     limit: 255
+    t.string   "vdm_type",                 limit: 255
     t.text     "classDoc",                 limit: 65535
     t.string   "class_doc_name",           limit: 255
   end

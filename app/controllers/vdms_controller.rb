@@ -154,6 +154,7 @@ class VdmsController < ApplicationController
                 classDoc: vdm.classDoc,
                 class_doc_name: vdm.class_doc_name,
                 teacherFiles: vdm.teacher_files,
+                topicName: cp.topicName
             }
             case role
               when 'contentLeader', 'contentAnalist'
@@ -169,6 +170,9 @@ class VdmsController < ApplicationController
                       intro: vdm.production_dpt.intro,
                       vidDev: vdm.production_dpt.vidDev,
                       conclu: vdm.production_dpt.conclu,
+                      screen_play: vdm.production_dpt.screen_play,
+                      script_name: vdm.production_dpt.script_name,
+                      screen_play_name: vdm.production_dpt.screen_play_name
                   }
                   if vdm.production_dpt.production_dpt_assignment != nil
                     responsable = vdm.production_dpt.production_dpt_assignment.assignedName
@@ -332,11 +336,11 @@ class VdmsController < ApplicationController
     changes = []
     if vdm.videoContent != new_vdm['videoContent']
       change = VdmChange.new
-      change.changeDetail = "Cambio de contenido"
+      change.changeDetail = 'Cambio de contenido'
       if vdm.videoContent != nil
         change.changedFrom = vdm.videoContent
       else
-        change.changedFrom = "vacio"
+        change.changedFrom = 'vacio'
       end
       change.changedTo = new_vdm['videoContent']
       change.vdm_id = vdm.id
@@ -349,11 +353,11 @@ class VdmsController < ApplicationController
     end
     if vdm.videoTittle != new_vdm['videoTittle']
       change = VdmChange.new
-      change.changeDetail = "Cambio de Titulo"
+      change.changeDetail = 'Cambio de Titulo'
       if vdm.videoTittle != nil
         change.changedFrom = vdm.videoTittle
       else
-        change.changedFrom = "vacio"
+        change.changedFrom = 'vacio'
       end
 
       change.changedTo = new_vdm['videoTittle']
@@ -368,11 +372,11 @@ class VdmsController < ApplicationController
 
     if vdm.vdm_type != new_vdm['vdm_type']
       change = VdmChange.new
-      change.changeDetail = "Cambio de tipo"
+      change.changeDetail = 'Cambio de tipo'
       if vdm.vdm_type != nil
         change.changedFrom = vdm.vdm_type
       else
-        change.changedFrom = "vacio"
+        change.changedFrom = 'vacio'
       end
 
       change.changedTo = new_vdm['type']
@@ -388,7 +392,7 @@ class VdmsController < ApplicationController
 
     if vdm.status != new_vdm['status']
       change = VdmChange.new
-      change.changeDetail = "Cambio de estado"
+      change.changeDetail = 'Cambio de estado'
       change.changedFrom = vdm.status
       change.changedTo = new_vdm['status']
       change.vdm_id = vdm.id
@@ -447,11 +451,11 @@ class VdmsController < ApplicationController
     end
     if vdm.comments != new_vdm['comments']
       change = VdmChange.new
-      change.changeDetail = "Cambio de comentarios"
+      change.changeDetail = 'Cambio de comentarios'
       if vdm.comments != nil
         change.changedFrom = vdm.comments
       else
-        change.changedFrom = "vacio"
+        change.changedFrom = 'vacio'
       end
       change.changedTo = new_vdm['comments']
       change.vdm_id = vdm.id

@@ -47,7 +47,7 @@ class ProductionDptsController < ApplicationController
     head :no_content
   end
 
-  def update_production_content(vdm, newVdm)
+  def self.update_production_content(vdm, newVdm)
     changes = []
     assignment = nil
     if vdm.production_dpt != nil
@@ -55,11 +55,11 @@ class ProductionDptsController < ApplicationController
         if newVdm['role'] == 'production'
           if vdm.production_dpt.comments != newVdm['prodDept']['comments']
             change = VdmChange.new
-            change.changeDetail = "Cambio de comentarios de produccion"
+            change.changeDetail = 'Cambio de comentarios de produccion'
             if vdm.production_dpt.comments != nil
               change.changedFrom = vdm.production_dpt.comments
             else
-              change.changedFrom = "vacio"
+              change.changedFrom = 'vacio'
             end
             change.changedTo = newVdm['prodDept']['comments']
             change.vdm_id = vdm.id
@@ -74,7 +74,7 @@ class ProductionDptsController < ApplicationController
           if vdm.production_dpt.script != newVdm['prodDept']['script']
             if newVdm['prodDept']['script'] != nil
               change = VdmChange.new
-              change.changeDetail = "Cambio de Guion de produccion"
+              change.changeDetail = 'Cambio de libreto de produccion'
 
               change.changedTo = newVdm['prodDept']['script']
               change.vdm_id = vdm.id
@@ -82,15 +82,39 @@ class ProductionDptsController < ApplicationController
               change.uname = $currentPetitionUser['username']
               change.videoId = vdm.videoId
               change.changeDate = Time.now
+              vdm.production_dpt.script_name = newVdm['prodDept']['script']['filename']
+
+              vdm.production_dpt.script = newVdm['prodDept']['script']['base64']
+              change.changedTo = vdm.production_dpt.script.url
               change.department = 'produccion'
               changes.push(change)
-              vdm.production_dpt.script = newVdm['prodDept']['script']
 
             end
           end
+
+          if vdm.production_dpt.screen_play != newVdm['prodDept']['screen_play']
+            if newVdm['prodDept']['screen_play'] != nil
+              change = VdmChange.new
+              change.changeDetail = 'Cambio de Guion de produccion'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              vdm.production_dpt.screen_play_name = newVdm['prodDept']['screen_play']['filename']
+
+              vdm.production_dpt.screen_play = newVdm['prodDept']['screen_play']['base64']
+              change.changedTo = vdm.production_dpt.screen_play.url
+
+              change.department = 'produccion'
+              changes.push(change)
+
+            end
+          end
+
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "Grabacion completa"
+            change.changeDetail = 'Grabacion completa'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -121,7 +145,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo intro y conclucion"
+            change.changeDetail = 'se grabo solo intro y conclucion'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -136,7 +160,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo intro y desarrollo"
+            change.changeDetail = 'se grabo solo intro y desarrollo'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -152,7 +176,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo conclusion y desarrollo"
+            change.changeDetail = 'se grabo solo conclusion y desarrollo'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -168,7 +192,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo desarrollo"
+            change.changeDetail = 'se grabo solo desarrollo'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -184,7 +208,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo intro"
+            change.changeDetail = 'se grabo solo intro'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -200,7 +224,7 @@ class ProductionDptsController < ApplicationController
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
             change = VdmChange.new
-            change.changeDetail = "se grabo solo conclusion"
+            change.changeDetail = 'se grabo solo conclusion'
             change.vdm_id = vdm.id
             change.user_id = $currentPetitionUser['id']
             change.uname = $currentPetitionUser['username']
@@ -247,11 +271,11 @@ class ProductionDptsController < ApplicationController
         if newVdm['role'] == 'editor'
           if vdm.production_dpt.production_dpt_assignment.comments != newVdm['prodDept']['assignment']['comments']
             change = VdmChange.new
-            change.changeDetail = "Cambio de comentarios de editor"
+            change.changeDetail = 'Cambio de comentarios de editor'
             if vdm.production_dpt.production_dpt_assignment.comments != nil
               change.changedFrom = vdm.production_dpt.production_dpt_assignment.comments
             else
-              change.changedFrom = "vacio"
+              change.changedFrom = 'vacio'
             end
             change.changedTo = newVdm['prodDept']['assignment']['comments']
             change.vdm_id = vdm.id
@@ -265,11 +289,11 @@ class ProductionDptsController < ApplicationController
           if vdm.production_dpt.production_dpt_assignment.status != newVdm['prodDept']['assignment']['status']
             if newVdm['prodDept']['assignment']['status'] != 'no asignado'
               change = VdmChange.new
-              change.changeDetail = "Cambio de estado de editor"
+              change.changeDetail = 'Cambio de estado de editor'
               if vdm.production_dpt.production_dpt_assignment.status != nil
                 change.changedFrom = vdm.production_dpt.production_dpt_assignment.status
               else
-                change.changedFrom = "vacio"
+                change.changedFrom = 'vacio'
               end
               change.changedTo = newVdm['prodDept']['assignment']['status']
               change.vdm_id = vdm.id
@@ -312,10 +336,10 @@ class ProductionDptsController < ApplicationController
     return prd_payload
   end
 
-  def checkForCompleteRecording(intro, vidDev, conclu, vdm, array)
+  def self.checkForCompleteRecording(intro, vidDev, conclu, vdm, array)
     if intro == true && conclu == true && vidDev == true
       change = VdmChange.new
-      change.changeDetail = "Grabacion completa"
+      change.changeDetail = 'Grabacion completa'
       change.vdm_id = vdm.id
       change.user_id = $currentPetitionUser['id']
       change.uname = $currentPetitionUser['username']

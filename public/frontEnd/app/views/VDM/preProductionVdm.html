@@ -40,7 +40,7 @@
                     </div>
                 </td>
                 <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.status | translate}}</div></td>
-                <td data-title="'Tipo'" filter="{type: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.vdm_type}}</div></td>
+                <td data-title="'Tipo'" filter="{vdm_type: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.vdm_type}}</div></td>
 
                 <td data-title="'Comentarios'" ng-if="row.writable != true" style="vertical-align:middle">
                     <div>
@@ -115,7 +115,7 @@
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px">|</span>
-                        <a ng-click="row.uploadFiles = true" title="subir documento de clase">
+                        <a ng-click="row.uploadFiles = true" title="subir archivos">
                             <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
                     </div>
