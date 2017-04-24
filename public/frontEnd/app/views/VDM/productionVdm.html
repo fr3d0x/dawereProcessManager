@@ -11,7 +11,7 @@
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{prodDeptStatus: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
                     <div ng-if="row.prodDept.status == null" align="center">
                         {{row.status | translate}}
                     </div>
@@ -19,7 +19,7 @@
                         {{row.prodDept.status | translate}}
                     </div>
                 </td>
-                <td data-title="'Asignado'" filter="{prodDeptResponsable: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
+                <td data-title="'Asignado'" filter="{responsable: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
                     <div ng-if="row.prodDept.assignment == null" align="center" class="itemMissing">
                         sin editor
                     </div>
@@ -100,7 +100,14 @@
 
                 <td data-title="'Id video'" ng-if="row.writable == true" style="vertical-align:middle"><div align="center">{{row.videoId}}</div></td>
                 <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><div align="center">{{row.videoTittle}}</div></td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><div align="center">{{row.prodDept.status}}</div></td>
+                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div ng-if="row.prodDept.status == null" align="center">
+                        {{row.status | translate}}
+                    </div>
+                    <div ng-if="row.prodDept.status != null" align="center">
+                        {{row.prodDept.status | translate}}
+                    </div>
+                </td>
                 <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
                         <div ng-if="row.prodDept.assignment.assignedName == null || row.prodDept.assignment.changeEditor == true">

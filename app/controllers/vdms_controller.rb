@@ -139,12 +139,13 @@ class VdmsController < ApplicationController
         payload = []
         sp.classes_planifications.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |cp|
           cp.vdms.reject{ |r| r.status == 'DESTROYED' }.uniq.each do |vdm|
+            status = vdm.status
             payload_item = {
                 id: vdm.id,
                 videoId: vdm.videoId,
                 videoTittle: vdm.videoTittle,
                 videoContent: vdm.videoContent,
-                status: vdm.status,
+                status: status,
                 comments: vdm.comments,
                 vdm_type: vdm.vdm_type,
                 cp: cp.as_json,
@@ -161,6 +162,9 @@ class VdmsController < ApplicationController
                 payload_item['prodDept'] = vdm.production_dpt
               when 'production', 'editor'
                 if vdm.production_dpt != nil
+                  if vdm.production_dpt.status != nil && vdm.production_dpt.status != ''
+                    payload_item['status']  = vdm.production_dpt.status
+                  end
                   responsable = 'no asignado'
                   production_dpt = {
                       id: vdm.production_dpt.id,

@@ -2,34 +2,33 @@
 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data | orderBy : row.videoId">
-                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">{{row.videoId}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" style="vertical-align: middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" ng-if="row.writable != true" style="vertical-align: middle">
+                    <div align="center">
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{prodAssignedStatus: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.status == null">
+                <td data-title="'Estado'" filter="{prodAssignedStatus: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
+                    <div ng-if="row.prodDept.assignment.status == null" align="center">
                         {{row.prodDept.status}}
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.status != null">
+                    <div ng-if="row.prodDept.assignment.status != null" align="center">
                         {{row.prodDept.assignment.status}}
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.comments == null">
+                <td data-title="'Comentarios'" ng-if="row.writable != true" style="vertical-align: middle">
+                    <div ng-if="row.prodDept.assignment.comments == null" align="center">
                         {{row.prodDept.comments}}...
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.comments != null">
+                    <div ng-if="row.prodDept.assignment.comments != null" align="center">
                         {{row.prodDept.assignment.comments}}...
                     </div>
                 </td>
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-3 col-md-3 col-sm-3 col-xs-3 row" style="vertical-align:middle">
+                <td data-title="'Acciones'" ng-if="row.writable != true" style="vertical-align:middle">
                     <div align="center">
-
                         <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">|</span>
@@ -40,18 +39,45 @@
                     </div>
                 </td>
 
-                <td data-title="'Id video'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">{{row.videoId}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">{{row.videoTittle}}</td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1"><select ng-model="row.assignmentStatus" ng-options="state.statusSpa as state.statusSpa for state in editorStates" style="height:2.2em; margin-top: 6px;" >
-                    <option value="#">No especifico</option>
-                </select></td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.assignment.comments"></textarea></td>
-                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                <td data-title="'Id video'" ng-if="row.writable == true" style="vertical-align: middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><div align="center">{{row.videoTittle}}</div></td>
+                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
+                        <select ng-model="row.assignmentStatus" ng-options="state.statusSpa as state.statusSpa for state in editorStates" style="height:2.2em; margin-top: 6px;" >
+                            <option value="#">No especifico</option>
+                        </select>
+                    </div>
+
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" style="vertical-align: middle">
+                    <div>
+                        <textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.assignment.comments"></textarea>
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div align="center" ng-if="row.uploadFiles != true">
                         <a id="prodSave" ng-click="saveVdmEditor(row)" title='guardar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment.status != 'editado'">|</span>
+                        <a ng-click="row.uploadFiles = true" ng-if="row.prodDept.assignment.status != 'editado'" title="subir archivos">
+                            <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.assignment.status != 'editado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                    <div align="center" ng-if="row.uploadFiles == true">
+                        <label for="uploadVideoClip" title="subir video clip">
+                            <i class="fa fa-film uploadBtn" aria-hidden="true" style="font-size: 15px">
+                                <input id="uploadVideoClip" type="file" ng-model="row.video_clip" name="video_clip" style="display: none" base-sixty-four-input>
+                            </i>
+                        </label><span style="font-size: 20px"> |</span>
+                        <label for="uploadPremierProject" title="subir proyecto premier">
+                            <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px">
+                                <input id="uploadPremierProject" type="file" ng-model="row.premier_project" name="premier_project" style="display: none" base-sixty-four-input>
+                            </i>
+                        </label><span style="font-size: 20px"> |</span>
+                        <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
                     </div>

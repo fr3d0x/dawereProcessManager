@@ -350,7 +350,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
                         valid = false;
                     }
-                    if(vdm.teacher_files == null || vdm.teacher_files == undefined){
+                    if(vdm.teacherFiles == null || vdm.teacherFiles == undefined){
                         invalidMsg = "No se puede procesar un video sin primero haber subido al menos un material de profesor";
                         valid = false;
                     }
