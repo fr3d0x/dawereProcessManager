@@ -81,7 +81,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'editor':
                         case 'designer':
                         case 'post-producer':
-                            tableData = $filter('vdmsByUser')(response.design, JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])), localStorageService.get('currentRole'));
+                            tableData = $filter('vdmsByUser')(response.data, JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])), localStorageService.get('currentRole'));
                             break;
                         
                     }
@@ -431,7 +431,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                 }
 
-                if(vdm.prodDept.screen_play != null && vdm.prodDept.screen_play != undefined){
+                if(vdm.screen_play != null && vdm.screen_play != undefined){
                     switch (vdm.prodDept.screen_play.filetype){
                         case 'application/vnd.ms-powerpoint':
                         case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
@@ -445,11 +445,13 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             break;
                     }
                 }else{
-                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                    valid = false;
+                    if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == ''){
+                        mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
+                        valid = false;
+                    }
                 }
 
-                if(vdm.prodDept.script != null && vdm.prodDept.script != undefined){
+                if(vdm.script != null && vdm.script != undefined){
                     switch (vdm.prodDept.script.filetype){
                         case 'application/vnd.ms-excel':
                         case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
@@ -463,8 +465,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             break;
                     }
                 }else{
-                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                    valid = false;
+                    if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == ''){
+                        mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
+                        valid = false;
+                    }
+
                 }
 
                 if (valid == false){
@@ -497,7 +502,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 $scope.disableSave = false;
 
                                 if(response.data.prodDept != null){
-                                    vdm.script = response.data.prodDept.script;
                                     vdm.intro = response.data.prodDept.intro;
                                     vdm.conclu = response.data.prodDept.conclu;
                                     vdm.vidDev = response.data.prodDept.vidDev;
@@ -525,7 +529,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             }
                                         }).then(function(result){
                                             if(result != null){
-                                                vdm.asignedId = result;
+                                                vdm.assignedId = result;
                                                 $rootScope.setLoader(true);
                                                 $scope.disableSave = true;
                                                 dawProcessManagerService.updateVdm(vdm, function (response){
@@ -539,7 +543,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                         confirmButtonColor: "lightskyblue"
                                                     });
                                                     if(response.data.prodDept != null){
-                                                        vdm.script = response.data.prodDept.script;
                                                         vdm.intro = response.data.prodDept.intro;
                                                         vdm.conclu = response.data.prodDept.conclu;
                                                         vdm.vidDev = response.data.prodDept.vidDev;
@@ -567,7 +570,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         $rootScope.setLoader(false);
                                         $scope.disableSave = false;
                                         if(response.data.prodDept != null){
-                                            vdm.script = response.data.prodDept.script;
                                             vdm.intro = response.data.prodDept.intro;
                                             vdm.conclu = response.data.prodDept.conclu;
                                             vdm.vidDev = response.data.prodDept.vidDev;
@@ -592,7 +594,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             $rootScope.setLoader(false);
                             $scope.disableSave = false;
                             if(response.data.prodDept != null) {
-                                vdm.script = response.data.prodDept.script;
                                 vdm.intro = response.data.prodDept.intro;
                                 vdm.conclu = response.data.prodDept.conclu;
                                 vdm.vidDev = response.data.prodDept.vidDev;
@@ -620,7 +621,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         }
                                     }).then(function(result){
                                         if(result != null){
-                                            vdm.asignedId = result;
+                                            vdm.assignedId = result;
                                             $rootScope.setLoader(true);
                                             $scope.disableSave = true;
                                             dawProcessManagerService.updateVdm(vdm, function (response){
@@ -634,7 +635,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     confirmButtonColor: "lightskyblue"
                                                 });
                                                 if(response.data.prodDept != null){
-                                                    vdm.script = response.data.prodDept.script;
                                                     vdm.intro = response.data.prodDept.intro;
                                                     vdm.conclu = response.data.prodDept.conclu;
                                                     vdm.vidDev = response.data.prodDept.vidDev;
@@ -662,7 +662,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     $rootScope.setLoader(false);
                                     $scope.disableSave = false;
                                     if(response.data.prodDept != null){
-                                        vdm.script = response.data.prodDept.script;
                                         vdm.intro = response.data.prodDept.intro;
                                         vdm.conclu = response.data.prodDept.conclu;
                                         vdm.vidDev = response.data.prodDept.vidDev;

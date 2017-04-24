@@ -1,5 +1,5 @@
 <!--Production role Vdm View-->
-<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 over-x">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
     <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
@@ -20,11 +20,11 @@
                     </div>
                 </td>
                 <td data-title="'Asignado'" filter="{prodDeptResponsable: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
-                    <div ng-if="row.prodDept.assignment == null" align="center">
+                    <div ng-if="row.prodDept.assignment == null" align="center" class="itemMissing">
                         sin editor
                     </div>
                     <div ng-if="row.prodDept.assignment != null" align="center">
-                        <div ng-if="row.prodDept.assignment.assignedName == null">
+                        <div ng-if="row.prodDept.assignment.assignedName == null" class="itemMissing">
                             sin editor
                         </div>
                         <div ng-if="row.prodDept.assignment.assignedName != null">
@@ -87,9 +87,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'aprobado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'aprobado'">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -103,41 +103,41 @@
                 <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle"><div align="center">{{row.prodDept.status}}</div></td>
                 <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center">
-                        <div ng-if="row.prodDept.assignment != null">
-                            <div ng-if="row.prodDept.assignment.assignedName == null">
-                                <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
-                                    <option value="#">No especifico</option>
-                                </select>
-                            </div>
-                            <div ng-if="row.prodDept.assignment.assignedName != null">
-                                {{row.prodDept.assignment.assignedName}}<br>
-                                status: {{row.prodDept.assignment.status}}
-                            </div>
-                        </div>
-                        <div ng-if="row.prodDept.assignment == null">
-                            <select ng-model="row.asigned" ng-options="employee as employee.name for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
+                        <div ng-if="row.prodDept.assignment.assignedName == null || row.prodDept.assignment.changeEditor == true">
+                            <a  ng-click="row.prodDept.assignment.changeEditor = false" title='cerrar' ng-if="row.prodDept.assignment.changeEditor == true">
+                                <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                            </a>
+                            <select ng-model="row.prodDept.assigned" ng-options="employee as employee.name for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'aprobado' &&  row.prodDept.status != 'grabado'">
                                 <option value="#">No especifico</option>
                             </select>
                         </div>
+                        <div ng-if="row.prodDept.assignment.assignedName != null && row.prodDept.assignment.changeEditor != true">
+                            <a  ng-click="row.prodDept.assignment.changeEditor = true" title='cambiar editor'>
+                                <i class="fa fa-users showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                            </a><br><br>
+                            {{row.prodDept.assignment.assignedName}}<br>
+                            status: {{row.prodDept.assignment.status}}
+
+                        </div>
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
                 <td data-title="'Archivos'" ng-if="row.writable == true" style="vertical-align:middle">
-                    <div class="itemMissing" ng-if="row.prodDept.scree_play.scree_play.url == null && row.prodDept.script.script.url == null">
+                    <div class="itemMissing" ng-if="row.prodDept.scree_play.screen_play.url == null && row.prodDept.script.script.url == null">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.prodDept.scree_play.scree_play.url != null || row.prodDept.script.script.url != null">
-                        <div ng-if="row.prodDept.scree_play.url != null">
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.screen_play.url != null || row.prodDept.script.script.url != null">
+                        <div ng-if="row.prodDept.screen_play.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.scree_play_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.screen_play.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
-                        <div ng-if="row.prodDept.script.url != null">
-                            <h4>libreto</h4>
+                        <div ng-if="row.prodDept.script.script.url != null">
+                            <h4>Libreto</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.script_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.script.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -174,12 +174,12 @@
                     <div align="center" ng-if="row.uploadFiles == true">
                         <label for="uploadScreenPlay" title="subir libreto">
                             <i class="fa fa-file-powerpoint-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadScreenPlay" type="file" ng-model="row.prodDept.screen_play" name="screen_play" style="display: none" base-sixty-four-input>
+                                <input id="uploadScreenPlay" type="file" ng-model="row.screen_play" name="screen_play" style="display: none" base-sixty-four-input>
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <label for="uploadScript" title="subir guion">
                             <i class="fa fa-file-excel-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadScript" type="file" ng-model="row.prodDept.script" name="script" style="display: none" base-sixty-four-input>
+                                <input id="uploadScript" type="file" ng-model="row.script" name="script" style="display: none" base-sixty-four-input>
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>

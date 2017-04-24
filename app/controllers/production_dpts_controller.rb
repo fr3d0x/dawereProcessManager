@@ -71,46 +71,43 @@ class ProductionDptsController < ApplicationController
             changes.push(change)
           end
 
-          if vdm.production_dpt.script != newVdm['prodDept']['script']
-            if newVdm['prodDept']['script'] != nil
-              change = VdmChange.new
-              change.changeDetail = 'Cambio de libreto de produccion'
 
-              change.changedTo = newVdm['prodDept']['script']
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.changeDate = Time.now
-              vdm.production_dpt.script_name = newVdm['prodDept']['script']['filename']
+          if newVdm['script'] != nil
+            change = VdmChange.new
+            change.changeDetail = 'Cambio de libreto de produccion'
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            vdm.production_dpt.script_name = newVdm['script']['filename']
 
-              vdm.production_dpt.script = newVdm['prodDept']['script']['base64']
-              change.changedTo = vdm.production_dpt.script.url
-              change.department = 'produccion'
-              changes.push(change)
+            vdm.production_dpt.script = newVdm['script']['base64']
+            change.changedTo = vdm.production_dpt.script.url
+            change.department = 'produccion'
+            changes.push(change)
 
-            end
           end
 
-          if vdm.production_dpt.screen_play != newVdm['prodDept']['screen_play']
-            if newVdm['prodDept']['screen_play'] != nil
-              change = VdmChange.new
-              change.changeDetail = 'Cambio de Guion de produccion'
-              change.vdm_id = vdm.id
-              change.user_id = $currentPetitionUser['id']
-              change.uname = $currentPetitionUser['username']
-              change.videoId = vdm.videoId
-              change.changeDate = Time.now
-              vdm.production_dpt.screen_play_name = newVdm['prodDept']['screen_play']['filename']
 
-              vdm.production_dpt.screen_play = newVdm['prodDept']['screen_play']['base64']
-              change.changedTo = vdm.production_dpt.screen_play.url
+          if newVdm['screen_play'] != nil
+            change = VdmChange.new
+            change.changeDetail = 'Cambio de Guion de produccion'
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            vdm.production_dpt.screen_play_name = newVdm['screen_play']['filename']
 
-              change.department = 'produccion'
-              changes.push(change)
+            vdm.production_dpt.screen_play = newVdm['screen_play']['base64']
+            change.changedTo = vdm.production_dpt.screen_play.url
 
-            end
+            change.department = 'produccion'
+            changes.push(change)
+
           end
+
 
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
             change = VdmChange.new
@@ -123,15 +120,21 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             vdm.production_dpt.status = 'grabado'
+            user = VdmsController.assign_task_to('editor')
             if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
               vdm.production_dpt.production_dpt_assignment.status = 'asignado'
+              vdm.production_dpt.production_dpt_assignment.user_id = user.id
+              vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
               vdm.production_dpt.production_dpt_assignment.save!
             else
               assignment = ProductionDptAssignment.new
               assignment.production_dpt_id = vdm.production_dpt.id
               assignment.status = 'asignado'
+              assignment.user_id = user.id
+              assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
               assignment.save!
             end
+            UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
             if vdm.product_management != nil
               vdm.product_management.productionStatus = 'por aprobar'
               vdm.product_management.save!
@@ -187,7 +190,7 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             changes.push(change)
-            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, changes)
 
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] != vdm.production_dpt.vidDev
@@ -203,7 +206,7 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             changes.push(change)
-            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, changes)
 
           end
           if newVdm['intro'] != vdm.production_dpt.intro && newVdm['conclu'] == vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
@@ -219,7 +222,7 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             changes.push(change)
-            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, changes)
 
           end
           if newVdm['intro'] == vdm.production_dpt.intro && newVdm['conclu'] != vdm.production_dpt.conclu && newVdm['vidDev'] == vdm.production_dpt.vidDev
@@ -235,29 +238,22 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             changes.push(change)
-            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, prodDeptChanges)
+            checkForCompleteRecording(newVdm['intro'], newVdm['conclu'], newVdm['vidDev'], vdm, changes)
           end
-          if newVdm['asigned'] != nil || newVdm['asignedId'] != nil
-            if newVdm['asignedId'] != nil
-              user = User.find(newVdm['asignedId'])
+          if newVdm['prodDept']['assigned'] != nil || newVdm['assignedId'] != nil
+            if newVdm['assignedId'] != nil
+              user = User.find(newVdm['assignedId'])
             else
-              user = User.find(newVdm['asigned']['id'])
+              user = User.find(newVdm['prodDept']['assigned']['id'])
             end
-            if vdm.production_dpt.production_dpt_assignment != nil
-              if vdm.production_dpt.production_dpt_assignment.user_id == nil
-                vdm.production_dpt.production_dpt_assignment.user_id = user.id
-                vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-                vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-                vdm.production_dpt.production_dpt_assignment.save!
-                UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
-              end
-              prodAssignedPayload = {
-                  id: vdm.production_dpt.production_dpt_assignment.id,
-                  assignedName: vdm.production_dpt.production_dpt_assignment.assignedName,
-                  status: vdm.production_dpt.production_dpt_assignment.status,
-                  user_id: vdm.production_dpt.production_dpt_assignment.user_id
-              }
+            if vdm.production_dpt.production_dpt_assignment == nil
+              vdm.production_dpt.production_dpt_assignment = ProductionDptAssignment.new
             end
+            vdm.production_dpt.production_dpt_assignment.user_id = user.id
+            vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
+            vdm.production_dpt.production_dpt_assignment.status = 'asignado'
+            vdm.production_dpt.production_dpt_assignment.save!
+            UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
           end
           vdm.production_dpt.intro = newVdm['intro']
           vdm.production_dpt.conclu = newVdm['conclu']
@@ -313,20 +309,21 @@ class ProductionDptsController < ApplicationController
           if vdm.production_dpt.production_dpt_assignment.status == 'editado'
             UserNotifier.send_to_approved_to_production(vdm).deliver
           end
-
-          assignment = vdm.production_dpt.production_dpt_assignment
         end
       end
       VdmChange.transaction do
         changes.uniq.each(&:save!)
       end
     end
-    if assignment == nil && vdm.production_dpt.production_dpt_assignment != nil
+    if assignment == nil
       assignment = vdm.production_dpt.production_dpt_assignment
     end
     prd_payload = {
         status: vdm.production_dpt.status,
         script: vdm.production_dpt.script,
+        screen_play: vdm.production_dpt.screen_play,
+        script_name: vdm.production_dpt.script_name,
+        screen_play_name: vdm.production_dpt.screen_play_name,
         comments: vdm.production_dpt.comments,
         intro: vdm.production_dpt.intro,
         conclu: vdm.production_dpt.conclu,
@@ -348,15 +345,21 @@ class ProductionDptsController < ApplicationController
       change.changeDate = Time.now
       change.department = 'produccion'
       vdm.production_dpt.status = 'grabado'
+      user = VdmsController.assign_task_to('editor')
       if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
         vdm.production_dpt.production_dpt_assignment.status = 'asignado'
+        vdm.production_dpt.production_dpt_assignment.user_id = user.id
+        vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
         vdm.production_dpt.production_dpt_assignment.save!
       else
         assignment = ProductionDptAssignment.new
         assignment.production_dpt_id = vdm.production_dpt.id
         assignment.status = 'asignado'
+        assignment.user_id = user.id
+        assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
         assignment.save!
       end
+      UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
       if vdm.product_management != nil
         vdm.product_management.productionStatus = 'por aprobar'
         vdm.product_management.save!

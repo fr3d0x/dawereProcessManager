@@ -413,18 +413,8 @@ class VdmsController < ApplicationController
             production_dpt.vdm_id = new_vdm['id']
             production_dpt.save!
             vdm.classes_planification.subject_planification.save!
-            assignment = production_dpt.production_dpt_assignment
-            if  assignment == nil
-              assignment = ProductionDptAssignment.new
-            end
-            user = assign_task_to('production')
-            assignment.user_id = user.id
-            assignment.status = 'asignado'
-            assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-            assignment.production_dpt_id = production_dpt.id
-            assignment.save!
+
             UserNotifier.send_assigned_to_production(vdm).deliver
-            UserNotifier.send_assigned_to_editor(vdm, user).deliver
           when 'wacom'
             design_dpt = vdm.design_dpt
             if design_dpt == nil
@@ -437,7 +427,7 @@ class VdmsController < ApplicationController
             if  assignment == nil
               assignment = DesignAssignment.new
             end
-            user = assign_task_to('design')
+            user = assign_task_to('designer')
             assignment.user_id = user.id
             assignment.status = 'asignado'
             assignment.assignedName = u.employee.firstName + ' ' + u.employee.firstSurname
@@ -1125,13 +1115,13 @@ class VdmsController < ApplicationController
     render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
   end
 
-  def assign_task_to(department)
+  def self.assign_task_to(department)
     assignments = nil
     employee = nil
     users = User.joins(:roles).where(:roles => {:role => department})
     users.each do |u|
       case department
-        when 'production'
+        when 'editor'
           if assignments == nil
             assignments = u.production_dpt_assignments.count
           else
@@ -1139,15 +1129,15 @@ class VdmsController < ApplicationController
               employee = u
             end
           end
-        when 'design'
+        when 'designer'
           if assignments == nil
-            assignments = u.dessign_assignments.count
+            assignments = u.design_assignments.count
           else
-            if u.dessign_assignments.count <= assignments
+            if u.design_assignments.count <= assignments
               employee = u
             end
           end
-        when 'post_production'
+        when 'post-producer'
           if assignments == nil
             assignments = u.post_prod_dpt_assignments.count
           else
