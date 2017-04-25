@@ -162,9 +162,16 @@ class VdmsController < ApplicationController
                 payload_item['prodDept'] = vdm.production_dpt
               when 'production', 'editor'
                 if vdm.production_dpt != nil
-                  if vdm.production_dpt.status != nil && vdm.production_dpt.status != ''
-                    payload_item['status']  = vdm.production_dpt.status
+                  if role == 'production'
+                    if vdm.production_dpt.status != nil && vdm.production_dpt.status != ''
+                      payload_item['status']  = vdm.production_dpt.status
+                    end
+                  else
+                    if vdm.production_dpt.production_dpt_assignment != nil
+                      payload_item['status']  = vdm.production_dpt.production_dpt_assignment.status
+                    end
                   end
+
                   responsable = 'no asignado'
                   production_dpt = {
                       id: vdm.production_dpt.id,

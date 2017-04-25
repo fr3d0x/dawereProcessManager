@@ -432,7 +432,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
 
                 if(vdm.screen_play != null && vdm.screen_play != undefined){
-                    switch (vdm.prodDept.screen_play.filetype){
+                    switch (vdm.screen_play.filetype){
                         case 'application/vnd.ms-powerpoint':
                         case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
                         case 'application/pdf':
@@ -684,30 +684,74 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             $scope.disableSave = true;
             $("body").css("cursor", "progress");
             if (vdm != null){
+                var mesage = '';
+                var valid = true;
                 if(vdm.id != null){
-                    if (vdm.assignmentStatus != null){
-                        vdm.prodDept.assignment.status = vdm.assignmentStatus;
-                    }
-                    vdm.role = localStorageService.get('currentRole');
-                    dawProcessManagerService.updateVdm(vdm, function (response){
-                        swal({
-                            title: "Exitoso",
-                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
-                            type: 'success',
-                            confirmButtonText: "OK",
-                            confirmButtonColor: "lightskyblue"
-                        });
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
-                        vdm.writable = false;
-                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
-                        vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
+                    if(vdm.prodDept != null && vdm.prodDept.assignment != null){
 
-                    }, function(error){
-                        console.log(error);
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
-                    })
+                        if(vdm.videoClip != null && vdm.videoClip != undefined){
+                            switch (vdm.videoClip.filetype){
+                                default:
+                                    vdm.videoClip.base64 = 'data:'+vdm.videoClip.filetype+';base64,'+vdm.videoClip.base64;
+                                    vdm.prodDept.assignment.video_clip = vdm.videoClip;
+                                    break;
+                            }
+                        }
+
+                        if(vdm.premierProject != null && vdm.premierProject != undefined){
+                            switch (vdm.premierProject.filetype){
+                                default:
+                                    vdm.premierProject.base64 = 'data:'+vdm.premierProject.filetype+';base64,'+vdm.premierProject.base64;
+                                    vdm.prodDept.assignment.premier_project = vdm.premierProject;
+                                    break;
+                            }
+                        }
+                        if (vdm.assignmentStatus != null){
+                            if(vdm.assignmentStatus == 'editado'){
+                                if(vdm.prodDept.assignment.premier_project == null || vdm.prodDept.assignment.video_clip){
+                                    mesage = "Debe guardar un video clip y un premier para indicar el estado como editado";
+                                    valid = false;
+                                }else{
+                                    vdm.prodDept.assignment.status = vdm.assignmentStatus;
+                                }
+                            }
+                        }
+
+                        if(valid){
+                            vdm.role = localStorageService.get('currentRole');
+                            dawProcessManagerService.updateVdm(vdm, function (response){
+                                swal({
+                                    title: "Exitoso",
+                                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                                vdm.writable = false;
+                                vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
+
+                            }, function(error){
+                                console.log(error);
+                                $("body").css("cursor", "default");
+                                $scope.disableSave = false;
+                            })
+                        }else{
+                            swal({
+                                title: "Aviso",
+                                text: mesage,
+                                type: 'warning',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                        }
+
+                    }else{
+                        mesage = "No puede guardar una edicion sin que haya una produccion asociada";
+                        valid = false;
+                    }
                 }
             }
         };

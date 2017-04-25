@@ -27,6 +27,27 @@
                         {{row.prodDept.assignment.comments}}...
                     </div>
                 </td>
+                <td data-title="'Archivos'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.prodDept.assignment.video_clip.video_clip.url == null && row.prodDept.assignment.premier_project.premier_project.url == null">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.screen_play.url != null || row.prodDept.script.script.url != null">
+                        <div ng-if="row.prodDept.assignment.video_clip.video_clip.url != null">
+                            <h4>Video Clip</h4>
+                            <div>
+                                <a href="{{uploadFolder + row.prodDept.assignment.video_clip.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.premier_project.url != null">
+                            <h4>Proyecto Premier</h4>
+                            <div>
+                                <a href="{{uploadFolder + row.prodDept.assignment.premier_project.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </td>
                 <td data-title="'Acciones'" ng-if="row.writable != true" style="vertical-align:middle">
                     <div align="center">
                         <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'">
@@ -54,6 +75,27 @@
                         <textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.assignment.comments"></textarea>
                     </div>
                 </td>
+                <td data-title="'Archivos'" ng-if="row.writable == true" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.prodDept.assignment.video_clip.video_clip.url == null && row.prodDept.assignment.premier_project.premier_project.url == null">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.screen_play.url != null || row.prodDept.script.script.url != null">
+                        <div ng-if="row.prodDept.assignment.video_clip.video_clip.url != null">
+                            <h4>Video Clip</h4>
+                            <div>
+                                <a href="{{uploadFolder + row.prodDept.assignment.video_clip.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.premier_project.url != null">
+                            <h4>Proyecto Premier</h4>
+                            <div>
+                                <a href="{{uploadFolder + row.prodDept.assignment.premier_project.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
                     <div align="center" ng-if="row.uploadFiles != true">
                         <a id="prodSave" ng-click="saveVdmEditor(row)" title='guardar' ng-if="row.prodDept.assignment.status != 'editado' && row.prodDept.assignment.status != 'aprobado'" ng-class="{disabled: disableSave == true}">
@@ -69,12 +111,12 @@
                     <div align="center" ng-if="row.uploadFiles == true">
                         <label for="uploadVideoClip" title="subir video clip">
                             <i class="fa fa-film uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadVideoClip" type="file" ng-model="row.video_clip" name="video_clip" style="display: none" base-sixty-four-input>
+                                <input id="uploadVideoClip" type="file" ng-model="row.videoClip" name="videoClip" style="display: none" base-sixty-four-input>
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <label for="uploadPremierProject" title="subir proyecto premier">
                             <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadPremierProject" type="file" ng-model="row.premier_project" name="premier_project" style="display: none" base-sixty-four-input>
+                                <input id="uploadPremierProject" type="file" ng-model="row.premierProject" name="premierProject" style="display: none" base-sixty-four-input>
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>

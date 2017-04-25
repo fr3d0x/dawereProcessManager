@@ -301,6 +301,36 @@ class ProductionDptsController < ApplicationController
               changes.push(change)
             end
           end
+          if newVdm['videoClip']
+            change = VdmChange.new
+            change.changeDetail = 'Cambio de video clip de editor'
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            change.department = 'edicion'
+            vdm.production_dpt.production_dpt_assignment.video_clip_name = newVdm['videoClip']['filename']
+            vdm.production_dpt.production_dpt_assignment.video_clip = newVdm['videoClip']['base64']
+            change.changedTo = vdm.production_dpt.production_dpt_assignment.video_clip.url
+
+            changes.push(change)
+          end
+          if newVdm['premierProject']
+            change = VdmChange.new
+            change.changeDetail = 'Cambio de proyecto premier de editor'
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            change.department = 'edicion'
+            vdm.production_dpt.production_dpt_assignment.premier_project_name = newVdm['premierProject']['filename']
+            vdm.production_dpt.production_dpt_assignment.premier_project = newVdm['premierProject']['base64']
+            change.changedTo = vdm.production_dpt.production_dpt_assignment.premier_project.url
+
+            changes.push(change)
+          end
           vdm.production_dpt.production_dpt_assignment.comments = newVdm['prodDept']['assignment']['comments']
           if newVdm['prodDept']['assignment']['status'] != 'no asignado'
             vdm.production_dpt.production_dpt_assignment.status = newVdm['prodDept']['assignment']['status']
