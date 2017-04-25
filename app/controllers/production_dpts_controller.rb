@@ -120,21 +120,16 @@ class ProductionDptsController < ApplicationController
             change.changeDate = Time.now
             change.department = 'produccion'
             vdm.production_dpt.status = 'grabado'
-            user = VdmsController.assign_task_to('editor')
-            if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-              vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-              vdm.production_dpt.production_dpt_assignment.user_id = user.id
-              vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-              vdm.production_dpt.production_dpt_assignment.save!
-            else
+            if vdm.production_dpt.production_dpt_assignment == nil || vdm.production_dpt.production_dpt_assignment.user_id == nil
+              user = VdmsController.assign_task_to('editor')
               assignment = ProductionDptAssignment.new
               assignment.production_dpt_id = vdm.production_dpt.id
               assignment.status = 'asignado'
               assignment.user_id = user.id
               assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
               assignment.save!
+              UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
             end
-            UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
             if vdm.product_management != nil
               vdm.product_management.productionStatus = 'por aprobar'
               vdm.product_management.save!
@@ -376,20 +371,15 @@ class ProductionDptsController < ApplicationController
       change.department = 'produccion'
       vdm.production_dpt.status = 'grabado'
       user = VdmsController.assign_task_to('editor')
-      if vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.user_id != nil
-        vdm.production_dpt.production_dpt_assignment.status = 'asignado'
-        vdm.production_dpt.production_dpt_assignment.user_id = user.id
-        vdm.production_dpt.production_dpt_assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-        vdm.production_dpt.production_dpt_assignment.save!
-      else
+      if vdm.production_dpt.production_dpt_assignment == nil || vdm.production_dpt.production_dpt_assignment.user_id == nil
         assignment = ProductionDptAssignment.new
         assignment.production_dpt_id = vdm.production_dpt.id
         assignment.status = 'asignado'
         assignment.user_id = user.id
         assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
         assignment.save!
+        UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
       end
-      UserNotifier.send_assigned_to_editor(vdm, user.employee).deliver
       if vdm.product_management != nil
         vdm.product_management.productionStatus = 'por aprobar'
         vdm.product_management.save!

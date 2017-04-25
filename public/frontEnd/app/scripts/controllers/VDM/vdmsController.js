@@ -436,7 +436,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'application/vnd.ms-powerpoint':
                         case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
                         case 'application/pdf':
-                            vdm.prodDept.screen_play.base64 = 'data:'+vdm.prodDept.screen_play.filetype+';base64,'+vdm.prodDept.screen_play.base64;
+                            vdm.screen_play.base64 = 'data:'+vdm.screen_play.filetype+';base64,'+vdm.screen_play.base64;
+                            vdm.prodDept.screen_play = vdm.screen_play;
                             break;
 
                         default:
@@ -445,18 +446,19 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             break;
                     }
                 }else{
-                    if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == ''){
+                    if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == '' || vdm.prodDept.screen_play.url == null || vdm.prodDept.screen_play.url == undefined || vdm.prodDept.screen_play.url == '') {
                         mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
                         valid = false;
                     }
                 }
 
                 if(vdm.script != null && vdm.script != undefined){
-                    switch (vdm.prodDept.script.filetype){
+                    switch (vdm.script.filetype){
                         case 'application/vnd.ms-excel':
                         case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
                         case 'application/pdf':
-                            vdm.prodDept.script.base64 = 'data:'+vdm.prodDept.script.filetype+';base64,'+vdm.prodDept.script.base64;
+                            vdm.script.base64 = 'data:'+vdm.script.filetype+';base64,'+vdm.script.base64;
+                            vdm.prodDept.script = vdm.script;
                             break;
 
                         default:
@@ -465,7 +467,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             break;
                     }
                 }else{
-                    if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == ''){
+                    if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == '' ||vdm.prodDept.script.url == null || vdm.prodDept.script.url == undefined || vdm.prodDept.script.url == ''){
                         mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
                         valid = false;
                     }
@@ -682,7 +684,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.saveVdmEditor = function(vdm){
             $scope.disableSave = true;
-            $("body").css("cursor", "progress");
+            $rootScope.setLoader(true);
             if (vdm != null){
                 var mesage = '';
                 var valid = true;
@@ -716,42 +718,43 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 }
                             }
                         }
-
-                        if(valid){
-                            vdm.role = localStorageService.get('currentRole');
-                            dawProcessManagerService.updateVdm(vdm, function (response){
-                                swal({
-                                    title: "Exitoso",
-                                    text: "Se ha actualizado el MDT del video " + response.data.videoId,
-                                    type: 'success',
-                                    confirmButtonText: "OK",
-                                    confirmButtonColor: "lightskyblue"
-                                });
-                                $("body").css("cursor", "default");
-                                $scope.disableSave = false;
-                                vdm.writable = false;
-                                vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
-                                vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
-
-                            }, function(error){
-                                console.log(error);
-                                $("body").css("cursor", "default");
-                                $scope.disableSave = false;
-                            })
-                        }else{
-                            swal({
-                                title: "Aviso",
-                                text: mesage,
-                                type: 'warning',
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "lightskyblue"
-                            });
-                        }
-
                     }else{
                         mesage = "No puede guardar una edicion sin que haya una produccion asociada";
                         valid = false;
                     }
+                    if(valid){
+                        vdm.role = localStorageService.get('currentRole');
+                        dawProcessManagerService.updateVdm(vdm, function (response){
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                            $rootScope.setLoader(true);
+                            $scope.disableSave = false;
+                            vdm.writable = false;
+                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                            vdm.prodDept.assignment.comments = response.data.prodDept.assignment.comments;
+
+                        }, function(error){
+                            console.log(error);
+                            $rootScope.setLoader(true);
+                            $scope.disableSave = false;
+                        })
+                    }else{
+                        $rootScope.setLoader(true);
+                        $scope.disableSave = false;
+                        swal({
+                            title: "Aviso",
+                            text: mesage,
+                            type: 'warning',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                    }
+
                 }
             }
         };

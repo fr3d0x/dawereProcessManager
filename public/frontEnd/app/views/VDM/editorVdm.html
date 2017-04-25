@@ -111,12 +111,12 @@
                     <div align="center" ng-if="row.uploadFiles == true">
                         <label for="uploadVideoClip" title="subir video clip">
                             <i class="fa fa-film uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadVideoClip" type="file" ng-model="row.videoClip" name="videoClip" style="display: none" base-sixty-four-input>
+                                <div class="button" id="uploadVideoClip" ngf-select ng-model="row.videoClip" name="videoClip">select</div>
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <label for="uploadPremierProject" title="subir proyecto premier">
                             <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadPremierProject" type="file" ng-model="row.premierProject" name="premierProject" style="display: none" base-sixty-four-input>
+                                <input id="uploadPremierProject" type="file" ng-model="row.premierProject" name="premierProject" style="display: none">
                             </i>
                         </label><span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>

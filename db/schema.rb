@@ -293,7 +293,7 @@ ActiveRecord::Schema.define(version: 20170424144741) do
     t.datetime "updated_at",                             null: false
     t.integer  "number",                   limit: 4
     t.float    "duration",                 limit: 24
-    t.string   "vdm_type",                 limit: 255
+    t.string   "type",                     limit: 255
     t.text     "classDoc",                 limit: 65535
     t.string   "class_doc_name",           limit: 255
   end

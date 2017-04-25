@@ -1136,7 +1136,7 @@ class VdmsController < ApplicationController
           if assignments == nil
             assignments = u.production_dpt_assignments.count
           else
-            if u.production_dpt_assignments.count <= assignments
+            if u.production_dpt_assignments.count <= assignments || u.production_dpt_assignments == nil
               employee = u
             end
           end
@@ -1156,6 +1156,9 @@ class VdmsController < ApplicationController
               employee = u
             end
           end
+      end
+      if employee == nil
+        employee = u
       end
     end
     return employee

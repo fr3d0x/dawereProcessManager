@@ -42,21 +42,21 @@
                     </div>
                 </td>
                 <td data-title="'Archivos'" ng-if="row.writable != true" style="vertical-align:middle">
-                    <div class="itemMissing" ng-if="row.prodDept.scree_play.screen_play.url == null && row.prodDept.script.script.url == null">
+                    <div class="itemMissing" ng-if="row.prodDept.screen_play.url == null && row.prodDept.script.url == null">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.prodDept.screen_play.screen_play.url != null || row.prodDept.script.script.url != null">
-                        <div ng-if="row.prodDept.screen_play.screen_play.url != null">
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.url != null || row.prodDept.script.url != null">
+                        <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.screen_play.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
-                        <div ng-if="row.prodDept.script.script.url != null">
+                        <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.script.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
