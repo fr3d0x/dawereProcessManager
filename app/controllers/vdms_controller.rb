@@ -225,18 +225,30 @@ class VdmsController < ApplicationController
                 end
               when 'productManager'
                 if vdm.product_management != nil
-                  payload_item['prodDept'] = vdm.production_dpt
-                  payload_item['designDept'] = vdm.design_dpt
-                  payload_item['postProdDept'] = vdm.post_prod_dpt
-                  payload_item['productManagement'] = vdm.product_management
-                  payload_item['productionStatus'] = vdm.production_dpt.status
-                  if vdm.production_dpt != nil && vdm.production_dpt.production_dpt_assignment != nil
-                    payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+                  if vdm.production_dpt != nil
+                    payload_item['prodDept'] = vdm.production_dpt
+                    payload_item['productionStatus'] = vdm.production_dpt.status
+                    if vdm.production_dpt.production_dpt_assignment != nil
+                      payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+                    else
+                      payload_item['editionStatus'] = 'no asignado'
+                    end
                   else
-                    payload_item['editionStatus'] = 'no asignado'
+                    payload_item['productionStatus'] = 'no asignado'
                   end
-                  payload_item['designStatus'] = vdm.design_dpt.status
-                  payload_item['postProdStatus'] = vdm.post_prod_dpt.status
+                  if vdm.design_dpt != nil
+                    payload_item['designDept'] = vdm.design_dpt
+                    payload_item['designStatus'] = vdm.design_dpt.status
+                  else
+                    payload_item['designStatus'] = 'no asignado'
+                  end
+                  if vdm.post_prod_dpt != nil
+                    payload_item['postProdDept'] = vdm.post_prod_dpt
+                    payload_item['postProdStatus'] = vdm.post_prod_dpt.status
+                  else
+                    payload_item['postProdStatus'] = 'no asignado'
+                  end
+                  payload_item['productManagement'] = vdm.product_management
                 end
               when 'qa', 'qaAnalist'
                 if vdm.qa_dpt != nil
@@ -668,11 +680,22 @@ class VdmsController < ApplicationController
                 design.status = 'asignado'
                 design.vdm = vdm
                 design.save!
-                UserNotifier.send_assigned_to_designLeader(vdm).deliver
-                if design.design_assignment != nil
-                  design.design_assignment.status = 'asignado'
-                  design.design_assignment.save!
+                assignment = design.design_assignment
+                if  assignment == nil
+                  assignment = DesignAssignment.new
                 end
+                if assignment.user_id == nil
+                  user = assign_task('designer')
+                  assignment.user_id = user.id
+                  assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
+                  UserNotifier.send_assigned_to_designer(vdm, user).deliver
+                else
+                  UserNotifier.send_assigned_to_designer(vdm, assignment.user.employee).deliver
+                end
+                assignment.status = 'asignado'
+                assignment.design_dpt_id = design.id
+                assignment.save!
+                UserNotifier.send_assigned_to_designLeader(vdm).deliver
               end
             else
               if vdm.product_management != nil
@@ -1127,6 +1150,10 @@ class VdmsController < ApplicationController
   end
 
   def self.assign_task_to(department)
+    return assign_task(department)
+  end
+
+  def assign_task(department)
     assignments = nil
     employee = nil
     users = User.joins(:roles).where(:roles => {:role => department})
@@ -1163,7 +1190,42 @@ class VdmsController < ApplicationController
     end
     return employee
   end
+  def upload_edition_files
+    msg = 'Archivo guardadp exitosamente'
+    response = nil
+    if request != nil && params[:id] != nil
+      vdm = Vdm.find(params[:id])
+      if vdm.production_dpt.production_dpt_assignment != nil
+        if params[:file] != nil
+          case params[:file].content_type
+            when 'video/mp4'
+              vdm.production_dpt.production_dpt_assignment.video_clip_name = params[:file].original_filename
+              vdm.production_dpt.production_dpt_assignment.video_clip = params[:file]
+              vdm.production_dpt.production_dpt_assignment.save!
+              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.video_clip.path, $files_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.video_clip_name)
+              response = {
+                  video_clip: vdm.production_dpt.production_dpt_assignment.video_clip,
+                  video_clip_name: vdm.production_dpt.production_dpt_assignment.video_clip_name
+              }
+            when 'application/octet-stream'
+              vdm.production_dpt.production_dpt_assignment.premier_project_name = params[:file].original_filename
+              vdm.production_dpt.production_dpt_assignment.premier_project = params[:file]
+              vdm.production_dpt.production_dpt_assignment.save!
+              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.premier_project.path, $files_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.premier_project_name)
+              response = {
+                  premier_project: vdm.production_dpt.production_dpt_assignment.premier_project,
+                  premier_project_name: vdm.production_dpt.production_dpt_assignment.premier_project_name
+              }
+            else
+              msg = 'tipo de archivo no admitido'
+          end
+        end
 
+
+      end
+    end
+    render :json => { data: response, status: 'SUCCESS', msg: msg}, :status => 200
+  end
 
   private
 

@@ -86,7 +86,7 @@ class UserNotifier < ApplicationMailer
   def send_approved_to_editor(vdm, user)
     @vdm = vdm
     @user = user
-    mail( :to => [user.employee.email],
+    mail( :to => [user.email],
           :subject => 'Se ha aprobado un MDT de edicion' )
   end
   def send_approved_to_designLeader(vdm)
@@ -98,7 +98,7 @@ class UserNotifier < ApplicationMailer
   def send_approved_to_designer(vdm, user)
     @vdm = vdm
     @user = user
-    mail( :to => [user.employee.email],
+    mail( :to => [user.email],
           :subject => 'Se ha aprobado un MDT de diseno' )
   end
   def send_approved_to_post_prod_leader(vdm)
@@ -110,7 +110,7 @@ class UserNotifier < ApplicationMailer
   def send_approved_to_post_producer(vdm, user)
     @vdm = vdm
     @user = user
-    mail( :to => [user.employee.email],
+    mail( :to => [user.email],
           :subject => 'Se ha aprobado un MDT de post-produccion' )
   end
 

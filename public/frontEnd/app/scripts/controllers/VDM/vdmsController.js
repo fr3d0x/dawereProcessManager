@@ -2,8 +2,8 @@
  * Created by fr3d0 on 28/07/16.
  */
 'use strict';
-app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope',
-    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope){
+app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload){
         $scope.assignmentStatus = null;
 
         var getEditorsJson = function (employees) {
@@ -690,27 +690,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 var valid = true;
                 if(vdm.id != null){
                     if(vdm.prodDept != null && vdm.prodDept.assignment != null){
-
-                        if(vdm.videoClip != null && vdm.videoClip != undefined){
-                            switch (vdm.videoClip.filetype){
-                                default:
-                                    vdm.videoClip.base64 = 'data:'+vdm.videoClip.filetype+';base64,'+vdm.videoClip.base64;
-                                    vdm.prodDept.assignment.video_clip = vdm.videoClip;
-                                    break;
-                            }
-                        }
-
-                        if(vdm.premierProject != null && vdm.premierProject != undefined){
-                            switch (vdm.premierProject.filetype){
-                                default:
-                                    vdm.premierProject.base64 = 'data:'+vdm.premierProject.filetype+';base64,'+vdm.premierProject.base64;
-                                    vdm.prodDept.assignment.premier_project = vdm.premierProject;
-                                    break;
-                            }
-                        }
                         if (vdm.assignmentStatus != null){
                             if(vdm.assignmentStatus == 'editado'){
-                                if(vdm.prodDept.assignment.premier_project == null || vdm.prodDept.assignment.video_clip){
+                                if(vdm.prodDept.assignment.premier_project == null || vdm.prodDept.assignment.premier_project == undefined || vdm.prodDept.assignment.premier_project == '' || vdm.prodDept.assignment.premier_project.url == null ||  vdm.prodDept.assignment.premier_project.url == undefined || vdm.prodDept.assignment.premier_project.url == '' || vdm.prodDept.assignment.video_clip == null || vdm.prodDept.assignment.video_clip == undefined || vdm.prodDept.assignment.video_clip == '' || vdm.prodDept.assignment.video_clip.url == null || vdm.prodDept.assignment.video_clip.url == undefined || vdm.prodDept.assignment.video_clip.url == ''){
                                     mesage = "Debe guardar un video clip y un premier para indicar el estado como editado";
                                     valid = false;
                                 }else{
@@ -732,7 +714,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 confirmButtonText: "OK",
                                 confirmButtonColor: "lightskyblue"
                             });
-                            $rootScope.setLoader(true);
+                            $rootScope.setLoader(false);
                             $scope.disableSave = false;
                             vdm.writable = false;
                             vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
@@ -740,11 +722,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                         }, function(error){
                             console.log(error);
-                            $rootScope.setLoader(true);
+                            $rootScope.setLoader(false);
                             $scope.disableSave = false;
                         })
                     }else{
-                        $rootScope.setLoader(true);
+                        $rootScope.setLoader(false);
                         $scope.disableSave = false;
                         swal({
                             title: "Aviso",
@@ -1150,7 +1132,63 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         };
 
         getVdms();
-        
+
+        $scope.uploadEditionFiles = function(file, vdm){
+            $rootScope.setLoader(true);
+            var baseUrl = ENV.baseUrl;
+            if(vdm.prodDept != null && vdm.prodDept.assignment != null) {
+                Upload.upload({
+                    url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id,
+                    data: {file: file}
+                }).then(function (resp) {
+                    if(resp.data != null){
+                        switch(file.type){
+                            case 'video/mp4':
+                                vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
+                                vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
+                                break;
+
+                            case '':
+                                vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
+                                vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
+                                break;
+                            default:
+                                angular.element("input[type='file']").val(null);
+                                console.log('Archivo no permitido')
+                        }
+
+                    }
+                    $rootScope.setLoader(false);
+                    swal({
+                        title: "Exitoso",
+                        text: 'Se ha guardado el archivo de forma exitosa',
+                        type: 'success',
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightskyblue"
+                    });
+                    angular.element("input[type='file']").val(null);
+                    console.clear();
+                }, function (error) {
+                    angular.element("input[type='file']").val(null);
+                    $rootScope.setLoader(false);
+                    console.log(error);
+                }, function (evt) {
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                    console.log('progreso de subida: ' + progressPercentage + '% ');
+                });
+            }else {
+                angular.element("input[type='file']").val(null);
+                $rootScope.setLoader(false);
+                swal({
+                    title: "Fallido",
+                    text: 'No puede guardar una edicion sin que haya una produccion asociada',
+                    type: 'error',
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "lightcoral"
+                });
+
+            }
+        };
         $scope.$watch('localStorageService.get("currentRole")', function (newVal, oldVal) {
             if(newVal !== oldVal){
                 getVdms();

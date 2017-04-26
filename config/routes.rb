@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :qa_analists, except: [:new, :edit]
-  resources :qa_dpts, except: [:new, :edit]
   scope(:path => '/api') do
     resources :post_prod_dpt_assignments, except: [:new, :edit]
     resources :post_prod_dpts, except: [:new, :edit]
@@ -23,6 +21,7 @@ Rails.application.routes.draw do
         get :getDawereVdms
         post :approveVdm
         post :rejectVdm
+        post :upload_edition_files
       end
     end
     resources :classes_planifications, except: [:new, :edit] do
@@ -68,6 +67,8 @@ Rails.application.routes.draw do
         get :getChangesBySubject
       end
     end
+    resources :qa_analists, except: [:new, :edit]
+    resources :qa_dpts, except: [:new, :edit]
 
   end
 

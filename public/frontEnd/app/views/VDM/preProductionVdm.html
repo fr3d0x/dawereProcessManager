@@ -20,14 +20,14 @@
                     </div>
                 </td>
                 <td data-title="'Archivos'" ng-if="row.writable != true" style="vertical-align:middle">
-                    <div class="itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
+                    <div class="itemMissing" ng-if="row.classDoc.url == null && row.teacherFiles.length < 1">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
-                        <div ng-if="row.classDoc.classDoc.url != null">
+                    <div class="itemPresent" ng-if="row.classDoc.url != null || row.teacherFiles.length >= 1">
+                        <div ng-if="row.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
-                                <a href="{{uploadFolder + row.classDoc.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
+                                <a href="{{uploadFolder + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -75,11 +75,11 @@
                     <div class="itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.classDoc.classDoc.url != null || row.teacherFiles.length >= 1">
-                        <div ng-if="row.classDoc.classDoc.url != null">
+                    <div class="itemPresent" ng-if="row.classDoc.url != null || row.teacherFiles.length >= 1">
+                        <div ng-if="row.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
-                                <a href="{{uploadFolder + row.classDoc.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
+                                <a href="{{uploadFolder + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
                             </div>
                             <br>
                         </div>
