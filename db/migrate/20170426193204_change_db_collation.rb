@@ -15,7 +15,7 @@ class ChangeDbCollation < ActiveRecord::Migration
     execute "ALTER TABLE production_dpts CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
     execute "ALTER TABLE production_dpt_assignments CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
     execute "ALTER TABLE product_managements CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
-    execute "ALTER TABLE qa_analists CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
+    execute "ALTER TABLE qa_assignments CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
     execute "ALTER TABLE qa_dpts CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
     execute "ALTER TABLE roles CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"
     execute "ALTER TABLE subject_planifications CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;"

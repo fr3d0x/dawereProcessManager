@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class QaAnalistTest < ActiveSupport::TestCase
+class PostProdElementTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

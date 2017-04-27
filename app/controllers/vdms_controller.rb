@@ -147,7 +147,7 @@ class VdmsController < ApplicationController
                 videoContent: vdm.videoContent,
                 status: status,
                 comments: vdm.comments,
-                vdm_type: vdm.vdm_type,
+                type: vdm.vdm_type,
                 cp: cp.as_json,
                 cpId: cp.id,
                 videoNumber: vdm.number,
@@ -226,10 +226,23 @@ class VdmsController < ApplicationController
                       comments: vdm.post_prod_dpt.comments,
                   }
                   if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
-                    post_prod_dpt['assignment'] = vdm.post_prod_dpt.post_prod_dpt_assignment
+                    assignment = {
+                        id: vdm.post_prod_dpt.post_prod_dpt_assignment.id,
+                        status: vdm.post_prod_dpt.post_prod_dpt_assignment.status,
+                        assignedName: vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName,
+                        comments: vdm.post_prod_dpt.post_prod_dpt_assignment.comments,
+                        user_id: vdm.post_prod_dpt.post_prod_dpt_assignment.user_id,
+                        video: vdm.post_prod_dpt.post_prod_dpt_assignment.video,
+                        video_name: vdm.post_prod_dpt.post_prod_dpt_assignment.video_name,
+                        premier_project: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project,
+                        premier_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name,
+                        after_project: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project,
+                        after_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name,
+                        illustrators: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators,
+                        elements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements,
+                    }
+                    post_prod_dpt['assignment'] = assignment
                   end
-                  payload_item['prodDept'] = vdm.production_dpt
-                  payload_item['designDept'] = vdm.design_dpt
                   payload_item['postProdDept'] = post_prod_dpt
                 end
               when 'productManager'
@@ -1144,13 +1157,13 @@ class VdmsController < ApplicationController
                   user = assign_task_to('post-producer')
                   assignment.user_id = user.id
                   assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-                  UserNotifier.create_send_assigned_to_post_producer(vdm, user.employee).deliver
+                  UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
                 else
-                  UserNotifier.create_send_assigned_to_post_producer(vdm, assignment.user.employee).deliver
+                  UserNotifier.send_assigned_to_post_producer(vdm, assignment.user.employee).deliver
                 end
-                postProd.post_prod_dpt_assignment.status = 'asignado'
+                assignment = 'asignado'
                 assignment.post_prod_dpt_id = postProd.id
-                postProd.post_prod_dpt_assignment.save!
+                assignment.save!
                 UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
                 prod_mangement.postProductionStatus = 'asignado'
               else
@@ -1177,7 +1190,7 @@ class VdmsController < ApplicationController
                 assignment.design_dpt_id = design.id
                 assignment.save!
                 UserNotifier.send_assigned_to_designLeader(vdm).deliver
-                prod_mangement.editionStatus = 'asignado'
+                prod_mangement.designStatus = 'asignado'
               end
               prod_mangement.save!
             else
@@ -1233,13 +1246,13 @@ class VdmsController < ApplicationController
                   user = assign_task_to('post-producer')
                   assignment.user_id = user.id
                   assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
-                  UserNotifier.create_send_assigned_to_post_producer(vdm, user.employee).deliver
+                  UserNotifier.send_assigned_to_post_producer(vdm, user.employee).deliver
                 else
-                  UserNotifier.create_send_assigned_to_post_producer(vdm, assignment.user.employee).deliver
+                  UserNotifier.send_assigned_to_post_producer(vdm, assignment.user.employee).deliver
                 end
-                postProd.post_prod_dpt_assignment.status = 'asignado'
+                assignment.status = 'asignado'
                 assignment.post_prod_dpt_id = postProd.id
-                postProd.post_prod_dpt_assignment.save!
+                assignment.save!
                 UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
 
               end
@@ -1900,6 +1913,143 @@ class VdmsController < ApplicationController
     render :json => { data: response, status: 'SUCCESS', msg: msg}, :status => 200
   end
 
+  def upload_post_production_files
+    msg = 'Archivo(s) guardado(s) exitosamente'
+    response = nil
+    changes = []
+    if request != nil && params[:id] != nil
+      vdm = Vdm.find(params[:id])
+      if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+        case params[:file_type]
+          when 'final_vid'
+            if params[:upload] != nil
+              change = VdmChange.new
+              change.changeDetail = 'Cambio de video'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              vdm.post_prod_dpt.post_prod_dpt_assignment.video = params[:upload] #create a document associated with the item that has just been created end
+              vdm.post_prod_dpt.post_prod_dpt_assignment.video_name = params[:upload].original_filename
+              change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.video.url
+              changes.push(change)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, $files_copy_route+'/'+params[:upload].original_filename)
+              response = {
+                  video: vdm.post_prod_dpt.post_prod_dpt_assignment.video,
+                  video_name: vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
+              }
+            end
+          when 'premier_project'
+            if params[:upload] != nil
+              change = VdmChange.new
+              change.changeDetail = 'Cambio de proyecto premier'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project = params[:upload] #create a document associated with the item that has just been created end
+              vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name = params[:upload].original_filename
+              change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.url
+              changes.push(change)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, $files_copy_route+'/'+params[:upload].original_filename)
+              response = {
+                  premier_project: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project,
+                  premier_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name
+              }
+            end
+          when 'after_project'
+            if params[:upload] != nil
+              change = VdmChange.new
+              change.changeDetail = 'Cambio de proyecto after'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              vdm.post_prod_dpt.post_prod_dpt_assignment.after_project = params[:upload] #create a document associated with the item that has just been created end
+              vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name = params[:upload].original_filename
+              change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.url
+              changes.push(change)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, $files_copy_route+'/'+params[:upload].original_filename)
+              response = {
+                  after_project: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project,
+                  after_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name
+              }
+            end
+          when 'illustrators'
+            illustrators = []
+            params[:upload].each do |il|
+              uploaded_file = il[1]
+              change = VdmChange.new
+              change.changeDetail = 'Agregado nuevo illustrator'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              changes.push(change)
+              file = PostProdIllustrator.new
+              file.file = uploaded_file
+              file.post_prod_dpt_assignment_id = vdm.post_prod_dpt.post_prod_dpt_assignment.id
+              file.file_name = uploaded_file.original_filename
+              illustrators.push(file)
+              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+            end
+            if illustrators.count >= 1
+              TeacherFile.transaction do
+                illustrators.each(&:save!)
+              end
+            end
+            response = {
+                illustrators: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators
+            }
+          when 'elements'
+            elements = []
+            params[:upload].each do |el|
+              uploaded_file = el[1]
+              change = VdmChange.new
+              change.changeDetail = 'Agregado nuevo elemento'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'post-produccion'
+              changes.push(change)
+              file = PostProdElement.new
+              file.file = uploaded_file
+              file.post_prod_dpt_assignment_id = vdm.post_prod_dpt.post_prod_dpt_assignment.id
+              file.file_name = uploaded_file.original_filename
+              elements.push(file)
+              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+            end
+            if elements.count >= 1
+              TeacherFile.transaction do
+                elements.each(&:save!)
+              end
+            end
+            response = {
+                elements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements
+            }
+          else
+            msg = 'tipo de archivo no admitido'
+        end
+        vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+        VdmChange.transaction do
+          changes.each(&:save!)
+        end
+      end
+
+    end
+    render :json => { data: response, status: 'SUCCESS', msg: msg}, :status => 200
+  end
+
   def assign_task_to(department)
     assignments = nil
     employee = nil
@@ -1927,6 +2077,14 @@ class VdmsController < ApplicationController
             assignments = u.post_prod_dpt_assignments.count
           else
             if u.post_prod_dpt_assignments.count <= assignments
+              employee = u
+            end
+          end
+        when 'qa'
+          if assignments == nil
+            assignments = u.qa_assignments
+          else
+            if u.qa_assignments.count <= assignments
               employee = u
             end
           end
