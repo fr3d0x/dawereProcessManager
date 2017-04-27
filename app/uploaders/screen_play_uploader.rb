@@ -13,7 +13,7 @@ class ScreenPlayUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "#{model.vdm.classes_planification.subject_planification.subject.name}/#{model.vdm.videoId}/guiones/"
+    "#{model.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.vdm.classes_planification.subject_planification.subject.name}/#{model.vdm.videoId}/guiones/"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:

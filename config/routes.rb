@@ -22,6 +22,9 @@ Rails.application.routes.draw do
         post :approveVdm
         post :rejectVdm
         post :upload_edition_files
+        post :upload_pre_production_files
+        post :upload_design_files
+        post :upload_production_files
       end
     end
     resources :classes_planifications, except: [:new, :edit] do

@@ -72,7 +72,7 @@
                 <td data-title="'Contenido'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold" type="text" ng-model="row.videoContent"></textarea></td>
                 <td data-title="'Archivos'" ng-if="row.writable == true" class="row" style="vertical-align:middle">
 
-                    <div class="itemMissing" ng-if="row.classDoc.classDoc.url == null && row.teacherFiles.length < 1">
+                    <div class="itemMissing" ng-if="row.classDoc.url == null && row.teacherFiles.length < 1">
                         No Posee
                     </div>
                     <div class="itemPresent" ng-if="row.classDoc.url != null || row.teacherFiles.length >= 1">
@@ -120,16 +120,12 @@
                         </a>
                     </div>
                     <div align="center" ng-if="row.uploadFiles == true">
-                        <label for="uploadCDoc" title="subir documento de clase">
-                            <i class="fa fa-file-powerpoint-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadCDoc" type="file" ng-model="row.class_doc" name="class_doc" style="display: none" base-sixty-four-input>
-                            </i>
-                        </label><span style="font-size: 20px"> |</span>
-                        <label for="uploadTFiles" title="subir material del profesor">
-                            <i class="fa fa-file-pdf-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadTFiles" type="file" ng-model="row.teacher_files" multiple maxnum="2" name="teacher_files" style="display: none" base-sixty-four-input>
-                            </i>
-                        </label><span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-powerpoint-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPreProductionFiles($file, row, 'class_doc')" name="class_doc" id="uploadCDoc" title="subir documento de clase">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-pdf-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPreProductionFiles($files, row, 'teacher_files')" multiple="multiple" name="teacher_files" id="uploadTFiles" title="subir archivos de profesor">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

@@ -14,7 +14,7 @@ class TeacherFilesUploader < CarrierWave::Uploader::Base
   # This is a sensible default for uploaders that are meant to be mounted:
 
   def store_dir
-    "#{model.vdm.classes_planification.subject_planification.subject.name}/#{model.vdm.videoId}/material_profesor/"
+    "#{model.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.vdm.classes_planification.subject_planification.subject.name}/#{model.vdm.videoId}/material_profesor/"
   end
 
 

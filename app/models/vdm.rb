@@ -7,5 +7,5 @@ class Vdm < ActiveRecord::Base
   has_one :product_management
   has_one :post_prod_dpt
   has_one :qa_dpt
-  mount_base64_uploader :classDoc, ClassDocUploader
+  mount_uploader :classDoc, ClassDocUploader
 end

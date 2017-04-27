@@ -130,21 +130,21 @@
                 </td>
                 <td data-title="'Comentarios'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
                 <td data-title="'Archivos'" ng-if="row.writable == true" style="vertical-align:middle">
-                    <div class="itemMissing" ng-if="row.prodDept.scree_play.screen_play.url == null && row.prodDept.script.script.url == null">
+                    <div class="itemMissing" ng-if="row.prodDept.screen_play.url == null && row.prodDept.script.url == null">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.prodDept.screen_play.screen_play.url != null || row.prodDept.script.script.url != null">
-                        <div ng-if="row.prodDept.screen_play.screen_play.url != null">
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.url != null || row.prodDept.script.url != null">
+                        <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.screen_play.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
-                        <div ng-if="row.prodDept.script.script.url != null">
+                        <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.script.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a href="{{uploadFolder + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -179,16 +179,12 @@
                         </a>
                     </div>
                     <div align="center" ng-if="row.uploadFiles == true">
-                        <label for="uploadScreenPlay" title="subir libreto">
-                            <i class="fa fa-file-powerpoint-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadScreenPlay" type="file" ng-model="row.screen_play" name="screen_play" style="display: none" base-sixty-four-input>
-                            </i>
-                        </label><span style="font-size: 20px"> |</span>
-                        <label for="uploadScript" title="subir guion">
-                            <i class="fa fa-file-excel-o uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="uploadScript" type="file" ng-model="row.script" name="script" style="display: none" base-sixty-four-input>
-                            </i>
-                        </label><span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-powerpoint-o uploadBtn" id="uploadScreenPlay" name="screen_play" aria-hidden="true" style="font-size: 15px" ngf-select="uploadProductionFiles($file, row, 'screen_play')">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-excel-o uploadBtn" aria-hidden="true" style="font-size: 15px" title="subir guion" id="uploadScript" ngf-select="uploadProductionFiles($file, row, 'script')">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

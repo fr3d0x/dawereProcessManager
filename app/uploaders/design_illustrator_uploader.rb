@@ -1,6 +1,4 @@
-# encoding: utf-8
-
-class ScriptUploader < CarrierWave::Uploader::Base
+class DesignIllustratorUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
@@ -9,10 +7,11 @@ class ScriptUploader < CarrierWave::Uploader::Base
   # Choose what kind of storage to use for this uploader:
   storage :file
   # storage :fog
+
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "#{model.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.vdm.classes_planification.subject_planification.subject.name}/#{model.vdm.videoId}/libretos/"
+    "#{model.design_assignment.design_dpt.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.design_assignment.design_dpt.vdm.classes_planification.subject_planification.subject.name}/#{model.design_assignment.design_dpt.vdm.videoId}/illustrators_diseño/"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -24,7 +23,7 @@ class ScriptUploader < CarrierWave::Uploader::Base
   # end
 
   # Process files as they are uploaded:
-  # process :scale => [200, 300]
+  # process scale: [200, 300]
   #
   # def scale(width, height)
   #   # do something
@@ -32,20 +31,19 @@ class ScriptUploader < CarrierWave::Uploader::Base
 
   # Create different versions of your uploaded files:
   # version :thumb do
-  #   process :resize_to_fit => [50, 50]
+  #   process resize_to_fit: [50, 50]
   # end
 
   # Add a white list of extensions which are allowed to be uploaded.
   # For images you might use something like this:
-  #def extension_white_list
-  # #%w(jpg jpeg gif png)
-  # %w(pdf powerpoint doc excel)
-  #end
+  # def extension_whitelist
+  #   %w(jpg jpeg gif png)
+  # end
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-   def filename
-     "#{model.script_name}" if original_filename.present?
-   end
+  def filename
+    "#{model.file_name}" if original_filename.present?
+  end
 
 end

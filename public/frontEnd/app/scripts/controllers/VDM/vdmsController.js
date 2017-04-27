@@ -232,9 +232,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             });
         };
 
-        $scope.saveVdm = function(vdm, array){
+        $scope.saveVdm = function(vdm){
             $scope.disableSave = true;
-            $("body").css("cursor", "progress");
+            $rootScope.setLoader(true);
             if (vdm != null){
                 vdm.role = localStorageService.get('currentRole');
                 if(vdm.id != null){
@@ -247,7 +247,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             confirmButtonColor: "lightskyblue"
                         });
                         $scope.disableSave = false;
-                        $("body").css("cursor", "default");
+                        $rootScope.setLoader(false);
                         if (response.data.designDept != null){
                             vdm.designDept = response.data.designDept;
                         }
@@ -258,12 +258,12 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         vdm.classDoc = response.data.classDoc;
                     }, function(error){
                         $scope.disableSave = false;
-                        $("body").css("cursor", "default");
+                        $rootScope.setLoader(false);
                         console.log(error)
                     })
                 }else{
                     $scope.disableSave = false;
-                    $("body").css("cursor", "default");
+                    $rootScope.setLoader(false);
                     
                     swal({
                         title: 'Justificar creacion',
@@ -272,7 +272,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         showCancelButton: true
                     }).then(function(text) {
                         $scope.disableSave = true;
-                        $("body").css("cursor", "progress");
+                        $rootScope.setLoader(true);
                         vdm.justification = text;
                         dawProcessManagerService.addVdm(vdm, function(response){
                             swal({
@@ -282,19 +282,19 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 confirmButtonText: "OK"
                             });
                             $scope.disableSave = false;
-                            $("body").css("cursor", "default");
+                            $rootScope.setLoader(false);
                             vdm.id = response.data.id;
                             vdm.videoId = response.data.videoId;
                             vdm.classDoc = response.data.classDoc;
                             vdm.writable = false;
                         }, function(error){
                             $scope.disableSave = false;
-                            $("body").css("cursor", "default");
+                            $rootScope.setLoader(false);
                             console.log(error)
                         })
                     }, function(){
                         $scope.disableSave = false;
-                        $("body").css("cursor", "default");
+                        $rootScope.setLoader(false);
                     });
 
                 }
@@ -309,48 +309,13 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 vdm.role = localStorageService.get('currentRole');
                 var valid = true;
                 var invalidMsg = '';
-                if(vdm.class_doc != undefined && vdm.class_doc != null ) {
-                    switch (vdm.class_doc.filetype){
-                        case 'application/vnd.ms-powerpoint':
-                            vdm.class_doc.base64 = 'data:'+vdm.class_doc.filetype+';base64,'+vdm.class_doc.base64;
-                            break;
-                        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-                            vdm.class_doc.base64 = 'data:'+vdm.class_doc.filetype+';base64,'+vdm.class_doc.base64;
-                            break;
-
-                        default:
-                            invalidMsg = "Los documentos de clase deben ser presentaciones powerpoint para ser guardados";
-                            valid = false;
-                            break;
-                    }
-                }
-                if(vdm.teacher_files && vdm.teacher_files.length) {
-                    for (var i = 0; i < vdm.teacher_files.length; i++) {
-                        switch (vdm.teacher_files[i].filetype){
-                            case 'application/pdf':
-                                vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
-                                break;
-                            case 'application/msword':
-                                vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
-                                break;
-                            case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                                vdm.teacher_files[i].base64 = 'data:'+vdm.teacher_files[i].filetype+';base64,'+vdm.teacher_files[i].base64;
-                                break;
-
-                            default:
-                                invalidMsg = "Los archivos del profesor deben ser pdf o word para ser guardados";
-                                valid = false;
-                                break;
-                        }
-                    }
-                }
 
                 if(vdm.status == 'procesado'){
-                    if(vdm.classDoc == null || vdm.classDoc == undefined){
+                    if(vdm.classDoc == null || vdm.classDoc.url == null){
                         invalidMsg = "No se puede procesar un video sin primero haber subido el documento de la clase";
                         valid = false;
                     }
-                    if(vdm.teacherFiles == null || vdm.teacherFiles == undefined){
+                    if(vdm.teacherFiles == null || vdm.teacherFiles.length < 1){
                         invalidMsg = "No se puede procesar un video sin primero haber subido al menos un material de profesor";
                         valid = false;
                     }
@@ -360,7 +325,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }
                 }
 
-                if (valid == false) {
+                if (!valid) {
                     $scope.disableSave = false;
                     $rootScope.setLoader(false);
                     swal({
@@ -431,48 +396,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                 }
 
-                if(vdm.screen_play != null && vdm.screen_play != undefined){
-                    switch (vdm.screen_play.filetype){
-                        case 'application/vnd.ms-powerpoint':
-                        case 'application/vnd.openxmlformats-officedocument.presentationml.presentation':
-                        case 'application/pdf':
-                            vdm.screen_play.base64 = 'data:'+vdm.screen_play.filetype+';base64,'+vdm.screen_play.base64;
-                            vdm.prodDept.screen_play = vdm.screen_play;
-                            break;
 
-                        default:
-                            mesage = "Los guiones deben ser presentaciones powerpoint o archivos pdf para ser guardados";
-                            valid = false;
-                            break;
-                    }
-                }else{
-                    if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == '' || vdm.prodDept.screen_play.url == null || vdm.prodDept.screen_play.url == undefined || vdm.prodDept.screen_play.url == '') {
-                        mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                        valid = false;
-                    }
+                if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == '' || vdm.prodDept.screen_play.url == null || vdm.prodDept.screen_play.url == undefined || vdm.prodDept.screen_play.url == '') {
+                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
+                    valid = false;
                 }
 
-                if(vdm.script != null && vdm.script != undefined){
-                    switch (vdm.script.filetype){
-                        case 'application/vnd.ms-excel':
-                        case 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-                        case 'application/pdf':
-                            vdm.script.base64 = 'data:'+vdm.script.filetype+';base64,'+vdm.script.base64;
-                            vdm.prodDept.script = vdm.script;
-                            break;
 
-                        default:
-                            mesage = "Los libretos deben ser archivos excel o archivos pdf para ser guardados";
-                            valid = false;
-                            break;
-                    }
-                }else{
-                    if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == '' ||vdm.prodDept.script.url == null || vdm.prodDept.script.url == undefined || vdm.prodDept.script.url == ''){
-                        mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                        valid = false;
-                    }
 
+                if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == '' ||vdm.prodDept.script.url == null || vdm.prodDept.script.url == undefined || vdm.prodDept.script.url == ''){
+                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
+                    valid = false;
                 }
+
+
 
                 if (valid == false){
                     $rootScope.setLoader(false);
@@ -743,33 +680,61 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         $scope.saveVdmDesigner = function(vdm){
             $scope.disableSave = true;
-            $("body").css("cursor", "progress");
+            $rootScope.setLoader(true);
             if (vdm != null){
-                if(vdm.id != null){
-                    if (vdm.assignmentDesignStatus != null){
-                        vdm.designDept.assignment.status = vdm.assignmentDesignStatus;
+                var mesage = '';
+                var valid = true;
+                if(vdm.designDept != null && vdm.designDept.assignment != null){
+                    if (vdm.assignmentStatus != null){
+
+                        if (vdm.assignmentStatus == 'diseñado'){
+                            if(vdm.designDept.assignment.design_ilustrators.length < 1){
+                                mesage = "Debe guardar los illustrators para poder cambiar el estado a diseñado";
+                                valid = false;
+                            }
+                            if(vdm.vdm_type == 'wacom' && vdm.designDept.assignment.design_jpgs.length < 1){
+                                mesage = "Debe guardar los jpg cuando el video sea de tipo wacom para poder cambiar el estado a diseñado";
+                                valid = false;
+                            }
+                            vdm.designDept.assignment.status = vdm.assignmentStatus;
+                        }
                     }
-                    vdm.role = localStorageService.get('currentRole');
-                    dawProcessManagerService.updateVdm(vdm, function (response){
+                    if(valid){
+                        vdm.role = localStorageService.get('currentRole');
+                        dawProcessManagerService.updateVdm(vdm, function (response){
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha actualizado el MDT del video " + response.data.videoId,
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                            $scope.disableSave = false;
+                            vdm.writable = false;
+                            if(response.data.designDept.assignment != null){
+                                vdm.designDept.assignment = response.data.designDept.assignment
+                            }
+
+                        }, function(error){
+                            console.log(error);
+                            $rootScope.setLoader(false);
+                            $scope.disableSave = false;
+                        })
+                    }else{
+                        $rootScope.setLoader(false);
+                        $scope.disableSave = false;
                         swal({
-                            title: "Exitoso",
-                            text: "Se ha actualizado el MDT del video " + response.data.videoId,
-                            type: 'success',
+                            title: "Aviso",
+                            text: mesage,
+                            type: 'warning',
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightskyblue"
                         });
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
-                        vdm.writable = false;
-                        if(response.data.designDept.assignment != null){
-                            vdm.designDept.assignment = response.data.designDept.assignment
-                        }
-
-                    }, function(error){
-                        console.log(error);
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
-                    })
+                    }
+                }else{
+                    mesage = "No puede guardar un diseño sin que haya un departamento asociado";
+                    valid = false;
                 }
             }
         };
@@ -818,7 +783,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         
         $scope.approve = function(vdm, department, approval) {
             $scope.disableSave = true;
-            $("body").css("cursor", "progress");
+            $rootScope.setLoader(true);
             if (vdm != null) {
                 if (vdm.id != null) {
                     var request = {};
@@ -834,8 +799,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             confirmButtonText: "OK",
                             confirmButtonColor: "lightskyblue"
                         });
-                        $("body").css("cursor", "default");
-                        $scope.disableSave = false;
                         if (vdm.prodDept != null){
                             if (vdm.prodDept.assignment != null){
                                 if(response.data.editionStatus != null){
@@ -871,7 +834,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 vdm.productManagement = response.data.productManagement;
                             }
                         }
+                        $rootScope.setLoader(false);
+                        $scope.disableSave = false;
                     }, function(error){
+                        $rootScope.setLoader(false);
                         console.log(error)
                     })
                 }
@@ -922,7 +888,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             });
                                         }
                                     }).then(function(result) {
-                                        $("body").css("cursor", "progress");
+                                        $rootScope.setLoader(true);
                                         if (result != null){
                                             var request = {};
                                             request.rejection = 'production';
@@ -941,8 +907,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     confirmButtonText: "OK",
                                                     confirmButtonColor: "lightskyblue"
                                                 });
-                                                $("body").css("cursor", "default");
-                                                $scope.disableSave = false;
                                                 vdm.prodDept.intro = response.data.prodDept.intro;
                                                 vdm.intro = vdm.prodDept.intro;
                                                 vdm.prodDept.conclu = response.data.prodDept.conclu;
@@ -966,15 +930,17 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 if(response.data.postProdDept != null){
                                                     vdm.postProdDept = response.data.postProdDept;
                                                 }
+                                                $rootScope.setLoader(false);
+                                                $scope.disableSave = false;
                                             }, function(error){
-                                                $("body").css("cursor", "default");
+                                                $rootScope.setLoader(false);
                                                 $scope.disableSave = false;
                                                 console.log(error)
                                             });
                                         }
                                     }, function(){
+                                        $rootScope.setLoader(false);
                                         $scope.disableSave = false;
-                                        $("body").css("cursor", "default");
                                     });
                                     break;
                                 case 'edition':
@@ -984,7 +950,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         type: 'question',
                                         showCancelButton: true
                                     }).then(function(text){
-                                        $("body").css("cursor", "progress");
+                                        $rootScope.setLoader(true);
                                         var request = {};
                                         request.rejection = 'edition';
                                         request.justification = text;
@@ -1019,15 +985,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             if(response.data.postProdDept != null){
                                                 vdm.postProdDept = response.data.postProdDept;
                                             }
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                         }, function(error){
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                             console.log(error)
                                         });
                                     }, function(){
-                                        $("body").css("cursor", "default");
+                                        $rootScope.setLoader(false);
                                         $scope.disableSave = false;
                                     });
                                     break;
@@ -1038,7 +1004,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         type: 'question',
                                         showCancelButton: true
                                     }).then(function(text){
-                                        $("body").css("cursor", "progress");
+                                        $rootScope.setLoader(true);
                                         var request = {};
                                         request.rejection = 'design';
                                         request.justification = text;
@@ -1065,15 +1031,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     vdm.productManagement = response.data.productManagement;
                                                 }
                                             }
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                         }, function(error){
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                             console.log(error)
                                         });
                                     }, function(){
-                                        $("body").css("cursor", "default");
+                                        $rootScope.setLoader(false);
                                         $scope.disableSave = false;
                                     });
                                     break;
@@ -1084,7 +1050,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                         type: 'question',
                                         showCancelButton: true
                                     }).then(function(text){
-                                        $("body").css("cursor", "progress");
+                                        $rootScope.setLoader(true);
                                         var request = {};
                                         request.rejection = 'postProduction';
                                         request.justification = text;
@@ -1108,15 +1074,15 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     vdm.productManagement = response.data.productManagement;
                                                 }
                                             }
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                         }, function(error){
-                                            $("body").css("cursor", "default");
+                                            $rootScope.setLoader(false);
                                             $scope.disableSave = false;
                                             console.log(error)
                                         });
                                     }, function(){
-                                        $("body").css("cursor", "default");
+                                        $rootScope.setLoader(false);
                                         $scope.disableSave = false;
                                     });
                                     break;
@@ -1124,7 +1090,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         }
                     }, function(){
                         $scope.disableSave = false;
-                        $("body").css("cursor", "default");
+                        $rootScope.setLoader(false);
                     });
 
                 }
@@ -1133,6 +1099,86 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         getVdms();
 
+        $scope.uploadPreProductionFiles = function(upload, vdm, doc){
+            var valid = true;
+            var msg = '';
+            $rootScope.setLoader(true);
+            var baseUrl = ENV.baseUrl;
+            if(vdm.id != null) {
+                switch (doc){
+                    case 'class_doc':
+                        if(upload.type != 'application/vnd.ms-powerpoint' && upload.type != 'application/vnd.openxmlformats-officedocument.presentationml.presentation'){
+                            msg = "Los documentos de clase deben ser presentaciones powerpoint para ser guardados";
+                            valid = false;
+                        }
+                        break;
+                    case 'teacher_files':
+                        angular.forEach(upload, function(file){
+                            if(file.type != 'application/pdf' && file.type != 'application/msword' && file.type != 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
+                                msg = "Los archivos del profesor deben ser pdf o word para ser guardados";
+                                valid = false;
+                            }
+                        });
+                        break;
+                }
+                if(valid){
+                    Upload.upload({
+                        url: baseUrl+'/api/vdms/upload_pre_production_files?id='+vdm.id+'&doc='+doc,
+                        data: {upload: upload}
+                    }).then(function (resp) {
+                        if(resp.data != null){
+                            switch (doc){
+                                case 'class_doc':
+                                    vdm.classDoc = resp.data.data.class_doc;
+                                    vdm.class_doc_name = resp.data.data.class_doc_name;
+                                    msg = "Se ha guardado el archivo de forma exitosa";
+                                    break;
+                                case 'teacher_files':
+                                    vdm.teacherFiles = resp.data.data.teacher_files;
+                                    msg = "Se han guardado los archivos de forma exitosa";
+                                    break;
+                            }
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "Exitoso",
+                                text: msg,
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                        }else{
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "ERROR",
+                                text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                type: 'error',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            });
+                        }
+                        angular.element("input[type='file']").val(null);
+                        console.clear();
+                    }, function (error) {
+                        angular.element("input[type='file']").val(null);
+                        $rootScope.setLoader(false);
+                        console.log(error);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progreso de subida: ' + progressPercentage + '% ');
+                    });
+                }else{
+                    angular.element("input[type='file']").val(null);
+                    $rootScope.setLoader(false);
+                    swal({
+                        title: "Aviso",
+                        text: msg,
+                        type: 'warning',
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightcoral"
+                    });
+                }
+            }
+        };
         $scope.uploadEditionFiles = function(file, vdm){
             $rootScope.setLoader(true);
             var baseUrl = ENV.baseUrl;
@@ -1187,6 +1233,176 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     confirmButtonColor: "lightcoral"
                 });
 
+            }
+        };
+        $scope.uploadDesignFiles = function(upload, vdm, type){
+            var valid = true;
+            var msg = '';
+            $rootScope.setLoader(true);
+            var baseUrl = ENV.baseUrl;
+            if(vdm.designDept != null && vdm.designDept.assignment != null) {
+                switch (type){
+                    case 'ilustrators':
+                        angular.forEach(upload, function(file){
+                            if(file.type != 'application/postscript'){
+                                msg = "Los archivos deben ser .ai guardados";
+                                valid = false;
+                            }
+                        });
+                        break;
+                    case 'jpgs':
+                        angular.forEach(upload, function(file){
+                            if(file.type != 'image/jpeg' && file.type != 'image/png'){
+                                msg = "Los archivos deben ser imagenes para ser guardados";
+                                valid = false;
+                            }
+                        });
+                        break;
+                }
+                if(valid){
+                    Upload.upload({
+                        url: baseUrl+'/api/vdms/upload_design_files?id='+vdm.id+'&type='+type,
+                        data: {upload: upload}
+                    }).then(function (resp) {
+                        if(resp.data != null){
+                            switch (type){
+                                case 'ilustrators':
+                                    vdm.designDept.assignment.design_ilustrators = resp.data.data.design_ilustrators;
+                                    msg = "Se han guardado los archivos de forma exitosa";
+                                    break;
+                                case 'jpgs':
+                                    vdm.designDept.assignment.design_jpgs = resp.data.data.design_jpgs;
+                                    msg = "Se han guardado los archivos de forma exitosa";
+                                    break;
+                            }
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "Exitoso",
+                                text: msg,
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                        }else{
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "ERROR",
+                                text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                type: 'error',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            });
+                        }
+                        angular.element("input[type='file']").val(null);
+                        console.clear();
+                    }, function (error) {
+                        angular.element("input[type='file']").val(null);
+                        $rootScope.setLoader(false);
+                        console.log(error);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progreso de subida: ' + progressPercentage + '% ');
+                    });
+                }else{
+                    angular.element("input[type='file']").val(null);
+                    $rootScope.setLoader(false);
+                    swal({
+                        title: "Aviso",
+                        text: msg,
+                        type: 'warning',
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightcoral"
+                    });
+                }
+            }else{
+                angular.element("input[type='file']").val(null);
+                $rootScope.setLoader(false);
+                swal({
+                    title: "ERROR",
+                    text: 'Ha ocurrido un error inesperado por favor intentelo de nuevo mas tarde',
+                    type: 'error',
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "lightcoral"
+                });
+            }
+        };
+        $scope.uploadProductionFiles = function(upload, vdm, doc){
+            var valid = true;
+            var msg = '';
+            $rootScope.setLoader(true);
+            var baseUrl = ENV.baseUrl;
+            if(vdm.id != null) {
+                switch (doc){
+                    case 'screen_play':
+                        if(upload.type != 'application/vnd.ms-powerpoint' && upload.type != 'application/vnd.openxmlformats-officedocument.presentationml.presentation' && upload.type != 'application/pdf'){
+                            msg = "Los guiones deben ser presentaciones powerpoint o archivos pdf para ser guardados";
+                            valid = false;
+                        }
+                        break;
+                    case 'script':
+
+                        if(upload.type != 'application/pdf' && upload.type != 'application/vnd.ms-excel' && upload.type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'){
+                            msg = "Los libretos deben ser archivos excel o archivos pdf para ser guardados";
+                            valid = false;
+                        }
+
+                        break;
+                }
+                if(valid){
+                    Upload.upload({
+                        url: baseUrl+'/api/vdms/upload_production_files?id='+vdm.id+'&doc='+doc,
+                        data: {upload: upload}
+                    }).then(function (resp) {
+                        if(resp.data != null){
+                            switch (doc){
+                                case 'screen_play':
+                                    vdm.prodDept.screen_play = resp.data.data.screen_play;
+                                    vdm.prodDept.screen_play_name = resp.data.data.screen_play_name;
+                                    break;
+                                case 'script':
+                                    vdm.prodDept.script = resp.data.data.script;
+                                    vdm.prodDept.script_name = resp.data.data.script_name;
+                                    break;
+                            }
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "Exitoso",
+                                text: "Se ha guardado el archivo de forma exitosa",
+                                type: 'success',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightskyblue"
+                            });
+                        }else{
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "ERROR",
+                                text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                type: 'error',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            });
+                        }
+                        angular.element("input[type='file']").val(null);
+                        console.clear();
+                    }, function (error) {
+                        angular.element("input[type='file']").val(null);
+                        $rootScope.setLoader(false);
+                        console.log(error);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progreso de subida: ' + progressPercentage + '% ');
+                    });
+                }else{
+                    angular.element("input[type='file']").val(null);
+                    $rootScope.setLoader(false);
+                    swal({
+                        title: "Aviso",
+                        text: msg,
+                        type: 'warning',
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightcoral"
+                    });
+                }
             }
         };
         $scope.$watch('localStorageService.get("currentRole")', function (newVal, oldVal) {
