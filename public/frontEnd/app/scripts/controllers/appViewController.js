@@ -13,7 +13,7 @@ app.controller("appViewController",['$scope', 'ENV', 'dawProcessManagerService',
             if(localStorageService.get('currentRole') != null){
                 $rootScope.currentRole = localStorageService.get('currentRole')
             }
-            $rootScope.downloadRoot = ENV.baseUploadFolder;
+            $rootScope.downloadRoot = ENV.baseUrl + ENV.baseUploadFolder;
         }else{
             $state.go('core.login');
         }
