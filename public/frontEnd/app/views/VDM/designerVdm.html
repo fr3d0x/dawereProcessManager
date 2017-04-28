@@ -46,13 +46,13 @@
                         <div ng-if="row.designDept.assignment.design_ilustrators.length >= 1">
                             <h4>Ilustrators</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_ilustrators">
-                                <a href="{{uploadFolder + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                         <div ng-if="row.designDept.assignment.design_jpgs.length >= 1">
                             <h4>Imagenes</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_jpgs">
-                                <a href="{{uploadFolder + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                     </div>

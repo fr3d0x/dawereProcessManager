@@ -49,14 +49,21 @@
                         <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.video_clip.url != null">
+                            <h4>Video Edicion</h4>
+                            <div>
+                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -137,14 +144,14 @@
                         <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{uploadFolder + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
