@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170426223435) do
+ActiveRecord::Schema.define(version: 20170427185309) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -119,13 +119,19 @@ ActiveRecord::Schema.define(version: 20170426223435) do
   end
 
   create_table "post_prod_dpt_assignments", force: :cascade do |t|
-    t.string   "status",           limit: 255
-    t.string   "assignedName",     limit: 255
-    t.text     "comments",         limit: 16777215
-    t.integer  "user_id",          limit: 4
-    t.integer  "post_prod_dpt_id", limit: 4
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.string   "status",               limit: 255
+    t.string   "assignedName",         limit: 255
+    t.text     "comments",             limit: 16777215
+    t.integer  "user_id",              limit: 4
+    t.integer  "post_prod_dpt_id",     limit: 4
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "video",                limit: 255
+    t.string   "video_name",           limit: 255
+    t.string   "after_project",        limit: 255
+    t.string   "after_project_name",   limit: 255
+    t.string   "premier_project",      limit: 255
+    t.string   "premier_project_name", limit: 255
   end
 
   add_index "post_prod_dpt_assignments", ["post_prod_dpt_id"], name: "index_post_prod_dpt_assignments_on_post_prod_dpt_id", using: :btree
@@ -140,6 +146,26 @@ ActiveRecord::Schema.define(version: 20170426223435) do
   end
 
   add_index "post_prod_dpts", ["vdm_id"], name: "index_post_prod_dpts_on_vdm_id", using: :btree
+
+  create_table "post_prod_elements", force: :cascade do |t|
+    t.string   "file",                        limit: 255
+    t.string   "file_name",                   limit: 255
+    t.integer  "post_prod_dpt_assignment_id", limit: 4
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "post_prod_elements", ["post_prod_dpt_assignment_id"], name: "index_post_prod_elements_on_post_prod_dpt_assignment_id", using: :btree
+
+  create_table "post_prod_illustrators", force: :cascade do |t|
+    t.string   "file",                        limit: 255
+    t.string   "file_name",                   limit: 255
+    t.integer  "post_prod_dpt_assignment_id", limit: 4
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
+  end
+
+  add_index "post_prod_illustrators", ["post_prod_dpt_assignment_id"], name: "index_post_prod_illustrators_on_post_prod_dpt_assignment_id", using: :btree
 
   create_table "product_managements", force: :cascade do |t|
     t.string   "productionStatus",     limit: 255
@@ -187,7 +213,7 @@ ActiveRecord::Schema.define(version: 20170426223435) do
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
 
-  create_table "qa_analists", force: :cascade do |t|
+  create_table "qa_assignments", force: :cascade do |t|
     t.string   "status",       limit: 255
     t.text     "comments",     limit: 16777215
     t.string   "assignedName", limit: 255
@@ -197,8 +223,8 @@ ActiveRecord::Schema.define(version: 20170426223435) do
     t.datetime "updated_at",                    null: false
   end
 
-  add_index "qa_analists", ["qa_dpt_id"], name: "index_qa_analists_on_qa_dpt_id", using: :btree
-  add_index "qa_analists", ["user_id"], name: "index_qa_analists_on_user_id", using: :btree
+  add_index "qa_assignments", ["qa_dpt_id"], name: "index_qa_assignments_on_qa_dpt_id", using: :btree
+  add_index "qa_assignments", ["user_id"], name: "index_qa_assignments_on_user_id", using: :btree
 
   create_table "qa_dpts", force: :cascade do |t|
     t.string   "status",     limit: 255
@@ -331,12 +357,14 @@ ActiveRecord::Schema.define(version: 20170426223435) do
   add_foreign_key "post_prod_dpt_assignments", "post_prod_dpts"
   add_foreign_key "post_prod_dpt_assignments", "users"
   add_foreign_key "post_prod_dpts", "vdms"
+  add_foreign_key "post_prod_elements", "post_prod_dpt_assignments"
+  add_foreign_key "post_prod_illustrators", "post_prod_dpt_assignments"
   add_foreign_key "product_managements", "vdms"
   add_foreign_key "production_dpt_assignments", "production_dpts"
   add_foreign_key "production_dpt_assignments", "users"
   add_foreign_key "production_dpts", "vdms"
-  add_foreign_key "qa_analists", "qa_dpts"
-  add_foreign_key "qa_analists", "users"
+  add_foreign_key "qa_assignments", "qa_dpts"
+  add_foreign_key "qa_assignments", "users"
   add_foreign_key "qa_dpts", "vdms"
   add_foreign_key "roles", "users"
   add_foreign_key "subject_planifications", "subjects", on_delete: :cascade
