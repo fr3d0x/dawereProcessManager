@@ -81,9 +81,9 @@
                             </div>
                             <br>
                         </div>
-                        <div ng-if="vdm.teacherFiles.length >= 1">
+                        <div ng-if="vdm.teacher_files.length >= 1">
                             <h4>Material de Profesor</h4>
-                            <div ng-repeat="file in vdm.teacherFiles">
+                            <div ng-repeat="file in vdm.teacher_files">
                                 <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
