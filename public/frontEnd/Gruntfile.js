@@ -422,7 +422,7 @@ module.exports = function (grunt) {
           ENV: {
             name: 'production',
             baseUrl: 'http://192.168.1.23',
-            baseUploadFolder: 'http://127.0.0.1:3000'
+            baseUploadFolder: 'http://192.168.1.23'
           }
         }
       }
