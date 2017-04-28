@@ -30,7 +30,7 @@
                     <div class="itemPresent" ng-if="row.video.url != null" align="center">
                         <h4>Video</h4>
                         <video width="320" height="240" controls>
-                            <source ng-src="{{trustSrc(downloadRoot + row.video.url)}}" type="video/mp4">
+                            <source src="{{downloadRoot + row.video.url | trustUrl}}" type="video/mp4">
                             <a ng-href="{{downloadRoot + row.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.video_name}}</a>
                         </video>
                         <br>
