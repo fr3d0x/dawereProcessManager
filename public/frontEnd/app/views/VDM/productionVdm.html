@@ -63,7 +63,14 @@
                         <div ng-if="row.prodDept.assignment.video_clip.url != null">
                             <h4>Video Edicion</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.url != null">
+                            <h4>Proyecto premier</h4>
+                            <div>
+                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -152,6 +159,20 @@
                             <h4>Libreto</h4>
                             <div>
                                 <a href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.video_clip.url != null">
+                            <h4>Video Edicion</h4>
+                            <div>
+                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.url != null">
+                            <h4>Proyecto premier</h4>
+                            <div>
+                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>

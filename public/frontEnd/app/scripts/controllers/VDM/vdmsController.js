@@ -75,12 +75,12 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         case 'productManager':
                         case 'postProLeader':
                         case 'qa':
-                        case 'qaAnalist':
                             tableData = response.data;
                             break;
                         case 'editor':
                         case 'designer':
                         case 'post-producer':
+                        case 'qa-analyst':
                             tableData = $filter('vdmsByUser')(response.data, JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1])), localStorageService.get('currentRole'));
                             break;
                         
@@ -867,6 +867,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         if(vdm.productManagement != null){
                             if (response.data.productManagement != null){
                                 vdm.productManagement = response.data.productManagement;
+                            }
+                        }
+                        if(vdm.qa != null){
+                            if (response.data != null){
+                                vdm.qa = response.data;
                             }
                         }
                         $rootScope.setLoader(false);

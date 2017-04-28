@@ -249,7 +249,11 @@ class VdmsController < ApplicationController
                 if vdm.product_management != nil
                   if vdm.production_dpt != nil
                     payload_item['prodDept'] = vdm.production_dpt
-                    payload_item['productionStatus'] = vdm.production_dpt.status
+                    if vdm.production_dpt.status != nil
+                      payload_item['productionStatus'] = vdm.production_dpt.status
+                    else
+                      payload_item['productionStatus'] = 'no asignado'
+                    end
                     if vdm.production_dpt.production_dpt_assignment != nil
                       payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
                     else
@@ -272,20 +276,27 @@ class VdmsController < ApplicationController
                   end
                   payload_item['productManagement'] = vdm.product_management
                 end
-              when 'qa', 'qaAnalist'
+              when 'qa', 'qa-analyst'
                 if vdm.qa_dpt != nil
                   responsable = 'no asignado'
-                  qa_dept = {
+                  qa = {
                       id: vdm.qa_dpt.id,
                       status: vdm.qa_dpt.status,
                       comments: vdm.qa_dpt.comments,
                   }
-                  if vdm.qa_dpt.qa_analist != nil
-                    responsable = vdm.qa_dpt.qa_analist.assignedName
-                    qa_dept['assignment'] = vdm.qa_dpt.qa_analist
+                  payload_item['status'] = qa['status']
+                  if vdm.qa_dpt.qa_assignment != nil
+                    responsable = vdm.qa_dpt.qa_assignment.assignedName
+                    qa['assignment'] = vdm.qa_dpt.qa_assignment
+                    payload_item['status'] = vdm.qa_dpt.qa_assignment.status
                   end
-                  payload_item['qaDept'] = qa_dept
+                  payload_item['qa'] = qa
                   payload_item['qaResponsable'] = responsable
+                  if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                    payload_item['video'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video
+                    payload_item['video_name'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
+
+                  end
                 end
               else
                 raise Exceptions::InvalidRoleException
@@ -341,6 +352,7 @@ class VdmsController < ApplicationController
       prd_payload = nil
       design_payload = nil
       post_prod_payload = nil
+      qa_payload = nil
       case newVdm['role']
         when 'contentLeader', 'contentAnalist'
           update_pre_prod_content(vdm, newVdm)
@@ -350,6 +362,89 @@ class VdmsController < ApplicationController
           design_payload = update_design_changes(vdm, newVdm)
         when 'postProLeader', 'post-producer'
           post_prod_payload = update_post_prod_content(vdm, newVdm)
+        when 'qa', 'qa-analyst'
+          if vdm.qa_dpt != nil
+            if newVdm['qa'] != nil
+              changes = []
+              if newVdm['role'] == 'qa'
+                if vdm.qa_dpt.comments != newVdm['qa']['comments']
+                  change = VdmChange.new
+                  change.changeDetail = 'Cambio de comentarios de qa'
+                  if vdm.qa_dpt.comments != nil
+                    change.changedFrom = vdm.qa_dpt.comments
+                  else
+                    change.changedFrom = 'vacio'
+                  end
+                  change.changedTo = newVdm['qa']['comments']
+                  change.vdm_id = vdm.id
+                  change.user_id = $currentPetitionUser['id']
+                  change.uname = $currentPetitionUser['username']
+                  change.videoId = vdm.videoId
+                  change.changeDate = Time.now
+                  change.department = 'qa'
+                  vdm.qa_dpt.comments = newVdm['qa']['comments']
+                  changes.push(change)
+                end
+                if newVdm['qa']['qaAsigned'] != nil
+                  assignment = vdm.qa_dpt.qa_assignment
+                  if assignment == nil
+                    assignment = QaAssignment.new
+                  end
+                  assignment.qa_dpt_id = vdm.qa_dpt.id
+                  assignment.user_id = newVdm['qaAsigned']['id']
+                  assignment.assignedName = newVdm['qaAsigned']['name']
+                  assignment.status = 'asignado'
+                  assignment.save!
+                  user = User.find(newVdm['qaAsigned']['id'])
+                  UserNotifier.create_send_assigned_to_qa_analyst(vdm, user.employee).deliver
+                  change = VdmChange.new
+                  change.changeDetail = "Asignado video a Analista de qa " + newVdm['qaAsigned']['name']
+                  change.vdm_id = vdm.id
+                  change.user_id = $currentPetitionUser['id']
+                  change.uname = $currentPetitionUser['username']
+                  change.videoId = vdm.videoId
+                  change.changeDate = Time.now
+                  change.department = 'qa'
+                  changes.push(change)
+                end
+                vdm.qa_dpt.save!
+              end
+
+              if newVdm['role'] == 'qa-analyst'
+                if vdm.qa_dpt.qa_assignment != nil
+                  if newVdm['qa']['assignment'] != nil
+                    if vdm.qa_dpt.qa_assignment.comments != newVdm['qa']['assignment']['comments']
+                      change = VdmChange.new
+                      change.changeDetail = 'Cambio de comentarios de analista de qa'
+                      if vdm.qa_dpt.comments != nil
+                        change.changedFrom = vdm.qa_dpt.qa_assignment.comments
+                      else
+                        change.changedFrom = 'vacio'
+                      end
+                      change.changedTo = newVdm['qa']['assignment']['comments']
+                      change.vdm_id = vdm.id
+                      change.user_id = $currentPetitionUser['id']
+                      change.uname = $currentPetitionUser['username']
+                      change.videoId = vdm.videoId
+                      change.changeDate = Time.now
+                      change.department = 'qa'
+                      vdm.qa_dpt.qa_assignment.comments = newVdm['qa']['assignment']['comments']
+                      changes.push(change)
+                    end
+                    vdm.qa_dpt.qa_assignment.save!
+                  end
+                end
+
+              end
+            end
+            qa_payload = {
+                id: vdm.qa_dpt.id,
+                status: vdm.qa_dpt.status,
+                comments: vdm.qa_dpt.comments,
+                assignment: vdm.qa_dpt.qa_assignment
+            }
+          end
+
         else
           raise Exceptions::InvalidRoleException
       end
@@ -367,7 +462,8 @@ class VdmsController < ApplicationController
           subject: vdm.classes_planification.subject_planification.subject,
           prodDept: prd_payload,
           designDept: design_payload,
-          postProdDept: post_prod_payload
+          postProdDept: post_prod_payload,
+          qa: qa_payload
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -1161,7 +1257,7 @@ class VdmsController < ApplicationController
                 else
                   UserNotifier.send_assigned_to_post_producer(vdm, assignment.user.employee).deliver
                 end
-                assignment = 'asignado'
+                assignment.status = 'asignado'
                 assignment.post_prod_dpt_id = postProd.id
                 assignment.save!
                 UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
@@ -1293,15 +1389,14 @@ class VdmsController < ApplicationController
         when 'postProduction'
           postProdStatus = nil
           postProdAssignmentStatus = nil
-          pmanagement = {}
           if vdm.post_prod_dpt != nil
             if params['role'] == 'productManager'
-              vdm.post_prod_dpt.status = 'aprobado'
+              vdm.post_prod_dpt.status = 'por aprobar qa'
               vdm.post_prod_dpt.save!
               UserNotifier.send_approved_to_post_prod_leader(vdm).deliver
-              postProdStatus = 'aprobado'
+              postProdStatus = 'por aprobar qa'
               if vdm.product_management != nil
-                vdm.product_management.postProductionStatus = 'aprobado'
+                vdm.product_management.postProductionStatus = 'por aprobar qa'
                 vdm.product_management.save!
               end
               qa = vdm.qa_dpt
@@ -1311,6 +1406,23 @@ class VdmsController < ApplicationController
               qa.status = 'asignado'
               qa.vdm_id = vdm.id
               qa.save!
+              assignment = qa.qa_assignment
+              if  assignment == nil
+                assignment = QaAssignment.new
+              end
+              if assignment.user_id == nil
+                user = assign_task_to('qa-analyst')
+                assignment.user_id = user.id
+                assignment.assignedName = user.employee.firstName + ' ' + user.employee.firstSurname
+                UserNotifier.send_assigned_to_qa_analyst(vdm, user.employee).deliver
+              else
+                UserNotifier.send_assigned_to_qa_analyst(vdm, assignment.user.employee).deliver
+              end
+              assignment.status = 'asignado'
+              assignment.qa_dpt_id = qa.id
+              assignment.save!
+              UserNotifier.send_assigned_to_qaLeader(vdm).deliver
+
             else
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'aprobado'
@@ -1342,6 +1454,41 @@ class VdmsController < ApplicationController
               postProdAssignmentStatus: postProdAssignmentStatus,
               productManagement: vdm.product_management
           }
+        when 'qa'
+          if vdm.post_prod_dpt != nil && vdm.qa_dpt
+            if params['role'] == 'qa' || params['role'] == 'qa-analyst'
+              vdm.post_prod_dpt.status = 'aprobado'
+              vdm.post_prod_dpt.save!
+              vdm.qa_dpt.status = 'aprobado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment != nil
+                vdm.qa_dpt.qa_assignment.status = 'aprobado'
+                vdm.qa_dpt.qa_assignment.save!
+              end
+              UserNotifier.send_approved_to_post_prod_leader(vdm).deliver
+              if vdm.product_management != nil
+                vdm.product_management.postProductionStatus = 'aprobado'
+                vdm.product_management.save!
+              end
+            end
+            change = VdmChange.new
+            change.changeDetail = 'aprobado Post-Produccion por ' + params['approvedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'post-produccion'
+            change.changedFrom = vdm.post_prod_dpt.status
+            change.changedTo = 'aprobado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+            change.save!
+            payload = {
+                id: vdm.qa_dpt.id,
+                status: vdm.qa_dpt.status,
+                comments: vdm.qa_dpt.comments,
+                assignment: vdm.qa_dpt.qa_assignment
+            }
+          end
       end
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -2080,7 +2227,7 @@ class VdmsController < ApplicationController
               employee = u
             end
           end
-        when 'qa'
+        when 'qa-analyst'
           if assignments == nil
             assignments = u.qa_assignments
           else

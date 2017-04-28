@@ -37,12 +37,18 @@
                 <td data-title="'Asignado a'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
                     <div align="center">
                         <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment != null">
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.assignedName == null">
-                                <select ng-model="row.qaAsigned" ng-options="employee as employee.name for employee in employees | roles:['qaAnalist']" style="height:2.2em; margin-top: 6px;">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.assignedName == null || row.qa.changeAnalist == true">
+                                <a  ng-click="row.qa.changeAnalist = false" title='cerrar' ng-if="row.qa.changeAnalist == true">
+                                    <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <select ng-model="row.qaAsigned" ng-options="employee as employee.name for employee in employees | roles:['qa-analyst']" style="height:2.2em; margin-top: 6px;">
                                     <option value="#">No especifico</option>
                                 </select>
                             </div>
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.assignedName != null">
+                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.assignedName != null  && row.qa.changeAnalist != true">
+                                <a  ng-click="row.qa.changeAnalist = true" title='cambiar editor'>
+                                    <i class="fa fa-users showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a><br><br>
                                 {{row.qa.assignment.assignedName}}<br>
                                 status: {{row.qa.assignment.status}}
                             </div>
@@ -66,16 +72,9 @@
 
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="approve(row, 'lider de Control de calidad', 'qa')" title='aprobar' ng-if="row.qaDept.assignment != null && row.qaDept.assignment.status == 'analizado'">
-                            <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.designDept.assignment != null && row.designDept.assignment.status == 'diseñado'">|</span>
-                        <a ng-click="reject(row, 'design')" title='rechazar' ng-if="row.designDept.assignment != null && row.designDept.assignment.status == 'diseñado'">
-                            <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.designDept.assignment != null && row.designDept.assignment.status == 'diseñado'">|</span>
-
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.qaDept.status == 'asignado' && row.qaDept.assignment.user_id == null">
+                         <a ng-click="editRow(row)" title='editar' ng-if="row.qa.status == 'asignado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.qaDept.status == 'asignado' && row.qaDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.qa.status == 'asignado'">|</span>
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
@@ -84,9 +83,9 @@
                 </td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div align="center">
-                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.qaDept.status == 'asignado' && row.qaDept.assignment.user_id == null" ng-class="{disabled: disableSave == true}">
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.qa.status == 'asignado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.qaDept.status == 'asignado' && row.qaDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.qa.status == 'asignado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

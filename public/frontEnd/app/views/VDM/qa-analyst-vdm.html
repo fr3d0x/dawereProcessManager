@@ -1,0 +1,81 @@
+<!-- Designer role Vdm View-->
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+    <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
+
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
+        <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+            <tr ng-repeat="row in $data">
+
+                <td data-title="'Id video'" filter="{videoId: 'text'}" style="vertical-align: middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" style="vertical-align: middle">
+                    <div align="center">
+                        {{row.videoTittle | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Estado'" filter="{status: 'text'}" style="vertical-align: middle">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.status == null && row.qa.status == null">
+                        no asignado
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.status == null && row.qa.status != null">
+                        {{row.qa.status}}
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.status != null">
+                        {{row.qa.assignment.status}}
+                    </div>
+                </td>
+                <td data-title="'Video'" filter="{qaResponsable: 'text'}" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                    <div class="itemMissing" ng-if="row.video.url == null" align="center">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.video.url != null" align="center">
+                        <h4>Video</h4>
+                        <video width="320" height="240" controls>
+                            <source ng-src="{{downloadRoot + row.video.url}}" type="video/mp4">
+                            <a href="{{downloadRoot + row.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.video_name}}</a>
+                        </video>
+                        <br>
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.comments == null && row.qa.comments != null">
+                        {{row.qa.comments | limitTo : 300}}...
+                    </div>
+                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.qa.assignment.comments != null">
+                        {{row.qa.assignment.comments | limitTo : 300}}...
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.qa.assignment.comments"></textarea></td>
+
+                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                    <div align="center">
+                        <a ng-click="approve(row, 'Analista qa', 'qa')" title='aprobar' ng-if="row.qa.assignment.status == 'asignado'">
+                            <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
+                        <a ng-click="reject(row, 'design')" title='rechazar' ng-if="row.qa.assignment.status == 'asignado'">
+                            <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
+
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.qa.assignment.status == 'asignado'">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
+                        <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
+                            <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+
+                    </div>
+                </td>
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                    <div align="center">
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.qa.assignment.status == 'asignado'" ng-class="{disabled: disableSave == true}">
+                            <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
+                        <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<!-- ---End--- Designer role Vdm View-->

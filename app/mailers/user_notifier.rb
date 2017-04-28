@@ -142,6 +142,18 @@ class UserNotifier < ApplicationMailer
           :subject => 'Cambio estado "por aprobar" de un MDT' )
   end
 
+  def send_assigned_to_qaLeader(vdm)
+    @vdm = vdm
+    @employees = Employee.find_by_sql("Select e.* from employees e, users u, roles r where r.role = 'qa' and u.id = r.user_id and e.id = u.employee_id")
+    mail( :to => [@employees.map(&:email)],
+          :subject => 'Se han asignado nuevos MDT para quality assurance' )
+  end
+  def send_assigned_to_qa_analyst(vdm, user)
+    @vdm = vdm
+    @user = user
+    mail( :to => [user.email],
+          :subject => 'Se te han asignado nuevos MDT' )
+  end
 
 
 end

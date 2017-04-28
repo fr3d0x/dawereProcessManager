@@ -34,6 +34,15 @@ app.filter('vdmsByUser', function() {
                             }
                         }
                         break;
+                    case 'qa-analyst':
+                        if(vdm.qa != null && vdm.qa != undefined){
+                            if (vdm.qa.assignment != null) {
+                                if(vdm.qa.assignment.user_id === user.id && vdm.qa.assignment.status != 'no asignado'){
+                                    filtered.push(vdm)
+                                }
+                            }
+                        }
+                        break;
                 }
 
             }
