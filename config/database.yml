@@ -16,6 +16,12 @@ development:
   username: root
   password: 1234
 
+production:
+  <<: *default
+  database: dawProcessDb
+  username: root
+  password: 1234
+
 #default: &default
 #  adapter: postgresql
 #  encoding: unicode
@@ -29,18 +35,4 @@ development:
 #  timeout: 5000
 #  owner: postgres
 #  host: localhost
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-
-production:
-  adapter: mysql2
-  encoding: utf8mb4
-  collation: utf8mb4_unicode_ci
-  database: dawProcessDbProd
-  pool: 5
-  username: root
-  password: daw-db-pass16
 
