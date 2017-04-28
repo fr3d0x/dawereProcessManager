@@ -1429,7 +1429,7 @@ class VdmsController < ApplicationController
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
                 UserNotifier.send_approved_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
                 postProdAssignmentStatus = 'aprobado'
-                vdm.design_dpt.design_assignment.save!
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
                 if vdm.product_management != nil
                   vdm.product_management.postProductionStatus = 'por aprobar'
                   vdm.product_management.save!
