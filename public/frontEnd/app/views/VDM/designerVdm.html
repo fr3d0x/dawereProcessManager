@@ -46,13 +46,13 @@
                         <div ng-if="row.designDept.assignment.design_ilustrators.length >= 1">
                             <h4>Ilustrators</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_ilustrators">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                         <div ng-if="row.designDept.assignment.design_jpgs.length >= 1">
                             <h4>Imagenes</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_jpgs">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                     </div>
@@ -84,6 +84,9 @@
                     <div align="center" ng-if="row.uploadFiles == true">
 
                         <i class="fa fa-file-image-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($files, row, 'jpgs')" multiple="multiple" name="jpgs" id="uploadImages" ng-if="row.vdm_type == 'wacom'" title="subir imagenes">
+                        </i>
+                        <span style="font-size: 20px" ng-if="row.vdm_type == 'wacom'"> |</span>
+                        <i class="fa fa-file-pdf-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPreProductionFiles($files, row, 'designed_presentation')" name="designed_presentation" id="uploadDPresentation" title="subir presentacion diseñada" ng-if="row.vdm_type == 'wacom'">
                         </i>
                         <span style="font-size: 20px" ng-if="row.vdm_type == 'wacom'"> |</span>
                         <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($files, row, 'ilustrators')" multiple="multiple" name="ilustrators" id="uploadIlustrators" title="subir ilustrators">

@@ -2,10 +2,13 @@
  * Created by fr3d0 on 28/07/16.
  */
 'use strict';
-app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload',
-    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload){
+app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload', '$sce',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload, $sce){
         $scope.assignmentStatus = null;
-
+        $scope.trustSrc = function(src) {
+            src = src + "?modestbranding=1&autohide=1&showinfo=0&rel=0";
+            return $sce.trustAsResourceUrl(src);
+        };
         var getEditorsJson = function (employees) {
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
@@ -696,6 +699,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 mesage = "Debe guardar los jpg cuando el video sea de tipo wacom para poder cambiar el estado a diseñado";
                                 valid = false;
                             }
+                            if(vdm.vdm_type == 'wacom' && vdm.designDept.assignment.designed_presentation.url == null){
+                                mesage = "Debe la presentacion diseñada cuando el video sea de tipo wacom para poder cambiar el estado a diseñado";
+                                valid = false;
+                            }
                         }
                     }
                     if(valid){
@@ -1139,7 +1146,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
         getVdms();
 
-        $scope.uploadPreProductionFiles = function(upload, vdm, file_type){
+        $scope.uploadPreProductionFiles = function(upload, vdm, doc){
             var valid = true;
             var msg = '';
             $rootScope.setLoader(true);
@@ -1219,49 +1226,81 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
-        $scope.uploadEditionFiles = function(file, vdm){
+        $scope.uploadEditionFiles = function(file, vdm, file_type){
+            var valid = true;
+            var msg = '';
             $rootScope.setLoader(true);
             var baseUrl = ENV.baseUrl;
             if(vdm.prodDept != null && vdm.prodDept.assignment != null) {
-                Upload.upload({
-                    url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id,
-                    data: {file: file}
-                }).then(function (resp) {
-                    if(resp.data != null){
-                        switch(file.type){
-                            case 'video/mp4':
-                                vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
-                                vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
-                                break;
-
-                            case '':
-                                vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
-                                vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
-                                break;
-                            default:
-                                angular.element("input[type='file']").val(null);
-                                console.log('Archivo no permitido')
+                var regex;
+                switch (file_type){
+                    case 'video_clip':
+                        regex = new RegExp("(.*?)\.(mp4)$");
+                        if(!(regex.test(file.name.toLowerCase()))){
+                            msg = "Los videos deben ser mp4 para poder ser guardados";
+                            valid = false;
                         }
+                        break;
+                    case 'premier':
+                        regex = new RegExp("(.*?)\.(prproj)$");
+                        if(!(regex.test(file.name.toLowerCase()))){
+                            msg = "Los proyectos premier deben ser .prproj para poder ser guardados";
+                            valid = false;
+                        }
+                        break;
+                }
 
-                    }
+                if(valid){
+                    Upload.upload({
+                        url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id+'&file_type='+file_type,
+                        data: {file: file}
+                    }).then(function (resp) {
+                        if(resp.data != null){
+                            switch(file_type){
+                                case 'video_clip':
+                                    vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
+                                    vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
+                                    break;
+
+                                case 'premier':
+                                    vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
+                                    vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
+                                    break;
+                                default:
+                                    angular.element("input[type='file']").val(null);
+                                    console.log('Archivo no permitido')
+                            }
+
+                        }
+                        $rootScope.setLoader(false);
+                        swal({
+                            title: "Exitoso",
+                            text: 'Se ha guardado el archivo de forma exitosa',
+                            type: 'success',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightskyblue"
+                        });
+                        angular.element("input[type='file']").val(null);
+                        console.clear();
+                    }, function (error) {
+                        angular.element("input[type='file']").val(null);
+                        $rootScope.setLoader(false);
+                        console.log(error);
+                    }, function (evt) {
+                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                        console.log('progreso de subida: ' + progressPercentage + '% ');
+                    });
+                }else{
+                    angular.element("input[type='file']").val(null);
                     $rootScope.setLoader(false);
                     swal({
-                        title: "Exitoso",
-                        text: 'Se ha guardado el archivo de forma exitosa',
-                        type: 'success',
+                        title: "Aviso",
+                        text: msg,
+                        type: 'error',
                         confirmButtonText: "OK",
-                        confirmButtonColor: "lightskyblue"
+                        confirmButtonColor: "lightcoral"
                     });
-                    angular.element("input[type='file']").val(null);
-                    console.clear();
-                }, function (error) {
-                    angular.element("input[type='file']").val(null);
-                    $rootScope.setLoader(false);
-                    console.log(error);
-                }, function (evt) {
-                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                    console.log('progreso de subida: ' + progressPercentage + '% ');
-                });
+                }
             }else {
                 angular.element("input[type='file']").val(null);
                 $rootScope.setLoader(false);
@@ -1297,6 +1336,12 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 valid = false;
                             }
                         });
+                        break;
+                    case 'designed_presentation':
+                        if(upload.type != 'application/pdf'){
+                            msg = "Las presentaciones diseñadas deben ser pdf";
+                            valid = false;
+                        }
                         break;
                 }
                 if(valid){

@@ -20,7 +20,7 @@
                         {{row.postProdDept.status}}
                     </div>
                 </td>
-                <td data-title="'Asignado a'" filter="{postProdResponsable: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
+                <td data-title="'Asignado a'" filter="{responsable: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
                     <div ng-if="row.postProdDept.assignment == null" align="center">
                         sin post-productor
                     </div>
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                 </td>
-                <td data-title="'Asignado a'" ng-if="row.writable == true"  style="vertical-align:middle">
+                <td data-title="'Asignado a'" ng-if="row.writable == true" filter="{responsable: 'text'}"  style="vertical-align:middle">
                     <div align="center">
                         <div ng-if="row.postProdDept.assignment != null" align="center">
                             <div ng-if="row.postProdDept.assignment.assignedName == null || row.postProdDept.assignment.changePostProducer == true">
@@ -66,7 +66,10 @@
                     </div>
                     <div class="itemPresent" ng-if="row.postProdDept.assignment.video.url != null" align="center">
                         <h4>Video</h4>
-                        <a href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
+                        <video width="320" height="240" controls>
+                            <source ng-src="{{trustSrc(downloadRoot + row.postProdDept.assignment.video.url)}}" type="video/mp4">
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
+                        </video>
                         <br>
                     </div>
                 </td>

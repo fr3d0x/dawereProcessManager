@@ -2,7 +2,7 @@
 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 over-x">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data | orderBy : row.videoId">
                 <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" style="vertical-align: middle"><div align="center">{{row.videoId}}</div></td>
@@ -11,7 +11,7 @@
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{prodAssignedStatus: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
                     <div ng-if="row.prodDept.assignment.status == null" align="center">
                         {{row.prodDept.status}}
                     </div>
@@ -35,14 +35,14 @@
                         <div ng-if="row.prodDept.assignment.video_clip.url != null">
                             <h4>Video Clip</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.premier_project.url != null">
                             <h4>Proyecto Premier</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -83,14 +83,14 @@
                         <div ng-if="row.prodDept.assignment.video_clip.url != null">
                             <h4>Video Clip</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.premier_project.url != null">
                             <h4>Proyecto Premier</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -110,10 +110,10 @@
                     </div>
                     <div align="center" ng-if="row.uploadFiles == true">
 
-                        <i class="fa fa-film uploadBtn" aria-hidden="true" style="font-size: 15px" id="uploadVideoClip" ngf-select="uploadEditionFiles($file, row)" name="videoClip" title="subir video clip">
+                        <i class="fa fa-film uploadBtn" aria-hidden="true" style="font-size: 15px" id="uploadVideoClip" ngf-select="uploadEditionFiles($file, row, 'video_clip')" name="videoClip" title="subir video clip">
                         </i>
                         <span style="font-size: 20px"> |</span>
-                        <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px" id="uploadPremierProject" ngf-select="uploadEditionFiles($file, row)" name="premierProject" title="subir proyecto premier">
+                        <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px" id="uploadPremierProject" ngf-select="uploadEditionFiles($file, row, 'premier')" name="premierProject" title="subir proyecto premier">
                         </i><span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>

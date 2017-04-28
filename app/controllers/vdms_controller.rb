@@ -161,6 +161,8 @@ class VdmsController < ApplicationController
               when 'contentLeader', 'contentAnalist'
                 payload_item['prodDept'] = vdm.production_dpt
               when 'production', 'editor'
+                responsable = 'sin editor'
+                payload_item['status'] = 'no asignado'
                 if vdm.production_dpt != nil
                   if role == 'production'
                     if vdm.production_dpt.status != nil && vdm.production_dpt.status != ''
@@ -171,8 +173,6 @@ class VdmsController < ApplicationController
                       payload_item['status']  = vdm.production_dpt.production_dpt_assignment.status
                     end
                   end
-
-                  responsable = 'no asignado'
                   production_dpt = {
                       id: vdm.production_dpt.id,
                       status: vdm.production_dpt.status,
@@ -193,9 +193,9 @@ class VdmsController < ApplicationController
                   payload_item['conclu'] = vdm.production_dpt.conclu
                   payload_item['vidDev'] = vdm.production_dpt.vidDev
                   payload_item['prodDeptStatus'] = vdm.production_dpt.status
-                  payload_item['prodDeptResponsable'] = responsable
                   payload_item['prodDept'] = production_dpt
                 end
+                payload_item['responsable'] = responsable
               when 'designLeader', 'designer'
                 if vdm.design_dpt != nil
                   design_dpt = {
@@ -219,12 +219,15 @@ class VdmsController < ApplicationController
                   payload_item['designDept'] = design_dpt
                 end
               when 'postProLeader', 'post-producer'
+                responsable = 'sin post-productor'
+                payload_item['status'] = 'no asignado'
                 if vdm.post_prod_dpt != nil
                   post_prod_dpt = {
                       id: vdm.post_prod_dpt.id,
                       status: vdm.post_prod_dpt.status,
                       comments: vdm.post_prod_dpt.comments,
                   }
+                  payload_item['status'] = vdm.post_prod_dpt.status
                   if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                     assignment = {
                         id: vdm.post_prod_dpt.post_prod_dpt_assignment.id,
@@ -241,44 +244,46 @@ class VdmsController < ApplicationController
                         illustrators: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators,
                         elements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements,
                     }
+                    responsable = vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName
                     post_prod_dpt['assignment'] = assignment
+                    if role == 'post-producer'
+                      payload_item['status'] = vdm.post_prod_dpt.post_prod_dpt_assignment.status
+                    end
                   end
+                  payload_item['responsable'] = responsable
                   payload_item['postProdDept'] = post_prod_dpt
                 end
               when 'productManager'
+                production_status = 'no asignado'
+                edition_status = 'no asignado'
+                design_status = 'no asignado'
+                post_prod_status = 'no asignado'
                 if vdm.product_management != nil
-                  if vdm.production_dpt != nil
-                    payload_item['prodDept'] = vdm.production_dpt
-                    if vdm.production_dpt.status != nil
-                      payload_item['productionStatus'] = vdm.production_dpt.status
-                    else
-                      payload_item['productionStatus'] = 'no asignado'
-                    end
-                    if vdm.production_dpt.production_dpt_assignment != nil
-                      payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
-                    else
-                      payload_item['editionStatus'] = 'no asignado'
-                    end
-                  else
-                    payload_item['productionStatus'] = 'no asignado'
+
+                  payload_item['prodDept'] = vdm.production_dpt
+                  if vdm.product_management.productionStatus != nil
+                    production_status = vdm.product_management.productionStatus
                   end
-                  if vdm.design_dpt != nil
-                    payload_item['designDept'] = vdm.design_dpt
-                    payload_item['designStatus'] = vdm.design_dpt.status
-                  else
-                    payload_item['designStatus'] = 'no asignado'
+                  if vdm.product_management.editionStatus != nil
+                    edition_status = vdm.product_management.editionStatus
                   end
-                  if vdm.post_prod_dpt != nil
-                    payload_item['postProdDept'] = vdm.post_prod_dpt
-                    payload_item['postProdStatus'] = vdm.post_prod_dpt.status
-                  else
-                    payload_item['postProdStatus'] = 'no asignado'
+                  if vdm.product_management.designStatus != nil
+                     design_status = vdm.product_management.designStatus
                   end
+                  if vdm.product_management.postProductionStatus != nil
+                    post_prod_status = vdm.product_management.postProductionStatus
+                  end
+
                   payload_item['productManagement'] = vdm.product_management
                 end
+                payload_item['productionStatus'] = production_status
+                payload_item['editionStatus'] = edition_status
+                payload_item['designStatus'] = design_status
+                payload_item['postProdStatus'] = post_prod_status
               when 'qa', 'qa-analyst'
+                responsable = 'sin analista'
+                payload_item['status'] = 'no asignado'
                 if vdm.qa_dpt != nil
-                  responsable = 'no asignado'
                   qa = {
                       id: vdm.qa_dpt.id,
                       status: vdm.qa_dpt.status,
@@ -291,13 +296,13 @@ class VdmsController < ApplicationController
                     payload_item['status'] = vdm.qa_dpt.qa_assignment.status
                   end
                   payload_item['qa'] = qa
-                  payload_item['qaResponsable'] = responsable
                   if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                     payload_item['video'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video
                     payload_item['video_name'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
 
                   end
                 end
+                payload_item['qaResponsable'] = responsable
               else
                 raise Exceptions::InvalidRoleException
             end
@@ -327,7 +332,74 @@ class VdmsController < ApplicationController
   def getWholeVdm
     if params[:id] != nil
       vdm = Vdm.find(params[:id])
-
+      production_dpt = nil;
+      design_dpt = nil;
+      post_prod_dpt = nil;
+      if vdm.production_dpt != nil
+        production_dpt = {
+            id: vdm.production_dpt.id,
+            status: vdm.production_dpt.production_dpt_assignment,
+            comments: vdm.production_dpt.comments,
+            script: vdm.production_dpt.script,
+            script_name: vdm.production_dpt.script_name,
+            screen_play: vdm.production_dpt.screen_play,
+            screen_play_name: vdm.production_dpt.screen_play_name
+        }
+        if vdm.production_dpt.production_dpt_assignment != nil
+          production_dpt['assignment'] = {
+              id: vdm.production_dpt.production_dpt_assignment.id,
+              status: vdm.production_dpt.production_dpt_assignment.status,
+              assignedName: vdm.production_dpt.production_dpt_assignment.assignedName,
+              comments: vdm.production_dpt.production_dpt_assignment.comments,
+              video_clip: vdm.production_dpt.production_dpt_assignment.video_clip,
+              video_clip_name: vdm.production_dpt.production_dpt_assignment.video_clip_name,
+              premier_project: vdm.production_dpt.production_dpt_assignment.premier_project,
+              premier_project_name: vdm.production_dpt.production_dpt_assignment.premier_project_name
+          }
+        end
+      end
+      if vdm.design_dpt != nil
+        design_dpt = {
+            id: vdm.design_dpt.id,
+            status: vdm.design_dpt.status,
+            comments: vdm.design_dpt.comments,
+        }
+        if vdm.design_dpt.design_assignment != nil
+          design_dpt['assignment'] = {
+              id: vdm.design_dpt.design_assignment.id,
+              status: vdm.design_dpt.design_assignment.status,
+              assignedName: vdm.design_dpt.design_assignment.assignedName,
+              comments: vdm.design_dpt.design_assignment.comments,
+              illustrators: vdm.design_dpt.design_assignment.design_ilustrators,
+              jpgs: vdm.design_dpt.design_assignment,
+              designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
+              designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
+          }
+        end
+      end
+      if vdm.post_prod_dpt != nil
+        post_prod_dpt = {
+            id: vdm.post_prod_dpt.id,
+            status: vdm.post_prod_dpt.status,
+            comments: vdm.post_prod_dpt.comments,
+        }
+        if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+          post_prod_dpt['assignment'] = {
+              id: vdm.post_prod_dpt.post_prod_dpt_assignment.id,
+              status: vdm.post_prod_dpt.post_prod_dpt_assignment.status,
+              assignedName: vdm.post_prod_dpt.post_prod_dpt_assignment.assignedName,
+              comments: vdm.post_prod_dpt.post_prod_dpt_assignment.comments,
+              video: vdm.post_prod_dpt.post_prod_dpt_assignment.video,
+              video_name: vdm.post_prod_dpt.post_prod_dpt_assignment.video_name,
+              after_project: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project,
+              after_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name,
+              premier_project: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project,
+              premier_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name,
+              illustrators: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators,
+              ellements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements
+          }
+        end
+      end
       payload = {
           cp: vdm.classes_planification,
           videoId: vdm.videoId,
@@ -335,9 +407,16 @@ class VdmsController < ApplicationController
           videoContent: vdm.videoContent,
           status: vdm.status,
           comments: vdm.comments,
+          classDoc: vdm.classDoc,
+          class_doc_name: vdm.class_doc_name,
+          teacher_files: vdm.teacher_files,
           subject: vdm.classes_planification.subject_planification.subject,
           changes: vdm.vdm_changes,
-          prodDept: vdm.production_dpt
+          production_dpt: production_dpt,
+          design_dpt: design_dpt,
+          post_prod_dpt: post_prod_dpt
+
+
       }
       render :json => { data: payload, status: 'SUCCESS'}, :status => 200
     end
@@ -1826,8 +1905,8 @@ class VdmsController < ApplicationController
       vdm = Vdm.find(params[:id])
       if vdm.production_dpt.production_dpt_assignment != nil
         if params[:file] != nil
-          case params[:file].content_type
-            when 'video/mp4'
+          case params[:file_type]
+            when 'video_clip'
               vdm.production_dpt.production_dpt_assignment.video_clip_name = params[:file].original_filename
               vdm.production_dpt.production_dpt_assignment.video_clip = params[:file]
               vdm.production_dpt.production_dpt_assignment.save!
@@ -1836,7 +1915,7 @@ class VdmsController < ApplicationController
                   video_clip: vdm.production_dpt.production_dpt_assignment.video_clip,
                   video_clip_name: vdm.production_dpt.production_dpt_assignment.video_clip_name
               }
-            when 'application/octet-stream'
+            when 'premier'
               vdm.production_dpt.production_dpt_assignment.premier_project_name = params[:file].original_filename
               vdm.production_dpt.production_dpt_assignment.premier_project = params[:file]
               vdm.production_dpt.production_dpt_assignment.save!
@@ -1947,6 +2026,7 @@ class VdmsController < ApplicationController
             change.changedTo = vdm.production_dpt.script.url
             change.department = 'produccion'
             changes.push(change)
+            FileUtils.cp(vdm.production_dpt.script.path, $files_copy_route+'/'+params[:upload].original_filename)
             response = {
                 script: vdm.production_dpt.script,
                 script_name: vdm.production_dpt.script_name
@@ -1966,6 +2046,7 @@ class VdmsController < ApplicationController
 
             change.department = 'produccion'
             changes.push(change)
+            FileUtils.cp(vdm.production_dpt.screen_play.path, $files_copy_route+'/'+params[:upload].original_filename)
             response = {
                 screen_play: vdm.production_dpt.screen_play,
                 screen_play_name: vdm.production_dpt.screen_play_name
@@ -2046,6 +2127,25 @@ class VdmsController < ApplicationController
             end
             response = {
                 design_jpgs: vdm.design_dpt.design_assignment.design_jpgs
+            }
+          when 'designed_presentation'
+            change = VdmChange.new
+            change.changeDetail = 'Cambio de presentacion'
+            change.vdm_id = vdm.id
+            change.user_id = $currentPetitionUser['id']
+            change.uname = $currentPetitionUser['username']
+            change.videoId = vdm.videoId
+            change.changeDate = Time.now
+            vdm.design_dpt.design_assignment.designed_presentation_name = params[:upload].original_filename
+
+            vdm.design_dpt.design_assignment.designed_presentation = params[:upload]
+            change.changedTo = vdm.design_dpt.design_assignment.designed_presentation.url
+            change.department = 'diseño'
+            changes.push(change)
+            FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $files_copy_route+'/'+params[:upload].original_filename)
+            response = {
+                designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
+                designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
             }
           else
             msg = 'tipo de archivo no admitido'

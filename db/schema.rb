@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170427185309) do
+ActiveRecord::Schema.define(version: 20170428202054) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -47,13 +47,15 @@ ActiveRecord::Schema.define(version: 20170427185309) do
   add_index "cp_changes", ["user_id"], name: "index_cp_changes_on_user_id", using: :btree
 
   create_table "design_assignments", force: :cascade do |t|
-    t.string   "status",        limit: 255
-    t.string   "assignedName",  limit: 255
-    t.text     "comments",      limit: 16777215
-    t.integer  "user_id",       limit: 4
-    t.integer  "design_dpt_id", limit: 4
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.string   "status",                     limit: 255
+    t.string   "assignedName",               limit: 255
+    t.text     "comments",                   limit: 16777215
+    t.integer  "user_id",                    limit: 4
+    t.integer  "design_dpt_id",              limit: 4
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.string   "designed_presentation",      limit: 255
+    t.string   "designed_presentation_name", limit: 255
   end
 
   add_index "design_assignments", ["design_dpt_id"], name: "index_design_assignments_on_design_dpt_id", using: :btree

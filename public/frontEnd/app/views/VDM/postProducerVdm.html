@@ -17,7 +17,7 @@
                         {{row.postProdDept.assignment.status}}
                     </div>
                 </td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                     <select ng-model="row.assignmentPostPStatus" ng-options="state.statusSpa as state.statusSpa for state in postProducerStates" style="height:2.2em; margin-top: 6px;" >
                         <option value="#">No especifico</option>
                     </select>
@@ -29,29 +29,29 @@
                     <div class="itemPresent" ng-if="row.postProdDept.assignment.video.url != null || row.postProdDept.assignment.premier_project.url != null || row.postProdDept.assignment.after_project.url != null || row.postProdDept.assignment.illustrators.length >= 1 || row.postProdDept.assignment.elements.length >= 1">
                         <div ng-if="row.postProdDept.assignment.video.url != null">
                             <h4>Video</h4>
-                            <a href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
 
                         </div>
                         <div ng-if="row.postProdDept.assignment.premier_project.url != null">
                             <h4>Premier</h4>
-                            <a href="{{downloadRoot + row.postProdDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.premier_project_name}}</a>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.premier_project_name}}</a>
 
                         </div>
                         <div ng-if="row.postProdDept.assignment.after_project.url != null">
                             <h4>After</h4>
-                            <a href="{{downloadRoot + row.postProdDept.assignment.after_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.after_project_name}}</a>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.after_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.after_project_name}}</a>
 
                         </div>
                         <div ng-if="row.postProdDept.assignment.illustrators.length >= 1">
                             <h4>Illustrators</h4>
                             <div ng-repeat="file in row.postProdDept.assignment.illustrators">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                         <div ng-if="row.postProdDept.assignment.elements.length >= 1">
                             <h4>Elementos</h4>
                             <div ng-repeat="file in row.postProdDept.assignment.elements">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                     </div>
