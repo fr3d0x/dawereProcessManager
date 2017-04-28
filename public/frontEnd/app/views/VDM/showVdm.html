@@ -126,7 +126,7 @@
                         <div ng-if="vdm.production_dpt.assignment.video_clip.url != null">
                             <h4>Video</h4>
                             <video width="320" height="240" controls>
-                                <source ng-src="{{trustSrc(downloadRoot + vdm.production_dpt.assignment.video_clip.url)}}" type="video/mp4">
+                                <source ng-src="{{downloadRoot + vdm.production_dpt.assignment.video_clip.url}}" type="video/mp4">
                                 <a ng-href="{{downloadRoot + vdm.production_dpt.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.vdm.production_dpt.assignment.video_clip_name}}</a>
                             </video>
                             <br>
@@ -180,7 +180,7 @@
                         <div ng-if="vdm.post_prod_dpt.assignment.video.url != null">
                             <h4>Video</h4>
                             <video width="320" height="240" controls>
-                                <source ng-src="{{trustSrc(downloadRoot + vdm.post_prod_dpt.assignment.video.url)}}" type="video/mp4">
+                                <source ng-src="{{downloadRoot + vdm.post_prod_dpt.assignment.video.url}}" type="video/mp4">
                                 <a ng-href="{{downloadRoot + vdm.post_prod_dpt.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.post_prod_dpt.assignment.video_name}}</a>
                             </video>
                         </div>
