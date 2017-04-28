@@ -27,14 +27,14 @@
                         <div ng-if="row.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
-                                <a href="{{downloadRoot + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
+                                <a ng-href="{{downloadRoot + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.teacherFiles.length >= 1">
                             <h4>Material de Profesor</h4>
                             <div ng-repeat="file in row.teacherFiles">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
                     </div>
@@ -79,14 +79,14 @@
                         <div ng-if="row.classDoc.url != null">
                             <h4>Documento de clase</h4>
                             <div>
-                                <a href="{{downloadRoot + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
+                                <a ng-href="{{downloadRoot + row.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{row.class_doc_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.teacherFiles.length >= 1">
                             <h4>Material de Profesor</h4>
                             <div ng-repeat="file in row.teacherFiles">
-                                <a href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>
 

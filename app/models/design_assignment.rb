@@ -3,4 +3,6 @@ class DesignAssignment < ActiveRecord::Base
   belongs_to :user
   has_many :design_ilustrators, :dependent => :destroy
   has_many :design_jpgs, :dependent => :destroy
+  mount_uploader :designed_presentation, DesignedPresentationUploader
+
 end

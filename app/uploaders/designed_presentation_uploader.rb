@@ -1,4 +1,4 @@
-class DesignIllustratorUploader < CarrierWave::Uploader::Base
+class DesignedPresentationUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   # include CarrierWave::RMagick
@@ -11,7 +11,7 @@ class DesignIllustratorUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "#{model.design_assignment.design_dpt.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.design_assignment.design_dpt.vdm.classes_planification.subject_planification.subject.name}/#{model.design_assignment.design_dpt.vdm.videoId}/illustrators_diseno/"
+    "#{model.design_dpt.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.design_dpt.vdm.classes_planification.subject_planification.subject.name}/#{model.design_dpt.vdm.videoId}/presentacion_disenada/"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -43,7 +43,7 @@ class DesignIllustratorUploader < CarrierWave::Uploader::Base
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
   def filename
-    "#{model.file_name}" if original_filename.present?
+    "#{model.designed_presentation_name}" if original_filename.present?
   end
 
 end

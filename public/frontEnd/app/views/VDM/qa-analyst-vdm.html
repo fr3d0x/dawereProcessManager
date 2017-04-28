@@ -23,15 +23,15 @@
                         {{row.qa.assignment.status}}
                     </div>
                 </td>
-                <td data-title="'Video'" filter="{qaResponsable: 'text'}" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                <td data-title="'Video'" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
                     <div class="itemMissing" ng-if="row.video.url == null" align="center">
                         No Posee
                     </div>
                     <div class="itemPresent" ng-if="row.video.url != null" align="center">
                         <h4>Video</h4>
                         <video width="320" height="240" controls>
-                            <source ng-src="{{downloadRoot + row.video.url}}" type="video/mp4">
-                            <a href="{{downloadRoot + row.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.video_name}}</a>
+                            <source ng-src="{{trustSrc(downloadRoot + row.video.url)}}" type="video/mp4">
+                            <a ng-href="{{downloadRoot + row.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.video_name}}</a>
                         </video>
                         <br>
                     </div>

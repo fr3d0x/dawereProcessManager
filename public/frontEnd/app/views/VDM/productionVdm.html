@@ -49,28 +49,28 @@
                         <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.video_clip.url != null">
                             <h4>Video Edicion</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.premier_project.url != null">
                             <h4>Proyecto premier</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -101,9 +101,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'aprobado'">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'aprobado' && row.status != 'procesado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'aprobado'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'aprobado' && row.status != 'procesado'">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -122,7 +122,7 @@
                         {{row.prodDept.status | translate}}
                     </div>
                 </td>
-                <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
+                <td data-title="'Asignado'" ng-if="row.writable == true" filter="{responsable: 'text'}" style="vertical-align:middle">
                     <div align="center">
                         <div ng-if="row.prodDept.assignment.assignedName == null || row.prodDept.assignment.changeEditor == true">
                             <a  ng-click="row.prodDept.assignment.changeEditor = false" title='cerrar' ng-if="row.prodDept.assignment.changeEditor == true">
@@ -151,28 +151,28 @@
                         <div ng-if="row.prodDept.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.script.url != null">
                             <h4>Libreto</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.video_clip.url != null">
                             <h4>Video Edicion</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.assignment.premier_project.url != null">
                             <h4>Proyecto premier</h4>
                             <div>
-                                <a href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
                             </div>
                             <br>
                         </div>

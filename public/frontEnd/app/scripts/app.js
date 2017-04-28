@@ -38,6 +38,7 @@ var app = angular.module('app', [
           $("#shadowBox").remove();
       }
     };
+
     $rootScope.$on('$stateChangeSuccess', function(event, toState) {
 
       event.targetScope.$watch('$viewContentLoaded', function () {
