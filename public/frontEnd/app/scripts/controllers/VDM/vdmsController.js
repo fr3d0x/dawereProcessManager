@@ -2,13 +2,9 @@
  * Created by fr3d0 on 28/07/16.
  */
 'use strict';
-app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload', '$sce',
-    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload, $sce){
+app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload',
+    function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload){
         $scope.assignmentStatus = null;
-        $scope.trustSrc = function(src) {
-            src = src + "?modestbranding=1&autohide=1&showinfo=0&rel=0";
-            return $sce.trustAsResourceUrl(src);
-        };
         var getEditorsJson = function (employees) {
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
