@@ -1355,6 +1355,12 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     vdm.designDept.assignment.design_jpgs = resp.data.data.design_jpgs;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;
+                                case 'designed_presentation':
+                                    vdm.designDept.assignment.designed_presentation = resp.data.data.designed_presentation;
+                                    vdm.designDept.assignment.designed_presentation_name = resp.data.data.designed_presentation_name;
+
+                                    msg = "Se han guardado los archivos de forma exitosa";
+                                    break;
                             }
                             $rootScope.setLoader(false);
                             swal({
