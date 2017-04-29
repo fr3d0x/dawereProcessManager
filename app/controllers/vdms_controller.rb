@@ -147,7 +147,7 @@ class VdmsController < ApplicationController
                 videoContent: vdm.videoContent,
                 status: status,
                 comments: vdm.comments,
-                type: vdm.vdm_type,
+                vdm_type: vdm.vdm_type,
                 cp: cp.as_json,
                 cpId: cp.id,
                 videoNumber: vdm.number,
@@ -211,7 +211,9 @@ class VdmsController < ApplicationController
                         comments: vdm.design_dpt.design_assignment.comments,
                         user_id: vdm.design_dpt.design_assignment.user_id,
                         design_jpgs: vdm.design_dpt.design_assignment.design_jpgs,
-                        design_ilustrators: vdm.design_dpt.design_assignment.design_ilustrators
+                        design_ilustrators: vdm.design_dpt.design_assignment.design_ilustrators,
+                        designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
+                        designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
                     }
                     design_dpt['assignment'] = assignment
                   end
@@ -296,7 +298,7 @@ class VdmsController < ApplicationController
                     payload_item['status'] = vdm.qa_dpt.qa_assignment.status
                   end
                   payload_item['qa'] = qa
-                  if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                  if vdm.post_prod_dpt != nil && vsm.post_prod_dpt.post_prod_dpt_assignment != nil
                     payload_item['video'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video
                     payload_item['video_name'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
 
@@ -396,7 +398,7 @@ class VdmsController < ApplicationController
               premier_project: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project,
               premier_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name,
               illustrators: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators,
-              ellements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements
+              elements: vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements
           }
         end
       end
@@ -1391,9 +1393,10 @@ class VdmsController < ApplicationController
               UserNotifier.send_approved_to_designLeader(vdm).deliver
               vdm.design_dpt.save!
               designStatus = 'aprobado'
-              if vdm.product_management != nil
+              management = vdm.product_management
+              if management == nil
+                management = ProductManagement.new
                 vdm.product_management.designStatus = 'aprobado'
-                vdm.product_management.postProductionStatus = 'asignado'
                 vdm.product_management.save!
               end
               if vdm.vdm_type == 'wacom'
@@ -1405,11 +1408,13 @@ class VdmsController < ApplicationController
                 production_dpt.vdm_id = vdm.id
                 production_dpt.save!
                 UserNotifier.send_assigned_to_production(vdm).deliver
+                management.productionStatus = 'asignado'
               else
                 postProd = vdm.post_prod_dpt
                 if postProd == nil
                   postProd = PostProdDpt.new
                 end
+                management.postProductionStatus = 'asignado'
                 postProd.status = 'asignado'
                 postProd.vdm = vdm
                 postProd.save!
@@ -1429,7 +1434,7 @@ class VdmsController < ApplicationController
                 assignment.post_prod_dpt_id = postProd.id
                 assignment.save!
                 UserNotifier.send_assigned_to_post_prod_leader(vdm).deliver
-
+                management.save!
               end
             else
               if vdm.design_dpt.design_assignment != nil
@@ -2142,6 +2147,7 @@ class VdmsController < ApplicationController
             change.changedTo = vdm.design_dpt.design_assignment.designed_presentation.url
             change.department = 'diseño'
             changes.push(change)
+            vdm.design_dpt.design_assignment.save!
             FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $files_copy_route+'/'+params[:upload].original_filename)
             response = {
                 designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
