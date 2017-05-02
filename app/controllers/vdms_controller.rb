@@ -298,7 +298,7 @@ class VdmsController < ApplicationController
                     payload_item['status'] = vdm.qa_dpt.qa_assignment.status
                   end
                   payload_item['qa'] = qa
-                  if vdm.post_prod_dpt != nil && vsm.post_prod_dpt.post_prod_dpt_assignment != nil
+                  if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                     payload_item['video'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video
                     payload_item['video_name'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
 
