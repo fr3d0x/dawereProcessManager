@@ -79,131 +79,41 @@ class UsersController < ApplicationController
     end
   end
 
-  def globalProgress
+  def employee_progress
     if $currentPetitionUser['id'] != nil
       payload = []
-      grades = []
-      subject = {}
       if params[:role] != nil
-        role = params[:role]
         case request['role']
           when 'contentAnalist'
             user = User.find($currentPetitionUser['id'])
-            subjectPlannings = user.subject_planifications
-            payload = []
+            subject_plannings = user.subject_planifications
             i = 0
-            subjectPlannings.each do |sp|
-              totalVideos = 0
+            subject_plannings.each do |sp|
+              total_videos = 0
               returned = 0
               processed = 0
               received = 0
-              notReceived = 0
-              recorded = 0
+              not_received = 0
               sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                totalVideos = totalVideos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
-                notReceived = notReceived + cp.vdms.where(:status => 'no recibido').count
+                total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                not_received = not_received + cp.vdms.where(:status => 'no recibido').count
                 returned = returned + cp.vdms.where(:status => 'rechazado').count
                 processed = processed + cp.vdms.where(:status => 'procesado').count
                 received = received + cp.vdms.where(:status => 'recibido').count
-                recorded = recorded + ProductionDpt.find_by_sql("Select * from production_dpts pdpt, vdms v where v.classes_planification_id = " + cp.id.to_s + " and pdpt.vdm_id = v.id and pdpt.status = 'recorded'").count
               end
-              effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
+              effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
               subject = {
                   name: sp.subject.name + ' ' + sp.subject.grade.name
               }
               payload[i] ={
                   subject: subject,
                   teacher: sp.teacher,
-                  totalVideos: totalVideos,
+                  totalVideos: total_videos,
                   received: received,
                   returned: returned,
                   processed: processed,
-                  notReceived: notReceived,
+                  notReceived: not_received,
                   effectiveness: effectiveness,
-                  recorded: recorded
-              }
-              i += 1
-            end
-          when 'contentLeader'
-            subjectPlannings = SubjectPlanification.all
-            payload = []
-            i = 0
-            subjectPlannings.each do |sp|
-              totalVideos = 0
-              returned = 0
-              processed = 0
-              received = 0
-              notReceived = 0
-              recorded = 0
-              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                totalVideos = totalVideos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
-                notReceived = notReceived + cp.vdms.where(:status => 'no recibido').count
-                returned = returned + cp.vdms.where(:status => 'rechazado').count
-                processed = processed + cp.vdms.where(:status => 'procesado').count
-                received = received + cp.vdms.where(:status => 'recibido').count
-                recorded = recorded + ProductionDpt.find_by_sql("Select * from production_dpts pdpt, vdms v where v.classes_planification_id = " + cp.id.to_s + " and pdpt.vdm_id = v.id and pdpt.status = 'recorded'").count
-              end
-              effectiveness = number_with_precision((processed.to_f/totalVideos.to_f)*100, :precision => 2)
-              subject = {
-                  name: sp.subject.name + ' ' + sp.subject.grade.name
-              }
-              payload[i] ={
-                  subject: subject,
-                  teacher: sp.teacher,
-                  totalVideos: totalVideos,
-                  received: received,
-                  returned: returned,
-                  processed: processed,
-                  notReceived: notReceived,
-                  effectiveness: effectiveness,
-                  recorded: recorded
-              }
-              i += 1
-            end
-          when 'production'
-            subjectPlannings = SubjectPlanification.all
-            payload = []
-            i = 0
-            subjectPlannings.each do |sp|
-              totalVideos = 0
-              returned = 0
-              received = 0
-              recorded = 0
-              assigned = 0
-              approved = 0
-              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
-                  if vdm.production_dpt != nil
-                    totalVideos += 1
-                  end
-                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
-                    returned += 1
-                  end
-                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
-                    recorded += 1
-                  end
-                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
-                    assigned += 1
-                  end
-                  if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
-                    approved += 1
-                  end
-                end
-              end
-              effectiveness = number_with_precision(((recorded.to_f + approved.to_f)/totalVideos.to_f)*100, :precision => 2)
-              subject = {
-                  name: sp.subject.name + ' ' + sp.subject.grade.name
-              }
-              payload[i] ={
-                  subject: subject,
-                  teacher: sp.teacher,
-                  totalVideos: totalVideos,
-                  received: received,
-                  returned: returned,
-                  assigned: assigned,
-                  approved: approved,
-                  effectiveness: effectiveness,
-                  recorded: recorded
               }
               i += 1
             end
@@ -250,46 +160,6 @@ class UsersController < ApplicationController
                   returned: returned,
                   approved: approved,
                   effectiveness: effectiveness
-              }
-              i += 1
-            end
-          when 'designLeader'
-            subjectPlannings = SubjectPlanification.all
-            payload = []
-            i = 0
-            subjectPlannings.each do |sp|
-              totalVideos = 0
-              returned = 0
-              assigned = 0
-              approved = 0
-              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
-                  if vdm.design_dpt != nil
-                    totalVideos += 1
-                  end
-                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'asignado'
-                    assigned += 1
-                  end
-                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'rechazado'
-                    returned += 1
-                  end
-                  if vdm.design_dpt != nil && vdm.design_dpt.status == 'aprobado'
-                    approved += 1
-                  end
-                end
-              end
-              effectiveness = number_with_precision(((approved.to_f)/totalVideos.to_f)*100, :precision => 2)
-              subject = {
-                  name: sp.subject.name + ' ' + sp.subject.grade.name
-              }
-              payload[i] ={
-                  subject: subject,
-                  teacher: sp.teacher,
-                  totalVideos: totalVideos,
-                  assigned: assigned,
-                  returned: returned,
-                  effectiveness: effectiveness,
-                  approved: approved
               }
               i += 1
             end
@@ -433,6 +303,252 @@ class UsersController < ApplicationController
       end
 
       render :json => { data: payload.as_json, status: 'SUCCESS'}, :status => 200
+    end
+  end
+
+  def global_progress
+    payload = []
+    if $currentPetitionUser['id'] != nil
+
+      if params[:progress_type]
+        case params[:progress_type]
+          when 'content_department'
+            if params[:role] == 'contentLeader' || params[:role] == 'productManager'
+              subject_plannings = SubjectPlanification.all
+              subject_plannings.each do |sp|
+                total_videos = 0
+                returned = 0
+                processed = 0
+                received = 0
+                not_received = 0
+                recorded = 0
+                sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                  total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                  not_received = not_received + cp.vdms.where(:status => 'no recibido').count
+                  returned = returned + cp.vdms.where(:status => 'rechazado').count
+                  processed = processed + cp.vdms.where(:status => 'procesado').count
+                  received = received + cp.vdms.where(:status => 'recibido').count
+                end
+                effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
+                subject = {
+                    name: sp.subject.name + ' ' + sp.subject.grade.name
+                }
+                payload.push({
+                     subject: subject,
+                     teacher: sp.teacher,
+                     totalVideos: total_videos,
+                     received: received,
+                     returned: returned,
+                     processed: processed,
+                     notReceived: not_received,
+                     effectiveness: effectiveness,
+                     recorded: recorded
+                 })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+          when 'content_analysts'
+            if params[:role] == 'contentLeader' || params[:role] == 'productManager'
+              employees = User.joins(:roles).where(:roles => {:role => 'contentAnalist'})
+              employees.each do |emp|
+                total_videos = 0
+                returned = 0
+                processed = 0
+                received = 0
+                not_received = 0
+                subject_plannings = emp.subject_planifications
+                subject_plannings.each do |sp|
+                  sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                    total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                    not_received = not_received + cp.vdms.where(:status => 'no recibido').count
+                    returned = returned + cp.vdms.where(:status => 'rechazado').count
+                    processed = processed + cp.vdms.where(:status => 'procesado').count
+                    received = received + cp.vdms.where(:status => 'recibido').count
+                  end
+                end
+                effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
+                payload.push({
+                     analyst: emp.employee.firstName + ' ' + emp.employee.firstSurname,
+                     totalVideos: total_videos,
+                     received: received,
+                     returned: returned,
+                     processed: processed,
+                     notReceived: not_received,
+                     effectiveness: effectiveness,
+                 })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+
+          when 'production'
+            if params[:role] == 'production' || params[:role] == 'productManager'
+              subject_plannings = SubjectPlanification.all
+              payload = []
+              subject_plannings.each do |sp|
+                total_videos = 0
+                returned = 0
+                received = 0
+                recorded = 0
+                assigned = 0
+                approved = 0
+                sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                  cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                    if vdm.production_dpt != nil
+                      total_videos += 1
+                    end
+                    if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
+                      returned += 1
+                    end
+                    if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
+                      recorded += 1
+                    end
+                    if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
+                      assigned += 1
+                    end
+                    if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
+                      approved += 1
+                    end
+                  end
+                end
+                effectiveness = number_with_precision(((recorded.to_f + approved.to_f)/totalVideos.to_f)*100, :precision => 2)
+                subject = {
+                    name: sp.subject.name + ' ' + sp.subject.grade.name
+                }
+                payload.push({
+                    subject: subject,
+                    teacher: sp.teacher,
+                    totalVideos: total_videos,
+                    received: received,
+                    returned: returned,
+                    assigned: assigned,
+                    approved: approved,
+                    effectiveness: effectiveness,
+                    recorded: recorded
+                })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+
+          when 'editors'
+            if params[:role] == 'production' || params[:role] == 'productManager'
+              employees = User.joins(:roles).where(:roles => {:role => 'editor'})
+              employees.each do |emp|
+                total_videos = 0
+                returned = 0
+                approved = 0
+                assigned = 0
+                edited = 0
+                assignments = u.production_dpt_assignments
+                assignments.each do |as|
+                  total_videos += 1
+                  case as.status
+                    when 'rechazado'
+                      returned += 1
+                    when 'asignado'
+                      assigned += 1
+                    when 'editado'
+                      edited += 1
+                    when 'aprobado'
+                      approved += 1
+                  end
+                end
+                effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
+                payload.push({
+                     editor: emp.employee.firstName + ' ' + emp.employee.firstSurname,
+                     totalVideos: total_videos,
+                     assigned: assigned,
+                     returned: returned,
+                     edited: edited,
+                     effectiveness: effectiveness,
+                 })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+          when 'design'
+            if params[:role] == 'designLeader' || params[:role] == 'productManager'
+              subject_plannings = SubjectPlanification.all
+              payload = []
+              subject_plannings.each do |sp|
+                total_videos = 0
+                returned = 0
+                assigned = 0
+                approved = 0
+                sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                  cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                    if vdm.design_dpt != nil
+                      total_videos += 1
+                    end
+                    if vdm.design_dpt != nil && vdm.design_dpt.status == 'asignado'
+                      assigned += 1
+                    end
+                    if vdm.design_dpt != nil && vdm.design_dpt.status == 'rechazado'
+                      returned += 1
+                    end
+                    if vdm.design_dpt != nil && vdm.design_dpt.status == 'aprobado'
+                      approved += 1
+                    end
+                  end
+                end
+                effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
+                subject = {
+                    name: sp.subject.name + ' ' + sp.subject.grade.name
+                }
+                payload.push({
+                     subject: subject,
+                     totalVideos: total_videos,
+                     returned: returned,
+                     assigned: assigned,
+                     approved: approved,
+                     effectiveness: effectiveness,
+                 })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+          when 'designers'
+            if params[:role] == 'designLeader' || params[:role] == 'productManager'
+              employees = User.joins(:roles).where(:roles => {:role => 'designer'})
+              employees.each do |emp|
+                total_videos = 0
+                returned = 0
+                approved = 0
+                assigned = 0
+                designed = 0
+                assignments = u.design_assignments
+                assignments.each do |as|
+                  total_videos += 1
+                  case as.status
+                    when 'asignado'
+                      assigned += 1
+                    when 'diseñado'
+                      designed += 1
+                    when 'rechazado'
+                      returned += 1
+                    when 'aprobado'
+                      approved += 1
+                  end
+                end
+                effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
+                payload.push({
+                     designer: emp.employee.firstName + ' ' + emp.employee.firstSurname,
+                     totalVideos: total_videos,
+                     assigned: assigned,
+                     returned: returned,
+                     designed: designed,
+                     effectiveness: effectiveness,
+                 })
+              end
+            else
+              raise Exceptions::InvalidRoleException
+            end
+          else
+            render :json => { data: nil, status: 'FAILED', msg: 'Invalid petition'}, :status => 500
+        end
+      end
     end
   end
 

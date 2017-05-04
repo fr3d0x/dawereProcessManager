@@ -147,7 +147,7 @@ class VdmsController < ApplicationController
                 videoContent: vdm.videoContent,
                 status: status,
                 comments: vdm.comments,
-                vdm_type: vdm.vdm_type,
+                type: vdm.vdm_type,
                 cp: cp.as_json,
                 cpId: cp.id,
                 videoNumber: vdm.number,

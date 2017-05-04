@@ -31,65 +31,25 @@
     <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 row" >
         <!--botones de los departamentos-->
         <div align="center">
-            <div class="col-xs-1 col-xs-offset-2 col-sm-1 col-sm-offset-2 col-md-1 col-md-offset-2 col-lg-1 col-lg-offset-2 circle" title="Pre-produccion">
-                <div align="center" style="margin-top: 50%;">
-                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 line"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 circle" title="Produccion">
-                <div align="center" style="margin-top: 50%;">
-                    <i class="fa fa-video-camera" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 line"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 circle">
-                <div align="center" style="margin-top: 50%;"  title="Edicion">
-                    <i class="fa fa-scissors" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 line"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 circle"  title="Diseño">
-                <div align="center" style="margin-top: 50%;">
-                    <i class="fa fa-picture-o" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 line"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 circle"  title="Post-produccion">
-                <div align="center" style="margin-top: 50%;">
-                    <i class="fa fa-film" aria-hidden="true"></i>
-                </div>
-            </div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 line"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 circle" title="Qa">
-                <div align="center" style="margin-top: 50%;">
-                    <i class="fa fa-check" aria-hidden="true"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 row" >
-        <!--botones de los departamentos-->
-        <div align="center">
-            <div class="col-xs-1 col-xs-offset-1 col-sm-1 col-sm-offset-1 col-md-1 col-md-offset-1 col-lg-1 col-lg-offset-1 showBtn sectionBtn" title="Pre-produccion">
+            <div class="col-xs-1 col-xs-offset-1 col-sm-1 col-sm-offset-1 col-md-1 col-md-offset-1 col-lg-1 col-lg-offset-1 showBtn sectionBtn" title="Pre-produccion" ng-click="activateContentProgress()">
                 <div align="center" style="margin-top: 50%;">
                     <i class="fa fa-file-text-o" aria-hidden="true"></i>
                 </div>
             </div>
             <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Produccion">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Produccion" ng-click="activateProductionProgress()">
                 <div align="center" style="margin-top: 50%;">
                     <i class="fa fa-video-camera" aria-hidden="true"></i>
                 </div>
             </div>
             <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Edicion">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Edicion" ng-click="activateEditorsProgress()">
                 <div align="center" style="margin-top: 50%;">
                     <i class="fa fa-scissors" aria-hidden="true"></i>
                 </div>
             </div>
             <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1"></div>
-            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Diseño">
+            <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1 showBtn sectionBtn" title="Diseño" ng-click="activateDesignProgress()">
                 <div align="center" style="margin-top: 50%;">
                     <i class="fa fa-picture-o" aria-hidden="true"></i>
                 </div>
@@ -108,4 +68,25 @@
             </div>
         </div>
     </div>
+
+    <div class="col-xs-2 col-xs-offset-5 col-sm-2 col-sm-offset-5 col-md-2 col-md-offset-5 col-lg-2 col-lg-offset-5 row" >
+        <div align="center" class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pull-left" title="Post-produccion">
+            <div style="margin-top: 50%;">
+                <i class="fa fa-film  showBtn sectionBtn" aria-hidden="true"></i>
+            </div>
+        </div>
+        <div align="center" class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pull-right" title="Qa">
+            <div style="margin-top: 50%;">
+                <i class="fa fa-check  showBtn sectionBtn" aria-hidden="true"></i>
+            </div>
+        </div>
+    </div>
+    <span ng-if="progressContentActive" ng-include="'views/dashboard/report-tables/content-department.html'"></span>
+    <span ng-if="progressContentAnalystsActive" ng-include="'views/dashboard/report-tables/content-analists.html'"></span>
+    <span ng-if="progressProductionActive" ng-include="'views/dashboard/report-tables/production.html'"></span>
+    <span ng-if="progressEditorsActive" ng-include="'views/dashboard/report-tables/editors.html'"></span>
+    <span ng-if="progressDesignActive" ng-include="'views/dashboard/report-tables/design-department.html'"></span>
+    <span ng-if="progressDesignersActive" ng-include="'views/dashboard/report-tables/designers.html'"></span>
+    <span ng-if="progressPostProductionActive" ng-include="'views/dashboard/report-tables/post-production.html'"></span>
+    <span ng-if="progressPostProducersActive" ng-include="'views/dashboard/report-tables/post-producers.html'"></span>
 </div>

@@ -55,7 +55,8 @@ Rails.application.routes.draw do
     resources :users, except: [:new, :edit] do
       collection do
         post :login
-        get :globalProgress
+        get :global_progress
+        get :employee_progress
         post :generatePdf
       end
     end
