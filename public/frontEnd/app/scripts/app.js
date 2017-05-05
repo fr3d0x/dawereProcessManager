@@ -23,7 +23,8 @@ var app = angular.module('app', [
   'LocalStorageModule',
   'ngTable',
   'ngFileUpload',
-  'naif.base64'
+  'naif.base64',
+  '720kb.datepicker'
 ])
   .run(['$rootScope', '$state', '$stateParams', function($rootScope, $state, $stateParams) {
     $rootScope.$state = $state;

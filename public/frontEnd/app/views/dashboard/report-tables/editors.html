@@ -1,0 +1,42 @@
+<h3 class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0 over-x" style="text-align: center">Evaluación del Desempeño de Edicion (por editor)</h3>
+
+<div class="col-xs-2 col-xs-offset-5 col-sm-2 col-sm-offset-5 col-md-2 col-md-offset-5 col-lg-2 col-lg-offset-5 row" style="top: 20px; margin-bottom: 15px">
+    <div align="center" class="col-xs-1 col-sm-1 col-md-1 col-lg-1 pull-left" title="Desempeño de departamento por materia" ng-click="activateEditionProgress()">
+        <div style="margin-top: 50%;">
+            <i class="fa fa-book  showBtn sectionBtn" aria-hidden="true" ng-class="{'showBtnActive': progressEditionActive}"></i>
+        </div>
+    </div>
+    <div align="center" class="col-xs-1 col-sm-1 col-md-1 col-lg-1  pull-right" title="Desempeño de empleados" ng-click="activateEditorsProgress()">
+        <div style="margin-top: 50%;">
+            <i class="fa fa-users  showBtn sectionBtn" aria-hidden="true" ng-class="{'showBtnActive': progressEditorsActive}"></i>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0 over-x" style="top: 15px">
+
+    <table align="center" class="table table-condensed table-bordered table-striped col-lg-8">
+        <tr>
+            <th>Editor</th>
+            <th>Asignado (Cantidad)</th>
+            <th>Devueltos (Cantidad)</th>
+            <th>Editado (Cantidad)</th>
+            <th>Aprobados (Cantidad)</th>
+            <th>Total</th>
+            <th>Efectividad</th>
+        </tr>
+
+        <tr ng-repeat="row in data">
+            <td>{{row.editor}}</td>
+            <td>{{row.assigned}}</td>
+            <td>{{row.returned}}</td>
+            <td>{{row.edited}}</td>
+            <td>{{row.approved}}</td>
+            <td>{{row.totalVideos}}</td>
+            <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
+            <td ng-if="row.effectiveness == 'NaN'">0%</td>
+
+        </tr>
+    </table>
+
+</div>

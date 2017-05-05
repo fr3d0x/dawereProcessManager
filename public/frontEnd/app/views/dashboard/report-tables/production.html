@@ -1,0 +1,29 @@
+<div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0 over-x" style="top: 15px">
+
+    <table align="center" class="table table-bordered table-striped col-lg-8">
+        <tr>
+            <th>Materia</th>
+            <th>Profesor</th>
+            <th>Total (Cantidad)</th>
+            <th>Asignados (Cantidad)</th>
+            <th>Devueltos (Cantidad)</th>
+            <th>Grabado</th>
+            <th>Aprobados (Cantidad)</th>
+            <th>Efectividad</th>
+        </tr>
+
+        <tr ng-repeat="row in data">
+            <td>{{row.subject.name}}</td>
+            <td>{{row.teacher.firstName+" "+row.teacher.lastName}}</td>
+            <td>{{row.totalVideos}}</td>
+            <td>{{row.assigned}}</td>
+            <td>{{row.returned}}</td>
+            <td>{{row.recorded}}</td>
+            <td>{{row.approved}}</td>
+            <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
+            <td ng-if="row.effectiveness == 'NaN'">0%</td>
+
+        </tr>
+    </table>
+
+</div>
