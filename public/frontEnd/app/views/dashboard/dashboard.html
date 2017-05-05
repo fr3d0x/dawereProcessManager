@@ -1,5 +1,5 @@
 <span ng-if="currentRole == 'contentLeader'" ng-include="'views/dashboard/preProductionDashboard.html'" ng-controller="preProductionDashboardController"></span>
-<span ng-if="currentRole == 'contentAnalist'" ng-include="'views/dashboard/contentAnalistDashboard.html'" ng-controller="preProductionDashboardController"></span>
+<span ng-if="currentRole == 'contentAnalist'" ng-include="'views/dashboard/contentAnalistDashboard.html'" ng-controller="contentAnalistDashboard"></span>
 <span ng-if="currentRole == 'production'" ng-include="'views/dashboard/productionDashboard.html'" ng-controller="productionDashboard"></span>
 <span ng-if="currentRole == 'editor'" ng-include="'views/dashboard/editorDashboard.html'" ng-controller="editorDashboard"></span>
 <span ng-if="currentRole == 'designLeader'" ng-include="'views/dashboard/designLeaderDashboard.html'" ng-controller="designLeaderDashboard"></span>

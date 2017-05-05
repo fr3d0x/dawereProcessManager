@@ -1,3 +1,6 @@
+tr:hover{
+    border: 2px solid darkgrey !important;
+}
 .disabled {
     cursor: not-allowed;
     pointer-events: none !important;

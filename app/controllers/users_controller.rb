@@ -258,6 +258,48 @@ class UsersController < ApplicationController
               }
               i += 1
             end
+          when 'qa-analyst'
+            subject_plannings = SubjectPlanification.all
+            payload = []
+            i = 0
+            subject_plannings.each do |sp|
+              total_videos = 0
+              returned = 0
+              assigned = 0
+              approved = 0
+              sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
+                  if vdm.qa_dpt != nil
+                    if vdm.qa_dpt.qa_assignment != nil
+                      if vdm.qa_dpt.qa_assignment.user_id == $currentPetitionUser['id']
+                        total_videos += 1
+                        case vdm.qa_dpt.qa_assignment.status
+                          when 'asignado'
+                            assigned += 1
+                          when 'rechazado'
+                            returned += 1
+                          when 'aprobado'
+                            approved += 1
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+              effectiveness = number_with_precision(((approved.to_f + returned.to_f)/total_videos.to_f)*100, :precision => 2)
+              subject = {
+                  name: sp.subject.name + ' ' + sp.subject.grade.name
+              }
+              payload[i] ={
+                  subject: subject,
+                  totalVideos: total_videos,
+                  assigned: assigned,
+                  returned: returned,
+                  effectiveness: effectiveness,
+                  approved: approved,
+              }
+              i += 1
+            end
         end
 
       end
@@ -361,18 +403,20 @@ class UsersController < ApplicationController
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.production_dpt != nil && vdm.production_dpt.created_at >= from && vdm.production_dpt.created_at <= to
-                      total_videos += 1
-                      if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
-                        returned += 1
-                      end
-                      if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
-                        recorded += 1
-                      end
-                      if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
-                        assigned += 1
-                      end
-                      if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
-                        approved += 1
+                      if vdm.production_dpt.status != nil && vdm.production_dpt.status != 'no asignado'
+                        total_videos += 1
+                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
+                          returned += 1
+                        end
+                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
+                          recorded += 1
+                        end
+                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
+                          assigned += 1
+                        end
+                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
+                          approved += 1
+                        end
                       end
                     end
                   end
@@ -408,15 +452,17 @@ class UsersController < ApplicationController
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.production_dpt != nil && vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.created_at >= from && vdm.production_dpt.production_dpt_assignment.created_at <= to
-                      total_videos += 1
-                      if vdm.production_dpt.production_dpt_assignment.status == 'asignado'
-                        assigned += 1
-                      end
-                      if vdm.production_dpt.production_dpt_assignment.status == 'rechazado'
-                        returned += 1
-                      end
-                      if vdm.production_dpt.production_dpt_assignment.status == 'aprobado'
-                        approved += 1
+                      if vdm.production_dpt.production_dpt_assignment.status != nil && vdm.production_dpt.production_dpt_assignment.status != 'no asignado'
+                        total_videos += 1
+                        if vdm.production_dpt.production_dpt_assignment.status == 'asignado'
+                          assigned += 1
+                        end
+                        if vdm.production_dpt.production_dpt_assignment.status == 'rechazado'
+                          returned += 1
+                        end
+                        if vdm.production_dpt.production_dpt_assignment.status == 'aprobado'
+                          approved += 1
+                        end
                       end
                     end
                   end
@@ -448,16 +494,18 @@ class UsersController < ApplicationController
                 edited = 0
                 assignments = emp.production_dpt_assignments.where(:created_at => from..to)
                 assignments.each do |as|
-                  total_videos += 1
-                  case as.status
-                    when 'rechazado'
-                      returned += 1
-                    when 'asignado'
-                      assigned += 1
-                    when 'editado'
-                      edited += 1
-                    when 'aprobado'
-                      approved += 1
+                  if as.status != nil && as.status != 'no asignado'
+                    total_videos += 1
+                    case as.status
+                      when 'rechazado'
+                        returned += 1
+                      when 'asignado'
+                        assigned += 1
+                      when 'editado'
+                        edited += 1
+                      when 'aprobado'
+                        approved += 1
+                    end
                   end
                 end
                 effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
@@ -486,15 +534,17 @@ class UsersController < ApplicationController
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.design_dpt != nil && vdm.design_dpt.created_at >= from && vdm.design_dpt.created_at <= to
-                      total_videos += 1
-                      if vdm.design_dpt.status == 'asignado'
-                        assigned += 1
-                      end
-                      if vdm.design_dpt.status == 'rechazado'
-                        returned += 1
-                      end
-                      if vdm.design_dpt.status == 'aprobado'
-                        approved += 1
+                      if vdm.design_dpt.status != nil && vdm.design_dpt.status != 'no asignado'
+                        total_videos += 1
+                        if vdm.design_dpt.status == 'asignado'
+                          assigned += 1
+                        end
+                        if vdm.design_dpt.status == 'rechazado'
+                          returned += 1
+                        end
+                        if vdm.design_dpt.status == 'aprobado'
+                          approved += 1
+                        end
                       end
                     end
                   end
@@ -526,16 +576,18 @@ class UsersController < ApplicationController
                 designed = 0
                 assignments = emp.design_assignments.where(:created_at => from..to)
                 assignments.each do |as|
-                  total_videos += 1
-                  case as.status
-                    when 'asignado'
-                      assigned += 1
-                    when 'diseñado'
-                      designed += 1
-                    when 'rechazado'
-                      returned += 1
-                    when 'aprobado'
-                      approved += 1
+                  if as.status != nil && as.status != 'no asignado'
+                    total_videos += 1
+                    case as.status
+                      when 'asignado'
+                        assigned += 1
+                      when 'diseñado'
+                        designed += 1
+                      when 'rechazado'
+                        returned += 1
+                      when 'aprobado'
+                        approved += 1
+                    end
                   end
                 end
                 effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
@@ -564,15 +616,17 @@ class UsersController < ApplicationController
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.created_at >= from && vdm.post_prod_dpt.created_at <= to
-                      total_videos += 1
-                      if vdm.post_prod_dpt.status == 'asignado'
-                        assigned += 1
-                      end
-                      if vdm.post_prod_dpt.status == 'rechazado'
-                        returned += 1
-                      end
-                      if vdm.post_prod_dpt.status == 'aprobado'
-                        approved += 1
+                      if vdm.post_prod_dpt.status != nil && vdm.post_prod_dpt.status != 'no asignado'
+                        total_videos += 1
+                        if vdm.post_prod_dpt.status == 'asignado'
+                          assigned += 1
+                        end
+                        if vdm.post_prod_dpt.status == 'rechazado'
+                          returned += 1
+                        end
+                        if vdm.post_prod_dpt.status == 'aprobado'
+                          approved += 1
+                        end
                       end
                     end
                   end
@@ -604,16 +658,18 @@ class UsersController < ApplicationController
                 finished = 0
                 assignments = emp.post_prod_dpt_assignments.where(:created_at => from..to)
                 assignments.each do |as|
-                  total_videos += 1
-                  case as.status
-                    when 'asignado'
-                      assigned += 1
-                    when 'terminado'
-                      finished += 1
-                    when 'rechazado'
-                      returned += 1
-                    when 'aprobado'
-                      approved += 1
+                  if as.status != nil && as.status != 'no asignado'
+                    total_videos += 1
+                    case as.status
+                      when 'asignado'
+                        assigned += 1
+                      when 'terminado'
+                        finished += 1
+                      when 'rechazado'
+                        returned += 1
+                      when 'aprobado'
+                        approved += 1
+                    end
                   end
                 end
                 effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
@@ -642,15 +698,17 @@ class UsersController < ApplicationController
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.qa_dpt != nil && vdm.qa_dpt.created_at >= from && vdm.qa_dpt.created_at <= to
-                      total_videos += 1
-                      if vdm.qa_dpt.status == 'asignado'
-                        assigned += 1
-                      end
-                      if vdm.qa_dpt.status == 'rechazado'
-                        returned += 1
-                      end
-                      if vdm.qa_dpt.status == 'aprobado'
-                        approved += 1
+                      if vdm.qa_dpt.status != nil && vdm.qa_dpt.status != 'no asignado'
+                        total_videos += 1
+                        if vdm.qa_dpt.status == 'asignado'
+                          assigned += 1
+                        end
+                        if vdm.qa_dpt.status == 'rechazado'
+                          returned += 1
+                        end
+                        if vdm.qa_dpt.status == 'aprobado'
+                          approved += 1
+                        end
                       end
                     end
                   end
@@ -681,14 +739,16 @@ class UsersController < ApplicationController
                 assigned = 0
                 assignments = emp.qa_assignments.where(:created_at => from..to)
                 assignments.each do |as|
-                  total_videos += 1
-                  case as.status
-                    when 'asignado'
-                      assigned += 1
-                    when 'rechazado'
-                      rejected += 1
-                    when 'aprobado'
-                      approved += 1
+                  if as.status != nil && as.status != 'no asignado'
+                    total_videos += 1
+                    case as.status
+                      when 'asignado'
+                        assigned += 1
+                      when 'rechazado'
+                        rejected += 1
+                      when 'aprobado'
+                        approved += 1
+                    end
                   end
                 end
                 effectiveness = number_with_precision(((approved+rejected).to_f/total_videos.to_f)*100, :precision => 2)

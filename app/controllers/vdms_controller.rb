@@ -900,21 +900,6 @@ class VdmsController < ApplicationController
               changes.push(change)
             end
           end
-          if newVdm['videoClip']
-            change = VdmChange.new
-            change.changeDetail = 'Cambio de video clip de editor'
-            change.vdm_id = vdm.id
-            change.user_id = $currentPetitionUser['id']
-            change.uname = $currentPetitionUser['username']
-            change.videoId = vdm.videoId
-            change.changeDate = Time.now
-            change.department = 'edicion'
-            vdm.production_dpt.production_dpt_assignment.video_clip_name = newVdm['videoClip']['filename']
-            vdm.production_dpt.production_dpt_assignment.video_clip = newVdm['videoClip']['base64']
-            change.changedTo = vdm.production_dpt.production_dpt_assignment.video_clip.url
-
-            changes.push(change)
-          end
           if newVdm['premierProject']
             change = VdmChange.new
             change.changeDetail = 'Cambio de proyecto premier de editor'
@@ -1915,7 +1900,7 @@ class VdmsController < ApplicationController
               vdm.production_dpt.production_dpt_assignment.video_clip_name = params[:file].original_filename
               vdm.production_dpt.production_dpt_assignment.video_clip = params[:file]
               vdm.production_dpt.production_dpt_assignment.save!
-              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.video_clip.path, $files_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.video_clip_name)
+              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.video_clip.path, $drive_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.video_clip_name)
               response = {
                   video_clip: vdm.production_dpt.production_dpt_assignment.video_clip,
                   video_clip_name: vdm.production_dpt.production_dpt_assignment.video_clip_name
@@ -1924,7 +1909,7 @@ class VdmsController < ApplicationController
               vdm.production_dpt.production_dpt_assignment.premier_project_name = params[:file].original_filename
               vdm.production_dpt.production_dpt_assignment.premier_project = params[:file]
               vdm.production_dpt.production_dpt_assignment.save!
-              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.premier_project.path, $files_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.premier_project_name)
+              FileUtils.cp(vdm.production_dpt.production_dpt_assignment.premier_project.path, $drive_copy_route+'/'+vdm.production_dpt.production_dpt_assignment.premier_project_name)
               response = {
                   premier_project: vdm.production_dpt.production_dpt_assignment.premier_project,
                   premier_project_name: vdm.production_dpt.production_dpt_assignment.premier_project_name
@@ -1964,7 +1949,7 @@ class VdmsController < ApplicationController
             vdm.class_doc_name = params[:upload].original_filename
             change.changedTo = vdm.classDoc.url
             changes.push(change)
-            FileUtils.cp(vdm.classDoc.path, $files_copy_route+'/'+params[:upload].original_filename)
+            FileUtils.cp(vdm.classDoc.path, $drive_copy_route+'/'+params[:upload].original_filename)
             response = {
                 class_doc: vdm.classDoc,
                 class_doc_name: vdm.class_doc_name
@@ -1988,7 +1973,7 @@ class VdmsController < ApplicationController
             file.vdm_id = vdm.id
             file.file_name = uploaded_file.original_filename
             teacher_files.push(file)
-            FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+            FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
           end
           if teacher_files.count >= 1
             TeacherFile.transaction do
@@ -2031,7 +2016,7 @@ class VdmsController < ApplicationController
             change.changedTo = vdm.production_dpt.script.url
             change.department = 'produccion'
             changes.push(change)
-            FileUtils.cp(vdm.production_dpt.script.path, $files_copy_route+'/'+params[:upload].original_filename)
+            FileUtils.cp(vdm.production_dpt.script.path, $drive_copy_route+'/'+params[:upload].original_filename)
             response = {
                 script: vdm.production_dpt.script,
                 script_name: vdm.production_dpt.script_name
@@ -2051,7 +2036,7 @@ class VdmsController < ApplicationController
 
             change.department = 'produccion'
             changes.push(change)
-            FileUtils.cp(vdm.production_dpt.screen_play.path, $files_copy_route+'/'+params[:upload].original_filename)
+            FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+'/'+params[:upload].original_filename)
             response = {
                 screen_play: vdm.production_dpt.screen_play,
                 screen_play_name: vdm.production_dpt.screen_play_name
@@ -2095,7 +2080,7 @@ class VdmsController < ApplicationController
               file.design_assignment_id = vdm.design_dpt.design_assignment.id
               file.file_name = uploaded_file.original_filename
               ilustrators.push(file)
-              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+              FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
             end
             if ilustrators.count >= 1
               TeacherFile.transaction do
@@ -2123,7 +2108,7 @@ class VdmsController < ApplicationController
               file.design_assignment_id = vdm.design_dpt.design_assignment.id
               file.file_name = uploaded_file.original_filename
               images.push(file)
-              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+              FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
             end
             if images.count >= 1
               TeacherFile.transaction do
@@ -2148,7 +2133,7 @@ class VdmsController < ApplicationController
             change.department = 'diseño'
             changes.push(change)
             vdm.design_dpt.design_assignment.save!
-            FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $files_copy_route+'/'+params[:upload].original_filename)
+            FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+'/'+params[:upload].original_filename)
             response = {
                 designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
                 designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
@@ -2188,7 +2173,7 @@ class VdmsController < ApplicationController
               vdm.post_prod_dpt.post_prod_dpt_assignment.video_name = params[:upload].original_filename
               change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.video.url
               changes.push(change)
-              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, $files_copy_route+'/'+params[:upload].original_filename)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, $drive_copy_route+'/'+params[:upload].original_filename)
               response = {
                   video: vdm.post_prod_dpt.post_prod_dpt_assignment.video,
                   video_name: vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
@@ -2208,7 +2193,7 @@ class VdmsController < ApplicationController
               vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name = params[:upload].original_filename
               change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.url
               changes.push(change)
-              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, $files_copy_route+'/'+params[:upload].original_filename)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, $drive_copy_route+'/'+params[:upload].original_filename)
               response = {
                   premier_project: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project,
                   premier_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name
@@ -2228,7 +2213,7 @@ class VdmsController < ApplicationController
               vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name = params[:upload].original_filename
               change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.url
               changes.push(change)
-              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, $files_copy_route+'/'+params[:upload].original_filename)
+              FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, $drive_copy_route+'/'+params[:upload].original_filename)
               response = {
                   after_project: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project,
                   after_project_name: vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name
@@ -2252,7 +2237,7 @@ class VdmsController < ApplicationController
               file.post_prod_dpt_assignment_id = vdm.post_prod_dpt.post_prod_dpt_assignment.id
               file.file_name = uploaded_file.original_filename
               illustrators.push(file)
-              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+              FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
             end
             if illustrators.count >= 1
               TeacherFile.transaction do
@@ -2280,7 +2265,7 @@ class VdmsController < ApplicationController
               file.post_prod_dpt_assignment_id = vdm.post_prod_dpt.post_prod_dpt_assignment.id
               file.file_name = uploaded_file.original_filename
               elements.push(file)
-              FileUtils.cp(file.file.path, $files_copy_route+'/'+uploaded_file.original_filename)
+              FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
             end
             if elements.count >= 1
               TeacherFile.transaction do
