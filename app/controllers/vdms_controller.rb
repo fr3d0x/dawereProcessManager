@@ -301,14 +301,30 @@ class VdmsController < ApplicationController
                   if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                     payload_item['video'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video
                     payload_item['video_name'] = vdm.post_prod_dpt.post_prod_dpt_assignment.video_name
-
                   end
                 end
                 payload_item['qaResponsable'] = responsable
               else
                 raise Exceptions::InvalidRoleException
             end
-
+            if vdm.production_dpt != nil
+              payload_item['productionStatus'] = vdm.production_dpt.status
+              if vdm.production_dpt.production_dpt_assignment != nil
+                payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+              end
+            end
+            if vdm.design_dpt != nil
+              payload_item['designStatus'] = vdm.design_dpt.status
+              if vdm.design_dpt.design_assignment != nil
+                payload_item['designStatus'] = vdm.design_dpt.design_assignment.status
+              end
+            end
+            if vdm.post_prod_dpt != nil
+              payload_item['postProdStatus'] = vdm.post_prod_dpt.status
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                payload_item['postProdStatus'] = vdm.post_prod_dpt.post_prod_dpt_assignment.status
+              end
+            end
             payload.push(payload_item)
           end
         end
@@ -1576,6 +1592,7 @@ class VdmsController < ApplicationController
       prdPayload = {}
       designPayload = {}
       postProdPayload = {}
+      qa = {}
       vdm = Vdm.find(params['vdmId'])
       case params['rejection']
         when 'production'
@@ -1611,6 +1628,14 @@ class VdmsController < ApplicationController
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
+            if vdm.qa_dpt
+              vdm.qa_dpt.status = 'no asignado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment
+                vdm.qa_dpt.qa_assignment.status = 'no asignado'
+                vdm.qa_dpt.qa_assignment.save!
               end
             end
             change = VdmChange.new
@@ -1663,6 +1688,13 @@ class VdmsController < ApplicationController
                   assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
               }
             end
+            if vdm.qa_dpt != nil
+              qa = {
+                  status: vdm.qa_dpt.status,
+                  comments: vdm.qa_dpt.comments,
+                  assignment: vdm.qa_dpt.qa_assignment
+              }
+            end
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1673,7 +1705,8 @@ class VdmsController < ApplicationController
                 prodDept: prdPayload,
                 productManagement: vdm.product_management,
                 designDept: designPayload,
-                postProdDept: postProdPayload
+                postProdDept: postProdPayload,
+                qa: qa
             }
           end
         when 'edition'
@@ -1692,6 +1725,14 @@ class VdmsController < ApplicationController
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
+            if vdm.qa_dpt
+              vdm.qa_dpt.status = 'no asignado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment
+                vdm.qa_dpt.qa_assignment.status = 'no asignado'
+                vdm.qa_dpt.qa_assignment.save!
               end
             end
             change = VdmChange.new
@@ -1744,7 +1785,13 @@ class VdmsController < ApplicationController
                   assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
               }
             end
-
+            if vdm.qa_dpt != nil
+              qa = {
+                  status: vdm.qa_dpt.status,
+                  comments: vdm.qa_dpt.comments,
+                  assignment: vdm.qa_dpt.qa_assignment
+              }
+            end
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1755,7 +1802,8 @@ class VdmsController < ApplicationController
                 prodDept: prdPayload,
                 productManagement: vdm.product_management,
                 designDept: designPayload,
-                postProdDept: postProdPayload
+                postProdDept: postProdPayload,
+                qa: qa
             }
           end
         when 'design'
@@ -1782,6 +1830,14 @@ class VdmsController < ApplicationController
               if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
                 vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
+            if vdm.qa_dpt
+              vdm.qa_dpt.status = 'no asignado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment
+                vdm.qa_dpt.qa_assignment.status = 'no asignado'
+                vdm.qa_dpt.qa_assignment.save!
               end
             end
             change = VdmChange.new
@@ -1817,6 +1873,13 @@ class VdmsController < ApplicationController
                   assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
               }
             end
+            if vdm.qa_dpt != nil
+              qa = {
+                  status: vdm.qa_dpt.status,
+                  comments: vdm.qa_dpt.comments,
+                  assignment: vdm.qa_dpt.qa_assignment
+              }
+            end
             payload = {
                 cp: vdm.classes_planification,
                 videoId: vdm.videoId,
@@ -1826,7 +1889,8 @@ class VdmsController < ApplicationController
                 comments: vdm.comments,
                 designDept: designPayload,
                 postProdDept: postProdPayload,
-                productManagement: vdm.product_management
+                productManagement: vdm.product_management,
+                qa: qa
             }
           end
         when 'postProduction'
@@ -1847,6 +1911,14 @@ class VdmsController < ApplicationController
                 UserNotifier.send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
             end
+            if vdm.qa_dpt
+              vdm.qa_dpt.status = 'no asignado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment
+                vdm.qa_dpt.qa_assignment.status = 'no asignado'
+                vdm.qa_dpt.qa_assignment.save!
+              end
+            end
             change = VdmChange.new
             change.changeDetail = 'rechazado por '+request['rejectedFrom']
             change.changeDate = Time.now
@@ -1865,11 +1937,19 @@ class VdmsController < ApplicationController
               vdm.product_management.postProductionStatus = 'rechazado'
               vdm.product_management.save!
             end
+
             if vdm.post_prod_dpt != nil
               postProdPayload = {
                   status: vdm.post_prod_dpt.status,
                   comments: vdm.post_prod_dpt.comments,
                   assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
+            if vdm.qa_dpt != nil
+              qa = {
+                  status: vdm.qa_dpt.status,
+                  comments: vdm.qa_dpt.comments,
+                  assignment: vdm.qa_dpt.qa_assignment
               }
             end
 
@@ -1883,7 +1963,8 @@ class VdmsController < ApplicationController
                 postProdDept: postProdPayload,
                 designDept: vdm.design_dpt,
                 prodDept: vdm.production_dpt,
-                productManagement: vdm.product_management
+                productManagement: vdm.product_management,
+                qa: qa
             }
           end
       end
