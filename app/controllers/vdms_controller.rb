@@ -1508,7 +1508,6 @@ class VdmsController < ApplicationController
                   vdm.product_management.save!
                   UserNotifier.send_to_approved_to_product_Manager(vdm, 'Post-produccion').deliver
                 end
-                upload_files_to_drive(vdm.id, 'post-production')
               end
             end
             change = VdmChange.new
@@ -1544,6 +1543,7 @@ class VdmsController < ApplicationController
                 vdm.product_management.postProductionStatus = 'aprobado'
                 vdm.product_management.save!
               end
+              upload_files_to_drive(vdm.id, 'post-production')
             end
             change = VdmChange.new
             change.changeDetail = 'aprobado Post-Produccion por ' + params['approvedFrom']
