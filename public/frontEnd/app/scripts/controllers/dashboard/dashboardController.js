@@ -24,6 +24,6 @@ app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService
             }, function(error){
                 console.log(error)
             })
-        }
+        };
         getGrades();
 }]);

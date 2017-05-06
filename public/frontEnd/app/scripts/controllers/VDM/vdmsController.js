@@ -1236,6 +1236,64 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             msg = "Los videos deben ser mp4 para poder ser guardados";
                             valid = false;
                         }
+                        Upload.mediaDuration(file).then(function(duration){
+                            var validDuration = 720;
+                            if(duration > validDuration){
+                                msg = "Los videos deben durar menos de 12 minutos para poder ser guardados";
+                                valid = false;
+                            }
+                            if(valid){
+                                Upload.upload({
+                                    url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id+'&file_type='+file_type,
+                                    data: {file: file}
+                                }).then(function (resp) {
+                                    if(resp.data != null){
+                                        switch(file_type){
+                                            case 'video_clip':
+                                                vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
+                                                vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
+                                                break;
+
+                                            case 'premier':
+                                                vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
+                                                vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
+                                                break;
+                                            default:
+                                                angular.element("input[type='file']").val(null);
+                                                console.log('Archivo no permitido')
+                                        }
+
+                                    }
+                                    $rootScope.setLoader(false);
+                                    swal({
+                                        title: "Exitoso",
+                                        text: 'Se ha guardado el archivo de forma exitosa',
+                                        type: 'success',
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "lightskyblue"
+                                    });
+                                    angular.element("input[type='file']").val(null);
+                                    console.clear();
+                                }, function (error) {
+                                    angular.element("input[type='file']").val(null);
+                                    $rootScope.setLoader(false);
+                                    console.log(error);
+                                }, function (evt) {
+                                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                                    console.log('progreso de subida: ' + progressPercentage + '% ');
+                                });
+                            }else{
+                                angular.element("input[type='file']").val(null);
+                                $rootScope.setLoader(false);
+                                swal({
+                                    title: "Aviso",
+                                    text: msg,
+                                    type: 'error',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                });
+                            }
+                        });
                         break;
                     case 'premier':
                         regex = new RegExp("(.*?)\.(prproj)$");
@@ -1243,59 +1301,58 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             msg = "Los proyectos premier deben ser .prproj para poder ser guardados";
                             valid = false;
                         }
-                        break;
-                }
+                        if(valid){
+                            Upload.upload({
+                                url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id+'&file_type='+file_type,
+                                data: {file: file}
+                            }).then(function (resp) {
+                                if(resp.data != null){
+                                    switch(file_type){
+                                        case 'video_clip':
+                                            vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
+                                            vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
+                                            break;
 
-                if(valid){
-                    Upload.upload({
-                        url: baseUrl+'/api/vdms/upload_edition_files?id='+vdm.id+'&file_type='+file_type,
-                        data: {file: file}
-                    }).then(function (resp) {
-                        if(resp.data != null){
-                            switch(file_type){
-                                case 'video_clip':
-                                    vdm.prodDept.assignment.video_clip = resp.data.data.video_clip;
-                                    vdm.prodDept.assignment.video_clip_name = resp.data.data.video_clip_name;
-                                    break;
+                                        case 'premier':
+                                            vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
+                                            vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
+                                            break;
+                                        default:
+                                            angular.element("input[type='file']").val(null);
+                                            console.log('Archivo no permitido')
+                                    }
 
-                                case 'premier':
-                                    vdm.prodDept.assignment.premier_project = resp.data.data.premier_project;
-                                    vdm.prodDept.assignment.premier_project_name = resp.data.data.premier_project_name;
-                                    break;
-                                default:
-                                    angular.element("input[type='file']").val(null);
-                                    console.log('Archivo no permitido')
-                            }
-
+                                }
+                                $rootScope.setLoader(false);
+                                swal({
+                                    title: "Exitoso",
+                                    text: 'Se ha guardado el archivo de forma exitosa',
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                                angular.element("input[type='file']").val(null);
+                                console.clear();
+                            }, function (error) {
+                                angular.element("input[type='file']").val(null);
+                                $rootScope.setLoader(false);
+                                console.log(error);
+                            }, function (evt) {
+                                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                                console.log('progreso de subida: ' + progressPercentage + '% ');
+                            });
+                        }else{
+                            angular.element("input[type='file']").val(null);
+                            $rootScope.setLoader(false);
+                            swal({
+                                title: "Aviso",
+                                text: msg,
+                                type: 'error',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            });
                         }
-                        $rootScope.setLoader(false);
-                        swal({
-                            title: "Exitoso",
-                            text: 'Se ha guardado el archivo de forma exitosa',
-                            type: 'success',
-                            confirmButtonText: "OK",
-                            confirmButtonColor: "lightskyblue"
-                        });
-                        angular.element("input[type='file']").val(null);
-                        console.clear();
-                    }, function (error) {
-                        angular.element("input[type='file']").val(null);
-                        $rootScope.setLoader(false);
-                        console.log(error);
-                    }, function (evt) {
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        console.log('progreso de subida: ' + progressPercentage + '% ');
-                    });
-                }else{
-                    angular.element("input[type='file']").val(null);
-                    $rootScope.setLoader(false);
-                    swal({
-                        title: "Aviso",
-                        text: msg,
-                        type: 'error',
-                        confirmButtonText: "OK",
-                        confirmButtonColor: "lightcoral"
-                    });
+                        break;
                 }
             }else {
                 angular.element("input[type='file']").val(null);
@@ -1313,14 +1370,16 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.uploadDesignFiles = function(upload, vdm, type){
             var valid = true;
             var msg = '';
+            var regex;
             $rootScope.setLoader(true);
             var baseUrl = ENV.baseUrl;
             if(vdm.designDept != null && vdm.designDept.assignment != null) {
                 switch (type){
-                    case 'ilustrators':
+                    case 'ilustrators/after':
                         angular.forEach(upload, function(file){
-                            if(file.type != 'application/postscript' && file.type != 'application/illustrator'){
-                                msg = "Los archivos deben ser .ai guardados";
+                            regex = new RegExp("(.*?)\.(ai|aep)$");
+                            if(!(regex.test(file.name.toLowerCase()))){
+                                msg = "Estos archivos deben ser illustrators o after effect para ser guardados";
                                 valid = false;
                             }
                         });
@@ -1347,7 +1406,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }).then(function (resp) {
                         if(resp.data != null){
                             switch (type){
-                                case 'ilustrators':
+                                case 'ilustrators/after':
                                     vdm.designDept.assignment.design_ilustrators = resp.data.data.design_ilustrators;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;

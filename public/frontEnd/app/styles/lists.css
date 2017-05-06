@@ -105,6 +105,10 @@
     color: lightskyblue;
 }
 
+.showBtnActive{
+    color: lightskyblue;
+}
+
 .editBtn{
     background-color: transparent;
     position: relative;

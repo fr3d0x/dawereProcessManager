@@ -1,8 +1,8 @@
 /**
- * Created by fr3d0 on 8/22/16.
+ * Created by fr3d0 on 5/4/17.
  */
 'use strict';
-app.controller("postProducerDashboard",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService','NgTableParams', '$rootScope',
+app.controller("qaAnalist",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService','NgTableParams', '$rootScope',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService,NgTableParams, $rootScope){
 
         var getProgress = function(){

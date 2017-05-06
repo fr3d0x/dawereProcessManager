@@ -1,3 +1,6 @@
+tr:hover{
+    border: 2px solid darkgrey !important;
+}
 .disabled {
     cursor: not-allowed;
     pointer-events: none !important;
@@ -111,4 +114,10 @@ a:hover, a:focus {
 
 .active:hover{
     background-color: #008762 !important;
+}
+
+.daterangepicker .input-mini.active {
+    border: 1px solid #08c;
+    border-radius: 4px;
+    color: black !important;
 }

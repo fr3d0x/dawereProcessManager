@@ -50,9 +50,9 @@
 
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="row" style="vertical-align:middle">
                     <div align="center">
-                        <a ng-click="editRow(row)" title='editar'>
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.status != 'procesado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.status != 'procesado'">|</span>
 
                         <a ng-click="add(row, $data)" title='agregar video a este tema'>
                             <i class="fa fa-plus-circle addBtn" aria-hidden="true" style="font-size: 15px"></i>
