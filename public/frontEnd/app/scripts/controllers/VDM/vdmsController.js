@@ -1370,14 +1370,16 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.uploadDesignFiles = function(upload, vdm, type){
             var valid = true;
             var msg = '';
+            var regex;
             $rootScope.setLoader(true);
             var baseUrl = ENV.baseUrl;
             if(vdm.designDept != null && vdm.designDept.assignment != null) {
                 switch (type){
-                    case 'ilustrators':
+                    case 'ilustrators/after':
                         angular.forEach(upload, function(file){
-                            if(file.type != 'application/postscript' && file.type != 'application/illustrator'){
-                                msg = "Los archivos deben ser .ai guardados";
+                            regex = new RegExp("(.*?)\.(ai|aep)$");
+                            if(!(regex.test(file.name.toLowerCase()))){
+                                msg = "Estos archivos deben ser illustrators o after effect para ser guardados";
                                 valid = false;
                             }
                         });
@@ -1404,7 +1406,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }).then(function (resp) {
                         if(resp.data != null){
                             switch (type){
-                                case 'ilustrators':
+                                case 'ilustrators/after':
                                     vdm.designDept.assignment.design_ilustrators = resp.data.data.design_ilustrators;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;
