@@ -51,7 +51,7 @@
                         <a ng-click="approve(row, 'Analista qa', 'qa')" title='aprobar' ng-if="row.qa.assignment.status == 'asignado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
-                        <a ng-click="reject(row, 'design')" title='rechazar' ng-if="row.qa.assignment.status == 'asignado'">
+                        <a ng-click="reject(row, 'qa')" title='rechazar' ng-if="row.qa.assignment.status == 'asignado'">
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.qa.assignment.status == 'asignado'">|</span>
 
