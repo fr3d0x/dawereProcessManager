@@ -2366,7 +2366,7 @@ class VdmsController < ApplicationController
                   end
                 end
                 if vdm.design_dpt.design_assignment.designed_presentation != nil
-                  FileUtils.cp(fvdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+'/DISENO GRAFICO/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/DISENOS APROBADOS/'+vdm.videoId+'/'+vdm.design_dpt.design_assignment.designed_presentation_name)
+                  FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+'/DISENO GRAFICO/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/DISENOS APROBADOS/'+vdm.videoId+'/'+vdm.design_dpt.design_assignment.designed_presentation_name)
                 end
               end
             end
