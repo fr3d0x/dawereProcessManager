@@ -1952,7 +1952,7 @@ class VdmsController < ApplicationController
             vdm.class_doc_name = params[:upload].original_filename
             change.changedTo = vdm.classDoc.url
             changes.push(change)
-            FileUtils.cp(vdm.classDoc.path, $drive_copy_route+'/'+params[:upload].original_filename)
+            FileUtils.cp(vdm.classDoc.path, $drive_copy_route+'/CONTENIDO EDUCATIVO/'+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/CLASES/PRESENTACION ORIGINAL/'+params[:upload].original_filename)
             response = {
                 class_doc: vdm.classDoc,
                 class_doc_name: vdm.class_doc_name
@@ -1976,7 +1976,7 @@ class VdmsController < ApplicationController
             file.vdm_id = vdm.id
             file.file_name = uploaded_file.original_filename
             teacher_files.push(file)
-            FileUtils.cp(file.file.path, $drive_copy_route+'/'+uploaded_file.original_filename)
+            FileUtils.cp(file.file.path, $drive_copy_route+'/CONTENIDO EDUCATIVO/'+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/CLASES/ENTREGADO PROFE/'+uploaded_file.original_filename)
           end
           if teacher_files.count >= 1
             TeacherFile.transaction do
