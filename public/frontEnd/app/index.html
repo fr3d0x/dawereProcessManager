@@ -4,10 +4,10 @@
 <head>
   <meta charset="utf-8">
   <!-- ============================================
-  ================== Application =================
+  ================== Application ==================
   ============================================= -->
   <title> Dawere Process Manager </title>
-  <!-- ============================================-->
+  <!-- =========================================-->
 
 
 
@@ -33,6 +33,7 @@
   <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css">
   <link rel="stylesheet" href="../bower_components/ng-table/dist/ng-table.css"/>
   <link rel="stylesheet" href="../bower_components/sweetalert2/dist/sweetalert2.css">
+  <link rel="stylesheet" href="../bower_components/angularjs-datepicker/dist/angular-datepicker.css">
 
 
   <!-- -->
@@ -69,6 +70,10 @@
   <script src="../bower_components/ng-file-upload/ng-file-upload-all.js"></script>
   <script src="../bower_components/pdfmake/build/pdfmake.js"></script>
   <script src="../bower_components/pdfmake/build/vfs_fonts.js"></script>
+  <script src="../bower_components/angular-base64-upload/dist/angular-base64-upload.js"></script>
+  <script src="../bower_components/moment/moment.js"></script>
+  <script src="../bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+  <script src="../bower_components/angularjs-datepicker/dist/angular-datepicker.js"></script>
 
   <!--ngConstantFile-->
   <script src="scripts/config.js"></script>
@@ -100,15 +105,20 @@
   <script src="scripts/controllers/pre-production/cpHistoryController.js"></script>
   <script src="scripts/controllers/dashboard/productionDashboard.js"></script>
   <script src="scripts/controllers/VDM/dawereVdms.js"></script>
+  <script src="scripts/controllers/dashboard/productManagerDashboard.js"></script>
+  <script src="scripts/controllers/dashboard/qaDashboard.js"></script>
+  <script src="scripts/controllers/dashboard/qaAnalistDashboard.js"></script>
+  <script src="scripts/controllers/dashboard/contentAnalistDashboard.js"></script>
 
   <!--filters-->
   <script src="scripts/filters/role.js"></script>
   <script src="scripts/filters/vdmsByUser.js"></script>
+  <script src="scripts/filters/trustUrl.js"></script>
   <!--directives-->
   <script src="scripts/directives/dynamicUnderlining.js"></script>
   <script src="scripts/directives/pdfDirective.js"></script>
   <script src="scripts/directives/linkToPdf.js"></script>
-
+  <script src="scripts/directives/filedownload.js"></script>
 
   <!--services-->
   <script src="scripts/services/dawProcessManager.js"></script>
@@ -125,7 +135,7 @@
   <!--[endif]-->
 
   <!-- Application content-->
-  <div clas="container" id="wrap" ui-view></div>
+  <div ui-view></div>
 
   <!-- Page Loader -->
   <div id="pageloader" page-loader></div>

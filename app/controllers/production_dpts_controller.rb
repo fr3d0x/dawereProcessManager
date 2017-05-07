@@ -47,13 +47,15 @@ class ProductionDptsController < ApplicationController
     head :no_content
   end
 
+
+
   private
 
-    def set_production_dpt
-      @production_dpt = ProductionDpt.find(params[:id])
-    end
+  def set_production_dpt
+    @production_dpt = ProductionDpt.find(params[:id])
+  end
 
-    def production_dpt_params
-      params.require(:production_dpt).permit(:status, :script, :comments, :intro, :vidDev, :conclu)
-    end
+  def production_dpt_params
+    params.require(:production_dpt).permit(:status, :script, :comments, :intro, :vidDev, :conclu)
+  end
 end

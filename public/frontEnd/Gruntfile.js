@@ -409,7 +409,8 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'development',
-            baseUrl: 'http://127.0.0.1:3000'
+            baseUrl: 'http://127.0.0.1:3000',
+            baseUploadFolder: '/Users/fr3d0/projects/uploads/railsDpmUploads'
           }
         }
       },
@@ -420,7 +421,8 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'production',
-            baseUrl: 'http://192.168.2.45'
+            baseUrl: 'http://192.168.1.23',
+            baseDownloadFolder: '/uploads'
           }
         }
       }

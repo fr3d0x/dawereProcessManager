@@ -24,8 +24,12 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.get(baseUrl + '/api/subject_planifications/getSubjectsPlanning').success(success).error(error);
     };
     
-    this.getGlobalProgress = function (role, success, error){
-        $http.get(baseUrl +'/api/users/globalProgress?role='+role).success(success).error(error);
+    this.getGlobalProgress = function (role, progress_type, date_from, date_to,  success, error){
+        $http.get(baseUrl +'/api/users/global_progress?role='+role+'&progress_type='+progress_type+'&date_from='+date_from+'&date_to='+date_to).success(success).error(error);
+    };
+
+    this.getEmployeeProgress = function (role, success, error){
+        $http.get(baseUrl +'/api/users/employee_progress?role='+role).success(success).error(error);
     };
 
     this.getSubjectList = function (idGrade, success, error) {
@@ -45,8 +49,8 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.post(baseUrl + '/api/vdms/addVdm', vdm).success(success).error(error);
     };
 
-    this.getVdmsBySubject = function (id, success, error) {
-        $http.get(baseUrl + '/api/vdms/getVdmsBySubject?id='+id ).success(success).error(error);
+    this.getVdmsBySubject = function (id, role, success, error) {
+        $http.get(baseUrl + '/api/vdms/getVdmsBySubject?id='+id+'&role='+role).success(success).error(error);
     };
 
     this.getDawereVdms = function (success, error) {
@@ -115,5 +119,10 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
 
     this.mergeClassPlans = function (request, success, error){
         $http.post(baseUrl + '/api/classes_planifications/mergeCp', request ).success(success).error(error);
-    }
+    };
+
+    this.assignSubject = function (subject, success, error) {
+        $http.post(baseUrl + '/api/subjects/assignSubject', subject).success(success).error(error);
+
+    };
 }]);

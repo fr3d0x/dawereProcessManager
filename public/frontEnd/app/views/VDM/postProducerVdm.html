@@ -2,7 +2,7 @@
 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 over-x">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data">
 
@@ -17,10 +17,44 @@
                         {{row.postProdDept.assignment.status}}
                     </div>
                 </td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
                     <select ng-model="row.assignmentPostPStatus" ng-options="state.statusSpa as state.statusSpa for state in postProducerStates" style="height:2.2em; margin-top: 6px;" >
                         <option value="#">No especifico</option>
                     </select>
+                </td>
+                <td data-title="'Archivos'" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.postProdDept.assignment.video.url == null && row.postProdDept.assignment.premier_project.url == null && row.postProdDept.assignment.after_project.url == null && row.postProdDept.assignment.illustrators.length < 1 && row.postProdDept.assignment.elements.length < 1">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.postProdDept.assignment.video.url != null || row.postProdDept.assignment.premier_project.url != null || row.postProdDept.assignment.after_project.url != null || row.postProdDept.assignment.illustrators.length >= 1 || row.postProdDept.assignment.elements.length >= 1">
+                        <div ng-if="row.postProdDept.assignment.video.url != null">
+                            <h4>Video</h4>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
+
+                        </div>
+                        <div ng-if="row.postProdDept.assignment.premier_project.url != null">
+                            <h4>Premier</h4>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.premier_project_name}}</a>
+
+                        </div>
+                        <div ng-if="row.postProdDept.assignment.after_project.url != null">
+                            <h4>After</h4>
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.after_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.after_project_name}}</a>
+
+                        </div>
+                        <div ng-if="row.postProdDept.assignment.illustrators.length >= 1">
+                            <h4>Illustrators</h4>
+                            <div ng-repeat="file in row.postProdDept.assignment.illustrators">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                        <div ng-if="row.postProdDept.assignment.elements.length >= 1">
+                            <h4>Elementos</h4>
+                            <div ng-repeat="file in row.postProdDept.assignment.elements">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                    </div>
                 </td>
                 <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 row">
                     <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment.comments != null">
@@ -37,7 +71,6 @@
                         <a ng-click="editRow(row)" title='editar' ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'">|</span>
-
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
@@ -45,11 +78,35 @@
                     </div>
                 </td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <div align="center">
+                    <div align="center" ng-if="row.uploadFiles != true">
                         <a ng-click="saveVdmPostProducer(row)" title='guardar' ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'">|</span>
+                        <a ng-click="row.uploadFiles = true" title="subir archivos" ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'">
+                            <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.postProdDept.assignment.status != 'terminado' && row.postProdDept.assignment.status != 'aprobado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                    <div align="center" ng-if="row.uploadFiles == true">
+
+                        <i class="fa fa-video-camera uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPostProductionFiles($file, row, 'final_vid')" name="finalVid" id="uploadFinalVid" title="subir video final">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPostProductionFiles($file, row, 'premier_project')" name="premierProject" id="uploadPremierProject" title="subir proyecto premier">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPostProductionFiles($file, row, 'after_project')" name="afterProject" id="uploadAfterProject" title="subir proyecto after">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPostProductionFiles($files, row, 'illustrators')" multiple="multiple" name="illustrators" id="uploadIllustrators" title="subir illustrators">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadPostProductionFiles($files, row, 'elements')" multiple="multiple" name="elements" id="uploadElements" title="subir elementos">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
                     </div>

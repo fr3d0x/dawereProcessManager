@@ -35,6 +35,7 @@ app.controller("loginController",['$scope', 'ENV', 'dawProcessManagerService', '
                     localStorageService.set('encodedToken', token);
                     token = JSON.parse(atob(localStorageService.get('encodedToken').split(".")[1]));
                     var cu = {};
+                    cu.id = token.id;
                     cu.username = token.username;
                     cu.name = token.name;
                     cu.email = token.email;

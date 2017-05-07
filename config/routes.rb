@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
 
-  resources :qa_analists, except: [:new, :edit]
-  resources :qa_dpts, except: [:new, :edit]
   scope(:path => '/api') do
     resources :post_prod_dpt_assignments, except: [:new, :edit]
     resources :post_prod_dpts, except: [:new, :edit]
@@ -23,6 +21,11 @@ Rails.application.routes.draw do
         get :getDawereVdms
         post :approveVdm
         post :rejectVdm
+        post :upload_edition_files
+        post :upload_pre_production_files
+        post :upload_design_files
+        post :upload_production_files
+        post :upload_post_production_files
       end
     end
     resources :classes_planifications, except: [:new, :edit] do
@@ -45,13 +48,15 @@ Rails.application.routes.draw do
       collection do
         get :getSubjectByGrade
         post :createSubject
+        post :assignSubject
       end
     end
     resources :teachers, except: [:new, :edit]
     resources :users, except: [:new, :edit] do
       collection do
         post :login
-        get :globalProgress
+        get :global_progress
+        get :employee_progress
         post :generatePdf
       end
     end
@@ -67,6 +72,8 @@ Rails.application.routes.draw do
         get :getChangesBySubject
       end
     end
+    resources :qa_analists, except: [:new, :edit]
+    resources :qa_dpts, except: [:new, :edit]
 
   end
 

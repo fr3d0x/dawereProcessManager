@@ -15,7 +15,7 @@
                 </span>
             </div>
         </div>
-        <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="clearfix"></div>
 
             <div class="tile-body">
@@ -65,9 +65,160 @@
             <div class="col-xs-8 col-xs-offset-2 col-sm-8 col-sm-offset-2 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2" ng-if="vdm.prodDept.script != null && currentRole == 'production' || currentRole == 'productManager'">
                 <pdf data="vdm.prodDept.script" height="500"></pdf>
             </div>
-            <div class="col-xs-10 col-xs-offset-1 col-sm-10 col-sm-offset-1 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1 row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row">
+                <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Archivos</h3></div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 row">
+                    <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <h3>Pre-produccion</h3>
+                    </div>
+
+                    <div align="center"class="itemMissing" ng-if="vdm.classDoc.url == null && vdm.teacher_files.length < 1">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemPresent" ng-if="vdm.classDoc.url != null || vdm.teacher_files.length >= 1">
+                        <div ng-if="vdm.classDoc.url != null">
+                            <h4>Documento de clase</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + vdm.classDoc.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.class_doc_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.teacher_files.length >= 1">
+                            <h4>Material de Profesor</h4>
+                            <div ng-repeat="file in vdm.teacher_files">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 row">
+                    <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Produccion</h3></div>
+                    <div align="center" class="itemMissing" ng-if="vdm.production_dpt == null">
+                        No Posee
+                    </div>
+                    <div  align="center"class="itemMissing" ng-if="vdm.production_dpt.screen_play.url == null && vdm.production_dpt.script.url == null">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemPresent" ng-if="vdm.production_dpt.screen_play.url != null || vdm.production_dpt.script.url != null">
+                        <div ng-if="vdm.production_dpt.screen_play.url != null">
+                            <h4>Guion</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + vdm.production_dpt.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.production_dpt.screen_play_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.script.url != null">
+                            <h4>Libreto</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + vdm.production_dpt.script.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.production_dpt.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 row deptBox">
+                    <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 "><h3>Edicion</h3></div>
+                    <div align="center" class="itemMissing" ng-if="vdm.production_dpt.assignment == null">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemMissing" ng-if="vdm.production_dpt.assignment.video_clip.url == null && vdm.production_dpt.assignment.premier_project.url == null">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemPresent" ng-if="vdm.production_dpt.assignment.video_clip.url != null || vdm.production_dpt.assignment.premier_project.url != null">
+                        <div ng-if="vdm.production_dpt.assignment.video_clip.url != null">
+                            <h4>Video</h4>
+                            <video width="320" height="240" controls>
+                                <source src="{{downloadRoot + vdm.production_dpt.assignment.video_clip.url | trustUrl}}" type="video/mp4">
+                                <a ng-href="{{downloadRoot + vdm.production_dpt.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.vdm.production_dpt.assignment.video_clip_name}}</a>
+                            </video>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.assignment.premier_project.url != null">
+                            <h4>Premier</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + vdm.production_dpt.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.production_dpt.assignment.premier_project_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 row deptBox ">
+                    <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Diseño</h3></div>
+
+                    <div align="center"class="itemMissing" ng-if="vdm.design_dpt == null || vdm.design_dpt.assignment == null">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.design_ilustrators.length < 1 && vdm.design_dpt.assignment.design_jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemPresent" ng-if="vdm.design_dpt.assignment.illustrators.length >= 1 || vdm.design_dpt.assignment.jpgs.length >= 1 || vdm.design_dpt.assignment.designed_presentation.url != null">
+                        <div ng-if="vdm.design_dpt.assignment.illustrators.length >= 1">
+                            <h4>Ilustrators/After</h4>
+                            <div ng-repeat="file in vdm.design_dpt.assignment.illustrators">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                        <div ng-if="vdm.design_dpt.assignment.jpgs.length >= 1">
+                            <h4>Imagenes</h4>
+                            <div ng-repeat="file in vdm.design_dpt.assignment.jpgs">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                        <div ng-if="vdm.design_dpt.assignment.designed_presentation.url != null">
+                            <h4>Imagenes</h4>
+                                <a ng-href="{{downloadRoot + vdm.design_dpt.assignment.designed_presentation.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.design_dpt.assignment.designed_presentation_name}}</a>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 row deptBox">
+                    <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Post-produccion</h3></div>
+
+                    <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt == null || vdm.post_prod_dpt.assignment == null">
+                        No Posee
+                    </div>
+                    <div  align="center"class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">
+                        No Posee
+                    </div>
+                    <div align="center" class="itemPresent" ng-if="vdm.post_prod_dpt.assignment.video.url != null || vdm.post_prod_dpt.assignment.premier_project.url != null || vdm.post_prod_dpt.assignment.after_project.url != null || vdm.post_prod_dpt.assignment.illustrators.length >= 1 || vdm.post_prod_dpt.assignment.elements.length >= 1">
+                        <div ng-if="vdm.post_prod_dpt.assignment.video.url != null">
+                            <h4>Video</h4>
+                            <video width="320" height="240" controls>
+                                <source src="{{downloadRoot + vdm.post_prod_dpt.assignment.video.url | trustUrl}}" type="video/mp4">
+                                <a ng-href="{{downloadRoot + vdm.post_prod_dpt.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.post_prod_dpt.assignment.video_name}}</a>
+                            </video>
+                        </div>
+                        <div ng-if="vdm.post_prod_dpt.assignment.premier_project.url != null">
+                            <h4>Premier</h4>
+                            <a ng-href="{{downloadRoot + vdm.post_prod_dpt.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.post_prod_dpt.assignment.premier_project_name}}</a>
+
+                        </div>
+                        <div ng-if="vdm.post_prod_dpt.assignment.after_project.url != null">
+                            <h4>After</h4>
+                            <a ng-href="{{downloadRoot + vdm.post_prod_dpt.assignment.after_project.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.post_prod_dpt.assignment.after_project_name}}</a>
+
+                        </div>
+                        <div ng-if="vdm.post_prod_dpt.assignment.illustrators.length >= 1">
+                            <h4>Illustrators</h4>
+                            <div ng-repeat="file in vdm.post_prod_dpt.assignment.illustrators">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                        <div ng-if="vdm.post_prod_dpt.assignment.elements.length >= 1">
+                            <h4>Elementos</h4>
+                            <div ng-repeat="file in vdm.post_prod_dpt.assignment.elements">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 row over-x">
                 <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6  col-md-offset-3 col-lg-offset-3 col-sm-offset-3 col-xs-offset-3 row">
-                    <div align="center">
+                    <div align="center" style="margin-bottom: 20px">
                         <h3>Historial de Cambios</h3>
                     </div>
                 </div>

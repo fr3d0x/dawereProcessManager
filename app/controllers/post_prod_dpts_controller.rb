@@ -49,11 +49,11 @@ class PostProdDptsController < ApplicationController
 
   private
 
-    def set_post_prod_dpt
-      @post_prod_dpt = PostProdDpt.find(params[:id])
-    end
+  def set_post_prod_dpt
+    @post_prod_dpt = PostProdDpt.find(params[:id])
+  end
 
-    def post_prod_dpt_params
-      params.require(:post_prod_dpt).permit(:status, :comments)
-    end
+  def post_prod_dpt_params
+    params.require(:post_prod_dpt).permit(:status, :comments)
+  end
 end

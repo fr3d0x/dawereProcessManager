@@ -48,6 +48,8 @@
                         </td>
                         <td data-title="'Cambio a'" ng-if="row.changeDetail == 'Cambio de Guion de produccion'">
                             <div allign="center">
+                                <filedownload data="row.changedTo"  class="'prettyLinkSmall'" text="'descargar presentacion'" docname="'presentacion' + row.videoId" doctype="'ppt'" extension="'.ppt'"></filedownload>
+
                                 <pdflink data="row.changedTo" class="'prettyLinkSmall'" text="'ver cambio'"></pdflink>
                             </div>
                         </td>

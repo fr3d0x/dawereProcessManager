@@ -1,77 +1,97 @@
 <!--Production role Vdm View-->
-<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 over-x">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data | orderBy : row.videoId">
-                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                <td data-title="'Id video'" filter="{videoId: 'text'}" ng-if="row.writable != true" style="vertical-align:middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div align="center">
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{prodDeptStatus: 'text'}" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status == null">
+                <td data-title="'Estado'" filter="{status: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div ng-if="row.prodDept.status == null" align="center">
                         {{row.status | translate}}
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status != null">
+                    <div ng-if="row.prodDept.status != null" align="center">
                         {{row.prodDept.status | translate}}
                     </div>
                 </td>
-                <td data-title="'Asignado'" filter="{prodDeptResponsable: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment == null">
+                <td data-title="'Asignado'" filter="{responsable: 'text'}" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div ng-if="row.prodDept.assignment == null" align="center" class="itemMissing">
                         sin editor
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment != null">
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName == null">
+                    <div ng-if="row.prodDept.assignment != null" align="center">
+                        <div ng-if="row.prodDept.assignment.assignedName == null" class="itemMissing">
                             sin editor
                         </div>
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName != null">
+                        <div ng-if="row.prodDept.assignment.assignedName != null">
                             {{row.prodDept.assignment.assignedName}}<br>
                             status: {{row.prodDept.assignment.status}}
                         </div>
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status == null">
+                <td data-title="'Comentarios'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div ng-if="row.prodDept.status == null" align="center">
                         {{row.comments | limitTo : 300}}...
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.status != null">
+                    <div ng-if="row.prodDept.status != null" align="center">
                         {{row.prodDept.comments | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Guion'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
-                        <span ng-if="row.prodDept.script == null || row.prodDept.script == ''">
-                            no posee
-                        </span>
-                        <span ng-if="row.prodDept.script != null && row.prodDept.script != ''">
-                            <span ng-if="row.script == 'cambiado'">
-                                cambiado
-                            </span>
-                            <span ng-if="row.script != 'cambiado'">
-                                guardado
-                            </span>
-                        </span>
+                <td data-title="'Archivos'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.prodDept.screen_play.url == null && row.prodDept.script.url == null">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.url != null || row.prodDept.script.url != null">
+                        <div ng-if="row.prodDept.screen_play.url != null">
+                            <h4>Guion</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.script.url != null">
+                            <h4>Libreto</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.video_clip.url != null">
+                            <h4>Video Edicion</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.url != null">
+                            <h4>Proyecto premier</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                            </div>
+                            <br>
+                        </div>
                     </div>
                 </td>
-                <td data-title="'Intro'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Intro'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.prodDept.intro" ng-disabled="true">
                     </div>
                 </td>
-                <td data-title="'Desarrollo'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Desarrollo'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.prodDept.vidDev" ng-disabled="true">
                     </div>
                 </td>
-                <td data-title="'Conclu'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Conclu'" ng-if="row.writable != true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.prodDept.conclu" ng-disabled="true">
                     </div>
                 </td>
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
+                <td data-title="'Acciones'" ng-if="row.writable != true" style="vertical-align:middle">
                     <div align="center">
 
                         <a ng-click="approve(row, 'Lider de produccion', 'edition')" title='aprobar' ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">
@@ -81,9 +101,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.prodDept.assignment != null && row.prodDept.assignment.status == 'editado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.prodDept.status != 'aprobado' && row.status != 'procesado' && row.status != 'no asignado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'grabado' && row.prodDept.status != 'aprobado' || row.prodDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.prodDept.status != 'aprobado' && row.status != 'procesado' && row.status != 'no asignado'">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
@@ -92,72 +112,108 @@
                     </div>
                 </td>
 
-                <td data-title="'Id video'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.videoId}}</td>
-                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.videoTittle}}</td>
-                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-1 col-md-1 col-sm-1 col-xs-1">{{row.prodDept.status}}</td>
-                <td data-title="'Asignado'" ng-if="row.writable == true"  style="vertical-align:middle">
+                <td data-title="'Id video'" ng-if="row.writable == true" style="vertical-align:middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" ng-if="row.writable == true" style="vertical-align:middle"><div align="center">{{row.videoTittle}}</div></td>
+                <td data-title="'Estado'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div ng-if="row.prodDept.status == null" align="center">
+                        {{row.status | translate}}
+                    </div>
+                    <div ng-if="row.prodDept.status != null" align="center">
+                        {{row.prodDept.status | translate}}
+                    </div>
+                </td>
+                <td data-title="'Asignado'" ng-if="row.writable == true" filter="{responsable: 'text'}" style="vertical-align:middle">
                     <div align="center">
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment != null">
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName == null">
-                                <select ng-model="row.asigned" ng-options="employee as employee.username for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
-                                    <option value="#">No especifico</option>
-                                </select>
-                            </div>
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment.assignedName != null">
-                                {{row.prodDept.assignment.assignedName}}<br>
-                                status: {{row.prodDept.assignment.status}}
-                            </div>
-                        </div>
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.prodDept.assignment == null">
-                            <select ng-model="row.asigned" ng-options="employee as employee.name for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'grabado' || row.prodDept.assignment.user_id != null">
+                        <div ng-if="row.prodDept.assignment.assignedName == null || row.prodDept.assignment.changeEditor == true">
+                            <a  ng-click="row.prodDept.assignment.changeEditor = false" title='cerrar' ng-if="row.prodDept.assignment.changeEditor == true">
+                                <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                            </a>
+                            <select ng-model="row.prodDept.assigned" ng-options="employee as employee.name for employee in employees | roles:['editor']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.prodDept.status != 'aprobado' &&  row.prodDept.status != 'grabado'">
                                 <option value="#">No especifico</option>
                             </select>
                         </div>
+                        <div ng-if="row.prodDept.assignment.assignedName != null && row.prodDept.assignment.changeEditor != true">
+                            <a  ng-click="row.prodDept.assignment.changeEditor = true" title='cambiar editor'>
+                                <i class="fa fa-users showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                            </a><br><br>
+                            {{row.prodDept.assignment.assignedName}}<br>
+                            status: {{row.prodDept.assignment.status}}
+
+                        </div>
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
-                <td data-title="'Guion'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
-                        <span ng-if="row.prodDept.script == null">
-                            no posee
-                        </span>
-                        <span ng-if="row.prodDept.script != null">
-                            <span ng-if="row.script == 'cambiado'">
-                                cambiado
-                            </span>
-                            <span ng-if="row.script != 'cambiado'">
-                                guardado
-                            </span>
-                        </span>
+                <td data-title="'Comentarios'" ng-if="row.writable == true" style="vertical-align:middle"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.prodDept.comments"></textarea></td>
+                <td data-title="'Archivos'" ng-if="row.writable == true" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.prodDept.screen_play.url == null && row.prodDept.script.url == null">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.prodDept.screen_play.url != null || row.prodDept.script.url != null">
+                        <div ng-if="row.prodDept.screen_play.url != null">
+                            <h4>Guion</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.scree_play.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.screen_play_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.script.url != null">
+                            <h4>Libreto</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.script.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.video_clip.url != null">
+                            <h4>Video Edicion</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.video_clip.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.video_clip_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="row.prodDept.assignment.premier_project.url != null">
+                            <h4>Proyecto premier</h4>
+                            <div>
+                                <a ng-href="{{downloadRoot + row.prodDept.assignment.premier_project.url}}" download class="prettyLinkSmall">&#x25CF;{{row.prodDept.assignment.premier_project_name}}</a>
+                            </div>
+                            <br>
+                        </div>
                     </div>
                 </td>
-                <td data-title="'Intro'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Intro'" ng-if="row.writable == true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.intro" ng-disabled="row.prodDept.intro == true">
                     </div>
                 </td>
-                <td data-title="'Desarrollo'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Desarrollo'" ng-if="row.writable == true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.vidDev" ng-disabled="row.prodDept.vidDev == true">
                     </div>
                 </td>
-                <td data-title="'Conclu'" ng-if="row.writable == true" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row" style="vertical-align:middle">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" align="center">
+                <td data-title="'Conclu'" ng-if="row.writable == true" style="vertical-align:middle">
+                    <div align="center">
                         <input type="checkbox" name="intro" ng-model="row.conclu" ng-disabled="row.prodDept.conclu == true">
                     </div>
                 </td>
-                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                    <div align="center">
-                        <label for="upload" title="subir libreto">
-                            <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px">
-                                <input id="upload" type="file" ngf-select ng-model="file" name="file" accept="pdf/*" ngf-max-size="5MB" style="display: none">
-                            </i>
-                        </label>
+                <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle">
+                    <div align="center" ng-if="row.uploadFiles != true">
+                        <a ng-click="row.uploadFiles = true" title="subir archivos">
+                            <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
                         <span style="font-size: 20px">|</span>
                         <a id="prodSave" ng-click="saveVdmProd(row, file)" title='guardar' ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
+                            <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a>
+                    </div>
+                    <div align="center" ng-if="row.uploadFiles == true">
+                        <i class="fa fa-file-powerpoint-o uploadBtn" id="uploadScreenPlay" name="screen_play" aria-hidden="true" style="font-size: 15px" ngf-select="uploadProductionFiles($file, row, 'screen_play')">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-file-excel-o uploadBtn" aria-hidden="true" style="font-size: 15px" title="subir guion" id="uploadScript" ngf-select="uploadProductionFiles($file, row, 'script')">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <a ng-click="row.uploadFiles = false" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
                     </div>

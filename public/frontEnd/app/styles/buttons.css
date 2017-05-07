@@ -44,12 +44,12 @@
     font-family: ubuntu,sans-serif;
     border: 0 transparent;
     color: #58595B;
-    font-size: 16px;
+    font-size: 12px;
     background: #E6E7E8;
-    padding: 10px 10px 10px 10px;
+    padding: 5px 0px 5px 0px;
     text-decoration: none;
     border-radius: 10px;
-    margin-right: 20px;
+    /*margin-right: 20px;*/
 }
 
 .subjectButton:hover {
@@ -92,4 +92,23 @@
     color: lightskyblue;
     font-weight: 200;
     text-decoration: none !important;
+}
+
+.logoutButtonHover:hover{
+    background-color: #369291 !important;
+    font-weight: 600 !important;
+}
+.buttonHover:hover{
+    font-weight: 400 !important;
+    color: black  !important;
+}
+
+.deptBox{
+    min-height: 150px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.sectionBtn{
+    font-size: 20px !important;
 }

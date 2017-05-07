@@ -1,20 +1,10 @@
-<style>
-    .logoutButtonHover:hover{
-        background-color: #369291 !important;
-        font-weight: 600 !important;
-    }
-    .buttonHover:hover{
-        font-weight: 400 !important;
-        color: black  !important;
-    }
-</style>
 <header ng-controller="headerController">
     <div class="container-fluid header-bg">
         <div class="row">
 
             <div class="col-xs-12 col-xxs-offset-1 col-sm-7 col-sm-offset-1 col-md-8 col-md-offset-1 col-lg-8 col-lg-offset-1">
 
-                <a href="{{logoutURL}}/index.html">
+                <a ng-href="{{logoutURL}}/index.html">
                     <div style="background:url(https://www.dawere.com/img/frontEndDesign/logo_descriptivo_header.png) no-repeat" class="logo_img" ></div>
                 </a>
             </div>
@@ -23,14 +13,14 @@
                 <div id="img-name-header">
                     <nav class="navbar navbar-default ">
                         <ul class="nav navbar-nav" >
-                           <!-- <li>
-                                <div ng-style="{'background-image':'url('+profileURL+currentUser.profile_picture+')', 'background-repeat': 'no-repeat', 'background-position': 'center 100%', 'border-radius': '50%', 'border': '1px solid', 'border-color': '#125B60','background-size':'100%'}" id="u5767-N"></div>
-                            </li>-->
+                            <!-- <li>
+                                 <div ng-style="{'background-image':'url('+profileURL+currentUser.profile_picture+')', 'background-repeat': 'no-repeat', 'background-position': 'center 100%', 'border-radius': '50%', 'border': '1px solid', 'border-color': '#125B60','background-size':'100%'}" id="u5767-N"></div>
+                             </li>-->
                             <li class="dropdown">
                                 <div class="dawereNav style_nav">
                                     <p class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{currentUser.username}} <span class="caret"></span></p>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="role in roles"><a class="buttonHover" ng-click="changeRole(role.role)" style="cursor: pointer">{{role.role | translate}}</a></li>
+                                        <li ng-repeat="role in roles"><a class="buttonHover" ng-click="changeRole(role.role)" style="cursor: pointer" ng-class="{active: currentRole == role.role}">{{role.role | translate}}</a></li>
                                         <li style=" color: gray;" ><a href="{{logoutURL}}" class="logoutButtonHover" ng-click="logout()" style=" color: white;">Cerrar sesión</a></li>
                                     </ul>
                                 </div>

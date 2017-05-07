@@ -2,69 +2,88 @@
 <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
     <button ng-click="tableParams.filter({})" class="btn btn-default pull-right" style="margin-bottom: 30px;">Limpiar Filtrado</button>
 
-    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 row over-x">
         <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
             <tr ng-repeat="row in $data">
 
-                <td data-title="'Id video'" filter="{videoId: 'text'}" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">{{row.videoId}}</td>
-                <td data-title="'Titulo'" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12 ">
+                <td data-title="'Id video'" filter="{videoId: 'text'}" style="vertical-align: middle"><div align="center">{{row.videoId}}</div></td>
+                <td data-title="'Titulo'" style="vertical-align: middle">
+                    <div align="center">
                         {{row.videoTittle | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Estado'" filter="{status: 'text'}" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.status == null">
+                <td data-title="'Estado'" filter="{status: 'text'}" style="vertical-align: middle">
+                    <div ng-if="row.postProdDept.status == null" align="center">
                         no asignado
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.status != null">
+                    <div ng-if="row.postProdDept.status != null" align="center">
                         {{row.postProdDept.status}}
                     </div>
                 </td>
-                <td data-title="'Asignado a'" filter="{postProdResponsable: 'text'}" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment == null">
+                <td data-title="'Asignado a'" filter="{responsable: 'text'}" ng-if="row.writable != true" style="vertical-align: middle">
+                    <div ng-if="row.postProdDept.assignment == null" align="center">
                         sin post-productor
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment != null">
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment.assignedName == null">
+                    <div ng-if="row.postProdDept.assignment != null" align="center">
+                        <div ng-if="row.postProdDept.assignment.assignedName == null">
                             sin post-productor
                         </div>
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment.assignedName != null">
+                        <div ng-if="row.postProdDept.assignment.assignedName != null">
                             {{row.postProdDept.assignment.assignedName}}<br>
                             status: {{row.postProdDept.assignment.status}}
                         </div>
                     </div>
                 </td>
-                <td data-title="'Asignado a'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row">
+                <td data-title="'Asignado a'" ng-if="row.writable == true" filter="{responsable: 'text'}"  style="vertical-align:middle">
                     <div align="center">
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment != null">
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment.assignedName == null">
-                                <select ng-model="row.ppAsigned" ng-options="employee as employee.name for employee in employees | roles:['post-producer']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.postProdDept.assignment.user_id != null">
+                        <div ng-if="row.postProdDept.assignment != null" align="center">
+                            <div ng-if="row.postProdDept.assignment.assignedName == null || row.postProdDept.assignment.changePostProducer == true">
+                                <a  ng-click="row.postProdDept.assignment.changePostProducer = false" title='cerrar' ng-if="row.postProdDept.assignment.changePostProducer == true">
+                                    <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a>
+                                <select ng-model="row.ppAsigned" ng-options="employee as employee.name for employee in employees | roles:['post-producer']" style="height:2.2em; margin-top: 6px;">
                                     <option value="#">No especifico</option>
                                 </select>
                             </div>
-                            <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment.assignedName != null">
+                            <div ng-if="row.postProdDept.assignment.assignedName != null && row.postProdDept.assignment.changePostProducer != true" align="center">
+                                <a ng-click="row.postProdDept.assignment.changePostProducer = true" title='cambiar editor'>
+                                    <i class="fa fa-users showBtn" aria-hidden="true" style="font-size: 15px"></i>
+                                </a><br><br>
                                 {{row.postProdDept.assignment.assignedName}}<br>
                                 status: {{row.postProdDept.assignment.status}}
                             </div>
                         </div>
-                        <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.assignment == null">
-                            <select ng-model="row.ppAsigned" ng-options="employee as employee.name for employee in employees | roles:['post-producer']" style="height:2.2em; margin-top: 6px;" ng-disabled="row.postProdDept.assignment.user_id != null">
+                        <div ng-if="row.postProdDept.assignment == null" align="center">
+                            <select ng-model="row.ppAsigned" ng-options="employee as employee.name for employee in employees | roles:['post-producer']" style="height:2.2em; margin-top: 6px;">
                                 <option value="#">No especifico</option>
                             </select>
                         </div>
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable != true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4 row">
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.comments != null">
+                <td data-title="'Video'" style="vertical-align:middle">
+                    <div class="itemMissing" ng-if="row.postProdDept.assignment.video.url == null" align="center">
+                        No Posee
+                    </div>
+                    <div class="itemPresent" ng-if="row.postProdDept.assignment.video.url != null" align="center">
+                        <h4>Video</h4>
+                        <video width="320" height="240" controls>
+                            <source src="{{downloadRoot + row.postProdDept.assignment.video.url | trustUrl}}" type="video/mp4">
+                            <a ng-href="{{downloadRoot + row.postProdDept.assignment.video.url}}" download class="prettyLinkSmall">&#x25CF;{{row.postProdDept.assignment.video_name}}</a>
+                        </video>
+                        <br>
+                    </div>
+                </td>
+                <td data-title="'Comentarios'" ng-if="row.writable != true">
+                    <div ng-if="row.postProdDept.comments != null">
                         {{row.postProdDept.comments | limitTo : 300}}...
                     </div>
-                    <div class="col-lg-12  col-md-12 col-sm-12 col-xs-12" ng-if="row.postProdDept.comments == null">
+                    <div ng-if="row.postProdDept.comments == null">
                         {{row.designDept.comments | limitTo : 300}}...
                     </div>
                 </td>
-                <td data-title="'Comentarios'" ng-if="row.writable == true" class="col-lg-4 col-md-4 col-sm-4 col-xs-4"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.postProdDept.comments"></textarea></td>
+                <td data-title="'Comentarios'" ng-if="row.writable == true"><textarea style="width: 100%; height: 150px; font-weight: bold"  type="text" ng-model="row.postProdDept.comments"></textarea></td>
 
-                <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
+                <td data-title="'Acciones'" ng-if="row.writable != true" style="vertical-align:middle">
                     <div align="center">
                         <a ng-click="approve(row, 'Lider de post-produccion', 'postProduction')" title='aprobar' ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">
                             <i class="fa fa-thumbs-o-up approveBtn" style="font-size: 15px"></i>
@@ -73,9 +92,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.postProdDept.assignment != null && row.postProdDept.assignment.status == 'terminado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.postProdDept.status == 'asignado' && row.postProdDept.assignment.user_id == null">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.postProdDept.status == 'asignado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.postProdDept.status == 'asignado' && row.postProdDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.postProdDept.status == 'asignado'">|</span>
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
@@ -84,9 +103,9 @@
                 </td>
                 <td data-title="'Acciones'" ng-if="row.writable == true"  style="vertical-align:middle" class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
                     <div align="center">
-                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.postProdDept.status == 'asignado' && row.postProdDept.assignment.user_id == null" ng-class="{disabled: disableSave == true}">
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.postProdDept.status == 'asignado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.postProdDept.status == 'asignado' && row.postProdDept.assignment.user_id == null">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.postProdDept.status == 'asignado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>

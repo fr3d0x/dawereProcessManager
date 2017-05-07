@@ -1,13 +1,13 @@
-# pg version 0.18.4
-#   gem install pg
+#   gem install mysql2
 #
 #   Ensure the pg gem is defined in your Gemfile
-#   gem 'pg'
+#   gem 'mysql2'
 #
 
 default: &default
   adapter: mysql2
-  encoding: utf8
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   pool: 5
 
 development:
@@ -15,6 +15,12 @@ development:
   database: dawProcessDb
   username: root
   password: daw-db-pass16
+
+production:
+  <<: *default
+  database: dawProcessDb
+  username: root
+  password: 1234
 
 #default: &default
 #  adapter: postgresql
@@ -29,17 +35,4 @@ development:
 #  timeout: 5000
 #  owner: postgres
 #  host: localhost
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test:
-
-production:
-  adapter: mysql2
-  encoding: utf8
-  database: dawProcessDbProd
-  pool: 5
-  username: root
-  password: daw-db-pass16
 

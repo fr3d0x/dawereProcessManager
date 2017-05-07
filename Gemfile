@@ -7,7 +7,7 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'pg'
+#gem 'pg'
 
 gem 'mysql2', '~> 0.3.18'
 
@@ -18,6 +18,12 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'prawn'
 
 gem 'prawn-table'
+
+gem 'carrierwave'
+
+gem 'carrierwave-base64'
+
+gem 'carrierwave-video'
 
 #gem 'sqlite3'
 
