@@ -421,8 +421,8 @@ module.exports = function (grunt) {
         constants: {
           ENV: {
             name: 'production',
-            baseUrl: 'http://192.168.1.23',
-            baseDownloadFolder: '/uploads'
+            baseUrl: 'http://192.168.2.45',
+            baseDownloadFolder: '/archivos_dpm'
           }
         }
       }
