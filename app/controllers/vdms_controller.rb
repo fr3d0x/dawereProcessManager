@@ -389,7 +389,7 @@ class VdmsController < ApplicationController
               assignedName: vdm.design_dpt.design_assignment.assignedName,
               comments: vdm.design_dpt.design_assignment.comments,
               illustrators: vdm.design_dpt.design_assignment.design_ilustrators,
-              jpgs: vdm.design_dpt.design_assignment,
+              jpgs: vdm.design_dpt.design_assignment.design_jpgs,
               designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
               designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
           }
