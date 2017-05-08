@@ -357,7 +357,7 @@ class UsersController < ApplicationController
             end
           when 'content_analysts'
             if params[:role] == 'contentLeader' || params[:role] == 'productManager'
-              employees = User.joins(:roles).where(:roles => {:role => 'contentAnalist'})
+              employees = User.joins(:roles).where(:roles => {:role => ['contentAnalist', 'contentLeade']})
               employees.each do |emp|
                 total_videos = 0
                 returned = 0
