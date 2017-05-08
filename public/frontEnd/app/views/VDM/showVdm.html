@@ -143,7 +143,7 @@
                     <div align="center"class="itemMissing" ng-if="vdm.design_dpt == null || vdm.design_dpt.assignment == null">
                         No Posee
                     </div>
-                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.design_illustrators.length < 1 && vdm.design_dpt.assignment.jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
+                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.illustrators.length < 1 && vdm.design_dpt.assignment.jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
                         No Posee
                     </div>
                     <div align="center" class="itemPresent" ng-if="vdm.design_dpt.assignment.illustrators.length >= 1 || vdm.design_dpt.assignment.jpgs.length >= 1 || vdm.design_dpt.assignment.designed_presentation.url != null">
