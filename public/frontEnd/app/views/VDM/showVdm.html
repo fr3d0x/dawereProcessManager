@@ -160,7 +160,7 @@
                             </div><br>
                         </div>
                         <div ng-if="vdm.design_dpt.assignment.designed_presentation.url != null">
-                            <h4>Imagenes</h4>
+                            <h4>Presentacion diseñada</h4>
                                 <a ng-href="{{downloadRoot + vdm.design_dpt.assignment.designed_presentation.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.design_dpt.assignment.designed_presentation_name}}</a>
                             <br>
                         </div>
@@ -170,9 +170,6 @@
                     <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Post-produccion</h3></div>
 
                     <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt == null || vdm.post_prod_dpt.assignment == null">
-                        No Posee
-                    </div>
-                    <div  align="center"class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">
                         No Posee
                     </div>
                     <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">
