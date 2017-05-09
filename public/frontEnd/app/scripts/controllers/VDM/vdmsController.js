@@ -17,22 +17,22 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         var getDepartmentsToReturn = function (vdm) {
             var departments = {};
             if (vdm.productionStatus != null){
-                if (vdm.productionStatus == 'grabado' || vdm.productionStatus == 'aprobado'){
+                if (vdm.productionStatus == 'grabado' || vdm.productionStatus == 'aprobado' || vdm.productionStatus == 'por aprobar'){
                     departments['production'] = 'Produccion';
                 }
             }
             if (vdm.editionStatus != null){
-                if (vdm.editionStatus == 'editado' || vdm.editionStatus == 'aprobado'){
+                if (vdm.editionStatus == 'editado' || vdm.editionStatus == 'aprobado' || vdm.editionStatus == 'por aprobar'){
                     departments['edition'] = 'Edicion'
                 }
             }
             if (vdm.designStatus != null){
-                if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'aprobado'){
+                if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'por aprobar'){
                     departments['design'] = 'Diseño'
                 }
             }
             if (vdm.postProdStatus != null){
-                if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'aprobado'){
+                if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'por aprobar'){
                     departments['postProduction'] = 'Post-Produccion'
                 }
             }
