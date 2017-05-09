@@ -931,18 +931,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                     confirmButtonColor: "lightskyblue"
                                                 });
                                                 if (vdm.prodDept != null){
-                                                    vdm.prodDept.intro = response.data.prodDept.intro;
-                                                    vdm.intro = vdm.prodDept.intro;
-                                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
-                                                    vdm.conclu = vdm.prodDept.conclu;
-                                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
-                                                    vdm.vidDev = vdm.prodDept.vidDev;
-                                                    vdm.prodDept.status = response.data.prodDept.status;
-                                                    if(response.data.prodDept.assignment != null){
-                                                        if (vdm.prodDept.assignment){
-                                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
-                                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                    if (response.data.prodDept){
+                                                        vdm.prodDept.intro = response.data.prodDept.intro;
+                                                        vdm.intro = vdm.prodDept.intro;
+                                                        vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                        vdm.conclu = vdm.prodDept.conclu;
+                                                        vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                        vdm.vidDev = vdm.prodDept.vidDev;
+                                                        vdm.prodDept.status = response.data.prodDept.status;
+                                                        if(response.data.prodDept.assignment != null){
+                                                            if (vdm.prodDept.assignment){
+                                                                vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                                vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                                vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -1002,18 +1004,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 confirmButtonColor: "lightskyblue"
                                             });
                                             if (vdm.prodDept != null){
-                                                vdm.prodDept.intro = response.data.prodDept.intro;
-                                                vdm.intro = vdm.prodDept.intro;
-                                                vdm.prodDept.conclu = response.data.prodDept.conclu;
-                                                vdm.conclu = vdm.prodDept.conclu;
-                                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
-                                                vdm.vidDev = vdm.prodDept.vidDev;
-                                                vdm.prodDept.status = response.data.prodDept.status;
-                                                if(response.data.prodDept.assignment != null){
-                                                    if (vdm.prodDept.assignment){
-                                                        vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                                        vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
-                                                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                if (response.data.prodDept){
+                                                    vdm.prodDept.intro = response.data.prodDept.intro;
+                                                    vdm.intro = vdm.prodDept.intro;
+                                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                    vdm.conclu = vdm.prodDept.conclu;
+                                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                    vdm.vidDev = vdm.prodDept.vidDev;
+                                                    vdm.prodDept.status = response.data.prodDept.status;
+                                                    if(response.data.prodDept.assignment != null){
+                                                        if (vdm.prodDept.assignment){
+                                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1073,18 +1077,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             });
 
                                             if (vdm.prodDept != null){
-                                                vdm.prodDept.intro = response.data.prodDept.intro;
-                                                vdm.intro = vdm.prodDept.intro;
-                                                vdm.prodDept.conclu = response.data.prodDept.conclu;
-                                                vdm.conclu = vdm.prodDept.conclu;
-                                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
-                                                vdm.vidDev = vdm.prodDept.vidDev;
-                                                vdm.prodDept.status = response.data.prodDept.status;
-                                                if(response.data.prodDept.assignment != null){
-                                                    if (vdm.prodDept.assignment){
-                                                        vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                                        vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
-                                                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                if (response.data.prodDept){
+                                                    vdm.prodDept.intro = response.data.prodDept.intro;
+                                                    vdm.intro = vdm.prodDept.intro;
+                                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                    vdm.conclu = vdm.prodDept.conclu;
+                                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                    vdm.vidDev = vdm.prodDept.vidDev;
+                                                    vdm.prodDept.status = response.data.prodDept.status;
+                                                    if(response.data.prodDept.assignment != null){
+                                                        if (vdm.prodDept.assignment){
+                                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                        }
                                                     }
                                                 }
                                             }
@@ -1144,18 +1150,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                             });
 
                                             if (vdm.prodDept != null){
-                                                vdm.prodDept.intro = response.data.prodDept.intro;
-                                                vdm.intro = vdm.prodDept.intro;
-                                                vdm.prodDept.conclu = response.data.prodDept.conclu;
-                                                vdm.conclu = vdm.prodDept.conclu;
-                                                vdm.prodDept.vidDev = response.data.prodDept.vidDev;
-                                                vdm.vidDev = vdm.prodDept.vidDev;
-                                                vdm.prodDept.status = response.data.prodDept.status;
-                                                if(response.data.prodDept.assignment != null){
-                                                    if (vdm.prodDept.assignment){
-                                                        vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
-                                                        vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
-                                                        vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                if (response.data.prodDept){
+                                                    vdm.prodDept.intro = response.data.prodDept.intro;
+                                                    vdm.intro = vdm.prodDept.intro;
+                                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                    vdm.conclu = vdm.prodDept.conclu;
+                                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                    vdm.vidDev = vdm.prodDept.vidDev;
+                                                    vdm.prodDept.status = response.data.prodDept.status;
+                                                    if(response.data.prodDept.assignment != null){
+                                                        if (vdm.prodDept.assignment){
+                                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                        }
                                                     }
                                                 }
                                             }
