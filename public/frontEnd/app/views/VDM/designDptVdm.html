@@ -79,9 +79,9 @@
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.designDept.assignment != null && row.designDept.assignment.status == 'diseñado'">|</span>
 
-                        <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado'">
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado' && row.designDept.assignment.status != 'rechazado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado' && row.designDept.assignment.status != 'rechazado'">|</span>
                         <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.assignment.status == 'rechazado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.designDept.assignment.status == 'rechazado'">|</span>

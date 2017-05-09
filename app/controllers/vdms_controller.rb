@@ -307,22 +307,24 @@ class VdmsController < ApplicationController
               else
                 raise Exceptions::InvalidRoleException
             end
-            if vdm.production_dpt != nil
-              payload_item['productionStatus'] = vdm.production_dpt.status
-              if vdm.production_dpt.production_dpt_assignment != nil
-                payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+            if role != 'productManager'
+              if vdm.production_dpt != nil
+                payload_item['productionStatus'] = vdm.production_dpt.status
+                if vdm.production_dpt.production_dpt_assignment != nil
+                  payload_item['editionStatus'] = vdm.production_dpt.production_dpt_assignment.status
+                end
               end
-            end
-            if vdm.design_dpt != nil
-              payload_item['designStatus'] = vdm.design_dpt.status
-              if vdm.design_dpt.design_assignment != nil
-                payload_item['designStatus'] = vdm.design_dpt.design_assignment.status
+              if vdm.design_dpt != nil
+                payload_item['designStatus'] = vdm.design_dpt.status
+                if vdm.design_dpt.design_assignment != nil
+                  payload_item['designStatus'] = vdm.design_dpt.design_assignment.status
+                end
               end
-            end
-            if vdm.post_prod_dpt != nil
-              payload_item['postProdStatus'] = vdm.post_prod_dpt.status
-              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
-                payload_item['postProdStatus'] = vdm.post_prod_dpt.post_prod_dpt_assignment.status
+              if vdm.post_prod_dpt != nil
+                payload_item['postProdStatus'] = vdm.post_prod_dpt.status
+                if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                  payload_item['postProdStatus'] = vdm.post_prod_dpt.post_prod_dpt_assignment.status
+                end
               end
             end
             payload.push(payload_item)
