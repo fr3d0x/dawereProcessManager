@@ -54,11 +54,6 @@
                         <div class="col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 col-lg-8 col-lg-offset-2" style="margin-top: 20px; text-align: center" ng-if="currentRole == 'production' || currentRole == 'productManager'">
                             <a class="prettyLinkBig" ng-click="printVdmInfo(vdm)">Imprimir informacion de mdt <i class="fa fa-print" aria-hidden="true" style="font-size: 30px"></i></a>
                         </div>
-                        <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6  col-md-offset-3 col-lg-offset-3 col-sm-offset-3 col-xs-offset-3 row" ng-if="vdm.prodDept.script != null && currentRole == 'production' || currentRole == 'productManager'">
-                            <div align="center">
-                                <h3>Libreto</h3>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -148,7 +143,7 @@
                     <div align="center"class="itemMissing" ng-if="vdm.design_dpt == null || vdm.design_dpt.assignment == null">
                         No Posee
                     </div>
-                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.design_ilustrators.length < 1 && vdm.design_dpt.assignment.design_jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
+                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.illustrators.length < 1 && vdm.design_dpt.assignment.jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
                         No Posee
                     </div>
                     <div align="center" class="itemPresent" ng-if="vdm.design_dpt.assignment.illustrators.length >= 1 || vdm.design_dpt.assignment.jpgs.length >= 1 || vdm.design_dpt.assignment.designed_presentation.url != null">
@@ -165,7 +160,7 @@
                             </div><br>
                         </div>
                         <div ng-if="vdm.design_dpt.assignment.designed_presentation.url != null">
-                            <h4>Imagenes</h4>
+                            <h4>Presentacion diseñada</h4>
                                 <a ng-href="{{downloadRoot + vdm.design_dpt.assignment.designed_presentation.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.design_dpt.assignment.designed_presentation_name}}</a>
                             <br>
                         </div>
@@ -175,9 +170,6 @@
                     <div align="center" class="col-xs-12 col-sm-12 col-md-12 col-lg-12"><h3>Post-produccion</h3></div>
 
                     <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt == null || vdm.post_prod_dpt.assignment == null">
-                        No Posee
-                    </div>
-                    <div  align="center"class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">
                         No Posee
                     </div>
                     <div align="center" class="itemMissing" ng-if="vdm.post_prod_dpt.assignment.video.url == null && vdm.post_prod_dpt.assignment.premier_project.url == null && vdm.post_prod_dpt.assignment.after_project.url == null && vdm.post_prod_dpt.assignment.illustrators.length < 1 && vdm.post_prod_dpt.assignment.elements.length < 1">

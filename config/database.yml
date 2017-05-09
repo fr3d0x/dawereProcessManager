@@ -20,7 +20,7 @@ production:
   <<: *default
   database: dawProcessDb
   username: root
-  password: 1234
+  password: daw-db-pass16
 
 #default: &default
 #  adapter: postgresql
