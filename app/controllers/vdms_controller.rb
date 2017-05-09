@@ -1824,10 +1824,6 @@ class VdmsController < ApplicationController
                 UserNotifier.send_rejected_to_designer(vdm, vdm.design_dpt.design_assignment.user.employee).deliver
               end
             end
-            if vdm.design_dpt != nil
-              vdm.design_dpt.status = 'rechazado'
-              vdm.design_dpt.save!
-            end
             if vdm.post_prod_dpt != nil
               vdm.post_prod_dpt.status = 'no asignado'
               vdm.post_prod_dpt.save!
@@ -1862,13 +1858,6 @@ class VdmsController < ApplicationController
               vdm.product_management.designStatus = 'rechazado'
               vdm.product_management.postProductionStatus = nil
               vdm.product_management.save!
-            end
-            if vdm.design_dpt != nil
-              designPayload = {
-                  status: vdm.design_dpt.status,
-                  comments: vdm.design_dpt.comments,
-                  assignment: vdm.design_dpt.design_assignment
-              }
             end
             if vdm.design_dpt != nil
               designPayload = {
@@ -1921,10 +1910,6 @@ class VdmsController < ApplicationController
                 vdm.post_prod_dpt.post_prod_dpt_assignment.save!
                 UserNotifier.send_rejected_to_post_producer(vdm, vdm.post_prod_dpt.post_prod_dpt_assignment.user.employee).deliver
               end
-            end
-            if vdm.post_prod_dpt != nil
-              vdm.post_prod_dpt.status = 'rechazado'
-              vdm.post_prod_dpt.save!
             end
             if vdm.qa_dpt
               vdm.qa_dpt.status = 'no asignado'

@@ -96,6 +96,9 @@
                         <a ng-click="saveVdm(row)" title='guardar' ng-if="row.designDept.status != 'aprobado'" ng-class="{disabled: disableSave == true}">
                             <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.designDept.status != 'aprobado'">|</span>
+                        <a ng-click="saveVdm(row)" title='guardar' ng-if="row.designDept.status == 'aprobado' && row.designDept.assignment.status == 'rechazado'" ng-class="{disabled: disableSave == true}">
+                            <i class="fa fa-floppy-o saveBtn" aria-hidden="true" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.status == 'aprobado' && row.designDept.assignment.status == 'rechazado'">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
