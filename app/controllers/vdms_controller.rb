@@ -2038,7 +2038,8 @@ class VdmsController < ApplicationController
             change.changedTo = vdm.classDoc.url
             changes.push(change)
             if vdm.classDoc.path != nil
-              FileUtils.cp(vdm.classDoc.path, $drive_copy_route+'/CONTENIDO EDUCATIVO/'+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/CLASES/PRESENTACION ORIGINAL/'+params[:upload].original_filename)
+              FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/'
+              FileUtils.cp(vdm.classDoc.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/PRESENTACION ORIGINAL/'+params[:upload].original_filename)
             end
             response = {
                 class_doc: vdm.classDoc,
@@ -2063,7 +2064,8 @@ class VdmsController < ApplicationController
             file.vdm_id = vdm.id
             file.file_name = uploaded_file.original_filename
             teacher_files.push(file)
-            FileUtils.cp(file.file.path, $drive_copy_route+'/CONTENIDO EDUCATIVO/'+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/CLASES/ENTREGADO PROFE/'+uploaded_file.original_filename)
+            FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/'
+            FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/ENTREGADO PROFE/'+uploaded_file.original_filename)
           end
           if teacher_files.count >= 1
             TeacherFile.transaction do
