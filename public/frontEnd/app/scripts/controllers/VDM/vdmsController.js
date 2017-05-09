@@ -27,7 +27,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
             if (vdm.designStatus != null){
-                if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'por aprobar'){
+                if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'por aprobar'|| vdm.designStatus == 'aprobado'){
                     departments['design'] = 'Diseño'
                 }
             }
@@ -1490,7 +1490,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                                     msg = "Se han guardado los archivos de forma exitosa";
                                 case 'elements':
-                                    vdm.designDept.assignment.design_elements = resp.data.data.design_elements;
+                                    vdm.designDept.assignment.design_elements = resp.data.data.elements;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;
                             }

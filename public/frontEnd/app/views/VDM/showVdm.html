@@ -143,10 +143,10 @@
                     <div align="center"class="itemMissing" ng-if="vdm.design_dpt == null || vdm.design_dpt.assignment == null">
                         No Posee
                     </div>
-                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.illustrators.length < 1 && vdm.design_dpt.assignment.jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null">
+                    <div align="center" class="itemMissing" ng-if="vdm.design_dpt.assignment.illustrators.length < 1 && vdm.design_dpt.assignment.jpgs.length < 1 && vdm.design_dpt.assignment.designed_presentation.url == null && vdm.design_dpt.assignment.design_elements.length < 1">
                         No Posee
                     </div>
-                    <div align="center" class="itemPresent" ng-if="vdm.design_dpt.assignment.illustrators.length >= 1 || vdm.design_dpt.assignment.jpgs.length >= 1 || vdm.design_dpt.assignment.designed_presentation.url != null">
+                    <div align="center" class="itemPresent" ng-if="vdm.design_dpt.assignment.illustrators.length >= 1 || vdm.design_dpt.assignment.jpgs.length >= 1 || vdm.design_dpt.assignment.designed_presentation.url != null || vdm.design_dpt.assignment.design_elements.length >= 1">
                         <div ng-if="vdm.design_dpt.assignment.illustrators.length >= 1">
                             <h4>Ilustrators</h4>
                             <div ng-repeat="file in vdm.design_dpt.assignment.illustrators">
@@ -164,9 +164,9 @@
                                 <a ng-href="{{downloadRoot + vdm.design_dpt.assignment.designed_presentation.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.design_dpt.assignment.designed_presentation_name}}</a>
                             <br>
                         </div>
-                        <div ng-if="row.designDept.assignment.design_elements.length >= 1">
+                        <div ng-if="vdm.design_dpt.assignment.design_elements.length >= 1">
                             <h4>Elementos</h4>
-                            <div ng-repeat="file in row.designDept.assignment.design_elements">
+                            <div ng-repeat="file in vdm.design_dpt.assignment.design_elements">
                                 <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
                         </div>

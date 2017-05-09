@@ -39,11 +39,11 @@
                     </div>
                 </td>
                 <td data-title="'Archivos'" style="vertical-align:middle">
-                    <div class="itemMissing" ng-if="row.designDept.assignment.design_ilustrators.length < 1 && row.designDept.assignment.design_jpgs.length < 1">
+                    <div class="itemMissing" ng-if="row.designDept.assignment.design_ilustrators.length < 1 && row.designDept.assignment.design_jpgs.length < 1 && row.designDept.assignment.design_elements.length < 1 && row.designDept.assignment.designed_presentation.url == null">
                         No Posee
                     </div>
-                    <div class="itemPresent" ng-if="row.designDept.assignment.design_ilustrators.length >= 1 || row.designDept.assignment.design_jpgs.length >= 1">
-                        <div ng-if="row.designDept.assignment.design_ilustrators.length >= 1">
+                    <div class="itemPresent" ng-if="row.designDept.assignment.design_ilustrators.length >= 1 || row.designDept.assignment.design_jpgs.length >= 1 || row.designDept.assignment.design_elements.length >= 1 || row.designDept.assignment.designed_presentation.url != null">
+                        <div ng-if="row.designDept.assignment.design_ilustrators.length >= 1 ">
                             <h4>Illustrators</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_ilustrators">
                                 <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>

@@ -1282,7 +1282,6 @@ class VdmsController < ApplicationController
             change.save!
             vdm.production_dpt.status = 'aprobado'
             vdm.production_dpt.save!
-            upload_files_to_drive(vdm.id, 'production')
             if params['role'] == 'productManager'
               if vdm.product_management != nil
                 vdm.product_management.productionStatus = 'aprobado'
@@ -1381,6 +1380,7 @@ class VdmsController < ApplicationController
                 vdm.product_management.editionStatus = 'por aprobar'
                 vdm.product_management.save!
                 UserNotifier.send_to_approved_to_product_Manager(vdm, 'Edicion').deliver
+                upload_files_to_drive(vdm.id, 'production')
                 upload_files_to_drive(vdm.id, 'edition')
               end
             end
@@ -2150,7 +2150,7 @@ class VdmsController < ApplicationController
       vdm = Vdm.find(params[:id])
       if vdm.design_dpt.design_assignment != nil
         case params[:type]
-          when 'ilustrators/after'
+          when 'ilustrators'
             ilustrators = []
             params[:upload].each do |il|
               uploaded_file = il[1]
@@ -2236,7 +2236,7 @@ class VdmsController < ApplicationController
               change.changeDate = Time.now
               change.department = 'diseño'
               changes.push(change)
-              file = PostProdElement.new
+              file = DesignElement.new
               file.file = uploaded_file
               file.design_assignment_id = vdm.design_dpt.design_assignment.id
               file.file_name = uploaded_file.original_filename
@@ -2454,7 +2454,7 @@ class VdmsController < ApplicationController
               end
               if vdm.production_dpt.screen_play != nil && vdm.production_dpt.screen_play.path != nil
                 FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'
-                FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'+vdm.production_dpt.screen_play)
+                FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'+vdm.production_dpt.screen_play_name)
               end
             end
           when 'edition'
@@ -2488,7 +2488,7 @@ class VdmsController < ApplicationController
                 if vdm.design_dpt.design_assignment.design_elements.count >= 1
                   vdm.design_dpt.design_assignment.design_elements.each do |file|
                     FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ELEMENTOS/'
-                    FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ILLUSTRATORS/'+file.file_name)
+                    FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ELEMENTOS/'+file.file_name)
                   end
                 end
                 if vdm.design_dpt.design_assignment.designed_presentation != nil && vdm.design_dpt.design_assignment.designed_presentation.path != nil
