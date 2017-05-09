@@ -26,3 +26,4 @@ vendor
 npm-debug.log
 concat.js
 concat.min.js
+/scripts/config.js
