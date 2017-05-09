@@ -82,6 +82,9 @@
                         <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado'">
                             <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.designDept.status != null &&  row.designDept.status != 'aprobado' && row.designDept.status != 'no asignado'">|</span>
+                        <a ng-click="editRow(row)" title='editar' ng-if="row.designDept.assignment.status == 'rechazado'">
+                            <i class="fa fa-pencil editBtn" style="font-size: 15px"></i>
+                        </a><span style="font-size: 20px" ng-if="row.designDept.assignment.status == 'rechazado'">|</span>
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
