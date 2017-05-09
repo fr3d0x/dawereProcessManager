@@ -2418,23 +2418,24 @@ class VdmsController < ApplicationController
           when 'production'
             if vdm.production_dpt != nil
               if vdm.production_dpt.script != nil && vdm.production_dpt.script.path != nil
-                FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/SCRIPT/'
-                FileUtils.cp(vdm.production_dpt.script.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/SCRIPT/'+vdm.production_dpt.script_name)
+                FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/SCRIPT/'
+                FileUtils.cp(vdm.production_dpt.script.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/SCRIPT/'+vdm.production_dpt.script_name)
               end
               if vdm.production_dpt.screen_play != nil && vdm.production_dpt.screen_play.path != nil
-                FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PRODUCCION/GUION/'
-                FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PRODUCCION/GUION/'+vdm.production_dpt.screen_play)
+                FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'
+                FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'+vdm.production_dpt.screen_play)
               end
             end
           when 'edition'
             if vdm.production_dpt != nil
               if vdm.production_dpt.production_dpt_assignment != nil
                 if vdm.production_dpt.production_dpt_assignment.video_clip != nil && vdm.production_dpt.production_dpt_assignment.video_clip.path != nil
-                  FileUtils::mkdir_p $drive_copy_route+'/AUDIOVISUALES/PRODUCCION/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/EDICION APROBADA/'+vdm.videoId+ '/'
-                  FileUtils.cp(vdm.production_dpt.production_dpt_assignment.video_clip.path, $drive_copy_route+'/AUDIOVISUALES/PRODUCCION/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/EDICION APROBADA/'+vdm.videoId+ '/' + vdm.production_dpt.production_dpt_assignment.video_clip_name)
+                  FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/EDICION/'
+                  FileUtils.cp(vdm.production_dpt.production_dpt_assignment.video_clip.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/EDICION/'+ vdm.production_dpt.production_dpt_assignment.video_clip_name)
                 end
                 if vdm.production_dpt.production_dpt_assignment.premier_project != nil && vdm.production_dpt.production_dpt_assignment.premier_project.path != nil
-                  FileUtils.cp(vdm.production_dpt.production_dpt_assignment.premier_project.path, $drive_copy_route+'/AUDIOVISUALES/PRODUCCION/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/EDICION APROBADA/'+vdm.videoId+ '/' + vdm.production_dpt.production_dpt_assignment.premier_project_name)
+                  FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/EDICION/'
+                  FileUtils.cp(vdm.production_dpt.production_dpt_assignment.premier_project.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/EDICION/' + vdm.production_dpt.production_dpt_assignment.premier_project_name)
                 end
               end
             end
@@ -2443,38 +2444,43 @@ class VdmsController < ApplicationController
               if vdm.design_dpt.design_assignment != nil
                 if vdm.design_dpt.design_assignment.design_jpgs.count >= 1
                   vdm.design_dpt.design_assignment.design_jpgs.each do |file|
-                    FileUtils.cp(file.file.path, $drive_copy_route+'/DISENO GRAFICO/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/DISENOS APROBADOS/'+vdm.videoId+'/'+file.file_name)
+                    FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/JPGS/'
+                    FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/JPGS/'+file.file_name)
                   end
                 end
                 if vdm.design_dpt.design_assignment.design_ilustrators.count >= 1
                   vdm.design_dpt.design_assignment.design_ilustrators.each do |file|
-                    FileUtils.cp(file.file.path, $drive_copy_route+'/DISENO GRAFICO/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/DISENOS APROBADOS/'+vdm.videoId+'/'+file.file_name)
+                    FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ILLUSTRATORS/'
+                    FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ILLUSTRATORS/'+file.file_name)
                   end
                 end
                 if vdm.design_dpt.design_assignment.designed_presentation != nil && vdm.design_dpt.design_assignment.designed_presentation.path != nil
-                  FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+'/DISENO GRAFICO/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/DISENOS APROBADOS/'+vdm.videoId+'/'+vdm.design_dpt.design_assignment.designed_presentation_name)
+                  FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/PRESENTACION/'
+                  FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/PRESENTACION/'+vdm.design_dpt.design_assignment.designed_presentation_name)
                 end
               end
             end
           when 'post-production'
             if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+              route = $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/POSTPRODUCCION/'
+              FileUtils::mkdir_p route
               if vdm.post_prod_dpt.post_prod_dpt_assignment.video != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.video.path != nil
-                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, $drive_copy_route+'/POSTPRODUCCION/APROBADOS/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
+                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, route + 'VIDEO FINAL/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.after_project != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path != nil
-                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, $drive_copy_route+'/POSTPRODUCCION/APROBADOS/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/'+vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name)
+                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, route + 'AFTER/'+vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name)
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path != nil
-                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, $drive_copy_route+'/POSTPRODUCCION/APROBADOS/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/'+vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name)
+                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, route + 'PREMIER/'+vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name)
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators.count >= 1
                 vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators.each do |file|
-                  FileUtils.cp(file.file.path, $drive_copy_route+'/POSTPRODUCCION/APROBADOS/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/'+file.file_name)
+                  FileUtils.cp(file.file.path, route + 'ILLUSTRATORS/'+file.file_name)
                 end
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements.count >= 1
                 vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements.each do |file|
-                  FileUtils.cp(file.file.path, $drive_copy_route+'/POSTPRODUCCION/APROBADOS/'+vdm.classes_planification.subject_planification.subject.grade.name+ '/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/'+file.file_name)
+                  FileUtils.cp(file.file.path,  route + 'ELEMENTOS/'+file.file_name)
                 end
               end
             end
