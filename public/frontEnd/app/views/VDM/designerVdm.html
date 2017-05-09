@@ -44,7 +44,7 @@
                     </div>
                     <div class="itemPresent" ng-if="row.designDept.assignment.design_ilustrators.length >= 1 || row.designDept.assignment.design_jpgs.length >= 1">
                         <div ng-if="row.designDept.assignment.design_ilustrators.length >= 1">
-                            <h4>Ilustrators/After</h4>
+                            <h4>Illustrators</h4>
                             <div ng-repeat="file in row.designDept.assignment.design_ilustrators">
                                 <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div><br>
@@ -58,6 +58,12 @@
                         <div ng-if="row.designDept.assignment.designed_presentation.url != null">
                             <h4>Presentacion</h4>
                             <a ng-href="{{downloadRoot + row.designDept.assignment.designed_presentation.url}}" download class="prettyLinkSmall">&#x25CF;{{row.designDept.assignment.designed_presentation_name}}</a>
+                        </div>
+                        <div ng-if="row.designDept.assignment.design_elements.length >= 1">
+                            <h4>Elementos</h4>
+                            <div ng-repeat="file in row.designDept.assignment.design_elements">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div><br>
                         </div>
                     </div>
                 </td>
@@ -93,7 +99,10 @@
                         <i class="fa fa-file-pdf-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($file, row, 'designed_presentation')" name="designed_presentation" id="uploadDPresentation" title="subir presentacion diseñada" ng-if="row.vdm_type == 'wacom'">
                         </i>
                         <span style="font-size: 20px" ng-if="row.vdm_type == 'wacom'"> |</span>
-                        <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($files, row, 'ilustrators/after')" multiple="multiple" name="ilustrators" id="uploadIlustrators" title="subir ilustrators">
+                        <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($files, row, 'ilustrators')" multiple="multiple" name="ilustrators" id="uploadIlustrators" title="subir ilustrators">
+                        </i>
+                        <span style="font-size: 20px"> |</span>
+                        <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="uploadDesignFiles($files, row, 'elements')" multiple="multiple" name="elements" id="uploadElements" title="subir elementos">
                         </i>
                         <span style="font-size: 20px"> |</span>
                         <a ng-click="row.uploadFiles = false" title='cerrar'>

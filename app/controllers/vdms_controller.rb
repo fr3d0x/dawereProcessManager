@@ -213,7 +213,8 @@ class VdmsController < ApplicationController
                         design_jpgs: vdm.design_dpt.design_assignment.design_jpgs,
                         design_ilustrators: vdm.design_dpt.design_assignment.design_ilustrators,
                         designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
-                        designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
+                        designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name,
+                        design_elements: vdm.design_dpt.design_assignment.design_elements
                     }
                     design_dpt['assignment'] = assignment
                   end
@@ -393,7 +394,8 @@ class VdmsController < ApplicationController
               illustrators: vdm.design_dpt.design_assignment.design_ilustrators,
               jpgs: vdm.design_dpt.design_assignment.design_jpgs,
               designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
-              designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
+              designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name,
+              design_elements: vdm.design_dpt.design_assignment.design_elements
           }
         end
       end
@@ -2221,6 +2223,33 @@ class VdmsController < ApplicationController
                 designed_presentation: vdm.design_dpt.design_assignment.designed_presentation,
                 designed_presentation_name: vdm.design_dpt.design_assignment.designed_presentation_name
             }
+          when 'elements'
+            elements = []
+            params[:upload].each do |el|
+              uploaded_file = el[1]
+              change = VdmChange.new
+              change.changeDetail = 'Agregado nuevo elemento'
+              change.vdm_id = vdm.id
+              change.user_id = $currentPetitionUser['id']
+              change.uname = $currentPetitionUser['username']
+              change.videoId = vdm.videoId
+              change.changeDate = Time.now
+              change.department = 'diseño'
+              changes.push(change)
+              file = PostProdElement.new
+              file.file = uploaded_file
+              file.design_assignment_id = vdm.design_dpt.design_assignment.id
+              file.file_name = uploaded_file.original_filename
+              elements.push(file)
+            end
+            if elements.count >= 1
+              TeacherFile.transaction do
+                elements.each(&:save!)
+              end
+            end
+            response = {
+                elements: vdm.design_dpt.design_assignment.design_elements
+            }
           else
             msg = 'tipo de archivo no admitido'
         end
@@ -2456,6 +2485,12 @@ class VdmsController < ApplicationController
                     FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ILLUSTRATORS/'+file.file_name)
                   end
                 end
+                if vdm.design_dpt.design_assignment.design_elements.count >= 1
+                  vdm.design_dpt.design_assignment.design_elements.each do |file|
+                    FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ELEMENTOS/'
+                    FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/ILLUSTRATORS/'+file.file_name)
+                  end
+                end
                 if vdm.design_dpt.design_assignment.designed_presentation != nil && vdm.design_dpt.design_assignment.designed_presentation.path != nil
                   FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/PRESENTACION/'
                   FileUtils.cp(vdm.design_dpt.design_assignment.designed_presentation.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/DISENO GRAFICO/PRESENTACION/'+vdm.design_dpt.design_assignment.designed_presentation_name)
@@ -2468,6 +2503,9 @@ class VdmsController < ApplicationController
               FileUtils::mkdir_p route
               if vdm.post_prod_dpt.post_prod_dpt_assignment.video != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.video.path != nil
                 FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, route + 'VIDEO FINAL/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
+                FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PUBLICACIONES/'
+                FileUtils.cp($drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PUBLICACIONES/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
+
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.after_project != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path != nil
                 FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, route + 'AFTER/'+vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name)

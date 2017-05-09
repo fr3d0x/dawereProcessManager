@@ -32,7 +32,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
             if (vdm.postProdStatus != null){
-                if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'por aprobar'){
+                if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'por aprobar' || 'por aprobar qa'){
                     departments['postProduction'] = 'Post-Produccion'
                 }
             }
@@ -1445,11 +1445,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var baseUrl = ENV.baseUrl;
             if(vdm.designDept != null && vdm.designDept.assignment != null) {
                 switch (type){
-                    case 'ilustrators/after':
+                    case 'ilustrators':
                         angular.forEach(upload, function(file){
-                            regex = new RegExp("(.*?)\.(ai|aep)$");
+                            regex = new RegExp("(.*?)\.(ai)$");
                             if(!(regex.test(file.name.toLowerCase()))){
-                                msg = "Estos archivos deben ser illustrators o after effect para ser guardados";
+                                msg = "Estos archivos deben ser illustrators para ser guardados";
                                 valid = false;
                             }
                         });
@@ -1476,7 +1476,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }).then(function (resp) {
                         if(resp.data != null){
                             switch (type){
-                                case 'ilustrators/after':
+                                case 'ilustrators':
                                     vdm.designDept.assignment.design_ilustrators = resp.data.data.design_ilustrators;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;
@@ -1488,6 +1488,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     vdm.designDept.assignment.designed_presentation = resp.data.data.designed_presentation;
                                     vdm.designDept.assignment.designed_presentation_name = resp.data.data.designed_presentation_name;
 
+                                    msg = "Se han guardado los archivos de forma exitosa";
+                                case 'elements':
+                                    vdm.designDept.assignment.design_elements = resp.data.data.design_elements;
                                     msg = "Se han guardado los archivos de forma exitosa";
                                     break;
                             }
