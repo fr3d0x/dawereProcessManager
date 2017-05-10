@@ -329,13 +329,15 @@ class UsersController < ApplicationController
                 received = 0
                 not_received = 0
                 recorded = 0
-                sp.classes_planifications.where(:created_at => from..to).reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                  total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                  cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
+                  total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}.count
                   not_received = not_received + cp.vdms.where(:status => 'no recibido').count
-                  returned = returned + cp.vdms.where(:status => 'rechazado').count
-                  processed = processed + cp.vdms.where(:status => 'procesado').count
-                  received = received + cp.vdms.where(:status => 'recibido').count
+                  returned = returned + cp_videos.select{|vdm| vdm.status == 'rechazado' }.count
+                  processed = processed + cp_videos.select{|vdm| vdm.status == 'procesado' }.count
+                  received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
                 end
+
                 effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
                 subject = {
                     name: sp.subject.name + ' ' + sp.subject.grade.name
@@ -366,12 +368,13 @@ class UsersController < ApplicationController
                 not_received = 0
                 subject_plannings = emp.subject_planifications
                 subject_plannings.each do |sp|
-                  sp.classes_planifications.where(:created_at => from..to).reject{|r| r.status == 'DESTROYED'}.each do |cp|
-                    total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.count
+                  sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
+                    cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
+                    total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}.count
                     not_received = not_received + cp.vdms.where(:status => 'no recibido').count
-                    returned = returned + cp.vdms.where(:status => 'rechazado').count
-                    processed = processed + cp.vdms.where(:status => 'procesado').count
-                    received = received + cp.vdms.where(:status => 'recibido').count
+                    returned = returned + cp_videos.select{|vdm| vdm.status == 'rechazado' }.count
+                    processed = processed + cp_videos.select{|vdm| vdm.status == 'procesado' }.count
+                    received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
                   end
                 end
                 effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)

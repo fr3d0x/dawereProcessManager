@@ -114,8 +114,8 @@
                         </a><span style="font-size: 20px">|</span>
                         <a ng-click="close(row, $data)" title='cerrar'>
                             <i class="fa fa-times-circle closeBtn" aria-hidden="true" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px">|</span>
-                        <a ng-click="row.uploadFiles = true" title="subir archivos">
+                        </a><span style="font-size: 20px" ng-if="row.id != null">|</span>
+                        <a ng-click="row.uploadFiles = true" title="subir archivos" ng-if="row.id != null">
                             <i class="fa fa-cloud-upload uploadBtn" aria-hidden="true" style="font-size: 15px"></i>
                         </a>
                     </div>
