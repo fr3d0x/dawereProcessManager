@@ -2038,8 +2038,8 @@ class VdmsController < ApplicationController
             change.changedTo = vdm.classDoc.url
             changes.push(change)
             if vdm.classDoc.path != nil
-              FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/'
-              FileUtils.cp(vdm.classDoc.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/PRESENTACION ORIGINAL/'+params[:upload].original_filename)
+              FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/PRESENTACION ORIGINAL/'
+              FileUtils.cp(vdm.classDoc.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/PRESENTACION ORIGINAL/'+vdm.class_doc_name)
             end
             response = {
                 class_doc: vdm.classDoc,
@@ -2064,8 +2064,8 @@ class VdmsController < ApplicationController
             file.vdm_id = vdm.id
             file.file_name = uploaded_file.original_filename
             teacher_files.push(file)
-            FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/'
-            FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/ENTREGADO PROFE/'+uploaded_file.original_filename)
+            FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/ENTREGADO PROFE/'
+            FileUtils.cp(file.file.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/CONTENIDO/ENTREGADO PROFE/'+file.file_name)
           end
           if teacher_files.count >= 1
             TeacherFile.transaction do
@@ -2504,23 +2504,28 @@ class VdmsController < ApplicationController
               route = $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/POSTPRODUCCION/'
               FileUtils::mkdir_p route
               if vdm.post_prod_dpt.post_prod_dpt_assignment.video != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.video.path != nil
+                FileUtils::mkdir_p  route + 'VIDEO FINAL/'
                 FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, route + 'VIDEO FINAL/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
                 FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PUBLICACIONES/'
-                FileUtils.cp($drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PUBLICACIONES/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
+                FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.video.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/PUBLICACIONES/'+vdm.post_prod_dpt.post_prod_dpt_assignment.video_name)
 
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.after_project != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path != nil
+                FileUtils::mkdir_p  route + 'AFTER/'
                 FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.after_project.path, route + 'AFTER/'+vdm.post_prod_dpt.post_prod_dpt_assignment.after_project_name)
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path != nil
+                FileUtils::mkdir_p  route + 'PREMIER/'
                 FileUtils.cp(vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project.path, route + 'PREMIER/'+vdm.post_prod_dpt.post_prod_dpt_assignment.premier_project_name)
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators.count >= 1
+                FileUtils::mkdir_p  route + 'ILLUSTRATORS/'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_illustrators.each do |file|
                   FileUtils.cp(file.file.path, route + 'ILLUSTRATORS/'+file.file_name)
                 end
               end
               if vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements != nil && vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements.count >= 1
+                FileUtils::mkdir_p  route + 'ELEMENTOS/'
                 vdm.post_prod_dpt.post_prod_dpt_assignment.post_prod_elements.each do |file|
                   FileUtils.cp(file.file.path,  route + 'ELEMENTOS/'+file.file_name)
                 end

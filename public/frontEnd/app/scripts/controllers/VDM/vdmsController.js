@@ -1215,7 +1215,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         $scope.uploadPreProductionFiles = function(upload, vdm, doc){
             var valid = true;
             var msg = '';
-            $rootScope.setLoader(true);
+            var selected_files = '';
             var baseUrl = ENV.baseUrl;
             if(vdm.id != null) {
                 switch (doc){
@@ -1224,6 +1224,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             msg = "Los documentos de clase deben ser presentaciones powerpoint para ser guardados";
                             valid = false;
                         }
+                        selected_files = upload.name;
                         break;
                     case 'teacher_files':
                         angular.forEach(upload, function(file){
@@ -1231,53 +1232,73 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 msg = "Los archivos del profesor deben ser pdf o word para ser guardados";
                                 valid = false;
                             }
+                            selected_files = "los archivos "+ selected_files + file.name;
+                            if(upload.indexOf(file) != upload.length - 1 ){
+                                selected_files = selected_files + ', '
+                            }
                         });
                         break;
                 }
                 if(valid){
-                    Upload.upload({
-                        url: baseUrl+'/api/vdms/upload_pre_production_files?id='+vdm.id+'&doc='+doc,
-                        data: {upload: upload}
-                    }).then(function (resp) {
-                        if(resp.data != null){
-                            switch (doc){
-                                case 'class_doc':
-                                    vdm.classDoc = resp.data.data.class_doc;
-                                    vdm.class_doc_name = resp.data.data.class_doc_name;
-                                    msg = "Se ha guardado el archivo de forma exitosa";
-                                    break;
-                                case 'teacher_files':
-                                    vdm.teacherFiles = resp.data.data.teacher_files;
-                                    msg = "Se han guardado los archivos de forma exitosa";
-                                    break;
+                    swal({
+                        title: 'Esta seguro',
+                        text: "Esta seguro que desea subir " + selected_files + ".Para " + vdm.videoId + "?",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: 'lightskyblue',
+                        cancelButtonColor: 'lightcoral',
+                        confirmButtonText: 'OK',
+                        cancelButtonText: 'Cancel'
+                    }).then(function () {
+                        $rootScope.setLoader(true);
+                        Upload.upload({
+                            url: baseUrl+'/api/vdms/upload_pre_production_files?id='+vdm.id+'&doc='+doc,
+                            data: {upload: upload}
+                        }).then(function (resp) {
+                            if(resp.data != null){
+                                switch (doc){
+                                    case 'class_doc':
+                                        vdm.classDoc = resp.data.data.class_doc;
+                                        vdm.class_doc_name = resp.data.data.class_doc_name;
+                                        msg = "Se ha guardado el archivo de forma exitosa";
+                                        break;
+                                    case 'teacher_files':
+                                        vdm.teacherFiles = resp.data.data.teacher_files;
+                                        msg = "Se han guardado los archivos de forma exitosa";
+                                        break;
+                                }
+                                $rootScope.setLoader(false);
+                                swal({
+                                    title: "Exitoso",
+                                    text: msg,
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                            }else{
+                                $rootScope.setLoader(false);
+                                swal({
+                                    title: "ERROR",
+                                    text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                    type: 'error',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                });
                             }
+                            angular.element("input[type='file']").val(null);
+                            console.clear();
+                        }, function (error) {
+                            angular.element("input[type='file']").val(null);
                             $rootScope.setLoader(false);
-                            swal({
-                                title: "Exitoso",
-                                text: msg,
-                                type: 'success',
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "lightskyblue"
-                            });
-                        }else{
-                            $rootScope.setLoader(false);
-                            swal({
-                                title: "ERROR",
-                                text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
-                                type: 'error',
-                                confirmButtonText: "OK",
-                                confirmButtonColor: "lightcoral"
-                            });
-                        }
+                            console.log(error);
+                        }, function (evt) {
+                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                            console.log('progreso de subida: ' + progressPercentage + '% ');
+                        });
+                       
+                    }, function (dismiss) {
                         angular.element("input[type='file']").val(null);
                         console.clear();
-                    }, function (error) {
-                        angular.element("input[type='file']").val(null);
-                        $rootScope.setLoader(false);
-                        console.log(error);
-                    }, function (evt) {
-                        var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                        console.log('progreso de subida: ' + progressPercentage + '% ');
                     });
                 }else{
                     angular.element("input[type='file']").val(null);
