@@ -16,12 +16,12 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
     t.string   "meSpecificObjective",      limit: 255
-    t.text     "meSpecificObjDesc",        limit: 65535
+    t.text     "meSpecificObjDesc",        limit: 16777215
     t.string   "topicName",                limit: 255
     t.string   "videos",                   limit: 255
     t.integer  "subject_planification_id", limit: 4
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.string   "status",                   limit: 255
     t.integer  "period",                   limit: 4
     t.integer  "topicNumber",              limit: 4
@@ -32,14 +32,14 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   create_table "cp_changes", force: :cascade do |t|
     t.date     "changeDate"
     t.string   "changeDetail",             limit: 255
-    t.text     "changedFrom",              limit: 65535
-    t.text     "changedTo",                limit: 65535
-    t.text     "comments",                 limit: 65535
+    t.text     "changedFrom",              limit: 16777215
+    t.text     "changedTo",                limit: 16777215
+    t.text     "comments",                 limit: 16777215
     t.string   "uname",                    limit: 255
     t.integer  "classes_planification_id", limit: 4
     t.integer  "user_id",                  limit: 4
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.string   "topicName",                limit: 255
   end
 
@@ -47,13 +47,15 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   add_index "cp_changes", ["user_id"], name: "index_cp_changes_on_user_id", using: :btree
 
   create_table "design_assignments", force: :cascade do |t|
-    t.string   "status",        limit: 255
-    t.string   "assignedName",  limit: 255
-    t.text     "comments",      limit: 65535
-    t.integer  "user_id",       limit: 4
-    t.integer  "design_dpt_id", limit: 4
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.string   "status",                     limit: 255
+    t.string   "assignedName",               limit: 255
+    t.text     "comments",                   limit: 16777215
+    t.integer  "user_id",                    limit: 4
+    t.integer  "design_dpt_id",              limit: 4
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.string   "designed_presentation",      limit: 255
+    t.string   "designed_presentation_name", limit: 255
   end
 
   add_index "design_assignments", ["design_dpt_id"], name: "index_design_assignments_on_design_dpt_id", using: :btree
@@ -61,10 +63,11 @@ ActiveRecord::Schema.define(version: 20170512041110) do
 
   create_table "design_dpts", force: :cascade do |t|
     t.string   "status",     limit: 255
-    t.text     "comments",   limit: 65535
+    t.text     "comments",   limit: 16777215
     t.integer  "vdm_id",     limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.string   "type",       limit: 255
   end
 
   add_index "design_dpts", ["vdm_id"], name: "index_design_dpts_on_vdm_id", using: :btree
@@ -112,29 +115,35 @@ ActiveRecord::Schema.define(version: 20170512041110) do
     t.date     "admissionDate"
     t.string   "phone",         limit: 255
     t.string   "cellphone",     limit: 255
-    t.text     "address",       limit: 65535
+    t.text     "address",       limit: 16777215
     t.string   "email",         limit: 255
     t.string   "email2",        limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.string   "gender",        limit: 255
   end
 
   create_table "grades", force: :cascade do |t|
     t.string   "name",        limit: 255
-    t.text     "description", limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.text     "description", limit: 16777215
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   create_table "post_prod_dpt_assignments", force: :cascade do |t|
-    t.string   "status",           limit: 255
-    t.string   "assignedName",     limit: 255
-    t.text     "comments",         limit: 65535
-    t.integer  "user_id",          limit: 4
-    t.integer  "post_prod_dpt_id", limit: 4
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.string   "status",               limit: 255
+    t.string   "assignedName",         limit: 255
+    t.text     "comments",             limit: 16777215
+    t.integer  "user_id",              limit: 4
+    t.integer  "post_prod_dpt_id",     limit: 4
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "video",                limit: 255
+    t.string   "video_name",           limit: 255
+    t.string   "after_project",        limit: 255
+    t.string   "after_project_name",   limit: 255
+    t.string   "premier_project",      limit: 255
+    t.string   "premier_project_name", limit: 255
   end
 
   add_index "post_prod_dpt_assignments", ["post_prod_dpt_id"], name: "index_post_prod_dpt_assignments_on_post_prod_dpt_id", using: :btree
@@ -142,10 +151,10 @@ ActiveRecord::Schema.define(version: 20170512041110) do
 
   create_table "post_prod_dpts", force: :cascade do |t|
     t.string   "status",     limit: 255
-    t.text     "comments",   limit: 65535
+    t.text     "comments",   limit: 16777215
     t.integer  "vdm_id",     limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   add_index "post_prod_dpts", ["vdm_id"], name: "index_post_prod_dpts_on_vdm_id", using: :btree
@@ -183,28 +192,35 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   add_index "product_managements", ["vdm_id"], name: "index_product_managements_on_vdm_id", using: :btree
 
   create_table "production_dpt_assignments", force: :cascade do |t|
-    t.string   "status",            limit: 255
-    t.string   "assignedName",      limit: 255
-    t.text     "comments",          limit: 65535
-    t.integer  "user_id",           limit: 4
-    t.integer  "production_dpt_id", limit: 4
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.string   "status",               limit: 255
+    t.string   "assignedName",         limit: 255
+    t.text     "comments",             limit: 16777215
+    t.integer  "user_id",              limit: 4
+    t.integer  "production_dpt_id",    limit: 4
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.string   "video_clip",           limit: 255
+    t.string   "premier_project",      limit: 255
+    t.string   "premier_project_name", limit: 255
+    t.string   "video_clip_name",      limit: 255
   end
 
   add_index "production_dpt_assignments", ["production_dpt_id"], name: "index_production_dpt_assignments_on_production_dpt_id", using: :btree
   add_index "production_dpt_assignments", ["user_id"], name: "index_production_dpt_assignments_on_user_id", using: :btree
 
   create_table "production_dpts", force: :cascade do |t|
-    t.string   "status",     limit: 255
-    t.text     "script",     limit: 4294967295
-    t.text     "comments",   limit: 65535
-    t.boolean  "intro",      limit: 1
-    t.boolean  "vidDev",     limit: 1
-    t.boolean  "conclu",     limit: 1
-    t.integer  "vdm_id",     limit: 4
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "status",           limit: 255
+    t.text     "script",           limit: 4294967295
+    t.text     "comments",         limit: 16777215
+    t.boolean  "intro",            limit: 1
+    t.boolean  "vidDev",           limit: 1
+    t.boolean  "conclu",           limit: 1
+    t.integer  "vdm_id",           limit: 4
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
+    t.string   "screen_play",      limit: 255
+    t.string   "screen_play_name", limit: 255
+    t.string   "script_name",      limit: 255
   end
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree

@@ -2400,7 +2400,7 @@ class VdmsController < ApplicationController
   def assign_task_to(department)
     assignments = nil
     employee = nil
-    users = User.joins(:roles).where(:roles => {:role => department})
+    users = User.joins(:roles).where(:roles => {role: department, status: 'enabled'})
     users.each do |u|
       case department
         when 'editor'

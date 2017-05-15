@@ -3,6 +3,7 @@ class Vdm < ActiveRecord::Base
   has_many :vdm_changes
   has_many :teacher_files
   has_one :production_dpt
+  has_one :production_dpt_assignment , :through => :production_dpt
   has_one :design_dpt
   has_one :product_management
   has_one :post_prod_dpt

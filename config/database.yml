@@ -14,7 +14,7 @@ development:
   <<: *default
   database: dawProcessDb
   username: root
-  password: daw-db-pass16
+  password: 1234
 
 production:
   <<: *default

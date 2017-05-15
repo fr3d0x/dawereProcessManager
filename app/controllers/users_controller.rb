@@ -398,33 +398,64 @@ class UsersController < ApplicationController
               payload = []
               subject_plannings.each do |sp|
                 total_videos = 0
+                total = []
+                returned_vdm = []
                 returned = 0
-                received = 0
+                recorded_vdm = []
                 recorded = 0
+                assigned_vdm = []
                 assigned = 0
+                approved_vdm = []
                 approved = 0
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.production_dpt != nil && vdm.production_dpt.created_at >= from && vdm.production_dpt.created_at <= to
                       if vdm.production_dpt.status != nil && vdm.production_dpt.status != 'no asignado'
-                        total_videos += 1
+                        v = {
+                            id:vdm.id,
+                            videoId:vdm.videoId,
+                            videoTittle: vdm.videoTittle,
+                            videoContent: vdm.videoContent,
+                            production_dpt: vdm.production_dpt
+                        }
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
+                          returned_vdm.push(v)
+                          total.push(v)
+                          total_videos += 1
                           returned += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
+                          recorded_vdm.push(v)
+                          total.push(v)
+                          total_videos += 1
                           recorded += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
+                          assigned_vdm.push(v)
+                          total.push(v)
+                          total_videos += 1
                           assigned += 1
-                        end
-                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
-                          approved += 1
                         end
                       end
                     end
                   end
+                  approved_vdms = cp.vdms.joins(:vdm_changes, :production_dpt).where(vdm_changes: {changeDetail: ['aprobado produccion por Gerente de Producto'], created_at: from..to}, production_dpts: {status: 'aprobado'}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
+                  approved_vdms.each do |v|
+                    vid = {
+                        id:v.id,
+                        videoId:v.videoId,
+                        videoTittle: v.videoTittle,
+                        videoContent: v.videoContent,
+                        production_dpt: v.production_dpt
+                    }
+                    approved_vdm.push(vid)
+                    total.push(vid)
+                    approved += 1
+                    total_videos += 1
+                  end
+
                 end
-                effectiveness = number_with_precision(((recorded.to_f + approved.to_f)/total_videos.to_f)*100, :precision => 2)
+                effectiveness = number_with_precision(((approved.to_f)/total_videos.to_f)*100, :precision => 2)
                 subject = {
                     name: sp.subject.name + ' ' + sp.subject.grade.name
                 }
@@ -432,12 +463,16 @@ class UsersController < ApplicationController
                     subject: subject,
                     teacher: sp.teacher,
                     totalVideos: total_videos,
-                    received: received,
+                    assigned_vdm: assigned_vdm,
+                    returned_vdm: returned_vdm,
+                    approved_vdm: approved_vdm,
+                    recorded_vdm: recorded_vdm,
                     returned: returned,
                     assigned: assigned,
                     approved: approved,
                     effectiveness: effectiveness,
-                    recorded: recorded
+                    recorded: recorded,
+                    total: total
                 })
               end
             else
@@ -449,6 +484,10 @@ class UsersController < ApplicationController
               payload = []
               subject_plannings.each do |sp|
                 total_videos = 0
+                total = []
+                returned_vdms = []
+                assigned_vdms = []
+                approved_vdms = []
                 returned = 0
                 assigned = 0
                 approved = 0
@@ -456,18 +495,41 @@ class UsersController < ApplicationController
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.production_dpt != nil && vdm.production_dpt.production_dpt_assignment != nil && vdm.production_dpt.production_dpt_assignment.created_at >= from && vdm.production_dpt.production_dpt_assignment.created_at <= to
                       if vdm.production_dpt.production_dpt_assignment.status != nil && vdm.production_dpt.production_dpt_assignment.status != 'no asignado'
-                        total_videos += 1
+                        v = {
+                            id:vdm.id,
+                            videoId:vdm.videoId,
+                            videoTittle: vdm.videoTittle,
+                            videoContent: vdm.videoContent,
+                            edition_dpt: vdm.production_dpt
+                        }
                         if vdm.production_dpt.production_dpt_assignment.status == 'asignado'
+                          assigned_vdms.push(v)
+                          total.push(v)
+                          total_videos += 1
                           assigned += 1
                         end
                         if vdm.production_dpt.production_dpt_assignment.status == 'rechazado'
+                          returned_vdms.push(v)
+                          total.push(v)
+                          total_videos += 1
                           returned += 1
-                        end
-                        if vdm.production_dpt.production_dpt_assignment.status == 'aprobado'
-                          approved += 1
                         end
                       end
                     end
+                  end
+                  approved_vids = cp.vdms.joins(:vdm_changes, :production_dpt_assignment).where(vdm_changes: {changeDetail: ['aprobado edicion por Lider de produccion'], created_at: from..to}, production_dpt_assignments: {status: 'aprobado'}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
+                  approved_vids.each do |v|
+                    vid = {
+                        id:v.id,
+                        videoId:v.videoId,
+                        videoTittle: v.videoTittle,
+                        videoContent: v.videoContent,
+                        edition_dpt: v.production_dpt
+                    }
+                    approved_vdms.push(vid)
+                    total.push(vid)
+                    approved += 1
+                    total_videos += 1
                   end
                 end
                 effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
@@ -477,6 +539,10 @@ class UsersController < ApplicationController
                 payload.push({
                      subject: subject,
                      totalVideos: total_videos,
+                     total:total,
+                     returned_vdms: returned_vdms,
+                     assigned_vdms: assigned_vdms,
+                     approved_vdms: approved_vdms,
                      returned: returned,
                      assigned: assigned,
                      approved: approved,
