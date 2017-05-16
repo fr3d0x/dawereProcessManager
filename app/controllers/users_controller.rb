@@ -416,44 +416,37 @@ class UsersController < ApplicationController
                             videoId:vdm.videoId,
                             videoTittle: vdm.videoTittle,
                             videoContent: vdm.videoContent,
-                            production_dpt: vdm.production_dpt
+                            dpt: vdm.production_dpt
                         }
+                        total.push(v)
+                        total_videos += 1
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
                           returned_vdm.push(v)
-                          total.push(v)
-                          total_videos += 1
                           returned += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
                           recorded_vdm.push(v)
-                          total.push(v)
-                          total_videos += 1
                           recorded += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
                           assigned_vdm.push(v)
-                          total.push(v)
-                          total_videos += 1
                           assigned += 1
+                        end
+                        if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
+                          approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado produccion por Gerente de Producto').first()
+                          if approved_record.blank?
+                            approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado edicion por Gerente de Producto').first()
+                          end
+                          approved_date = approved_record.created_at
+                          v['approved_date'] = approved_date
+                          if approved_date >= from && approved_date <= to
+                            approved_vdm.push(v)
+                            approved += 1
+                          end
                         end
                       end
                     end
                   end
-                  approved_vdms = cp.vdms.joins(:vdm_changes, :production_dpt).where(vdm_changes: {changeDetail: ['aprobado produccion por Gerente de Producto'], created_at: from..to}, production_dpts: {status: 'aprobado'}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
-                  approved_vdms.each do |v|
-                    vid = {
-                        id:v.id,
-                        videoId:v.videoId,
-                        videoTittle: v.videoTittle,
-                        videoContent: v.videoContent,
-                        production_dpt: v.production_dpt
-                    }
-                    approved_vdm.push(vid)
-                    total.push(vid)
-                    approved += 1
-                    total_videos += 1
-                  end
-
                 end
                 effectiveness = number_with_precision(((approved.to_f)/total_videos.to_f)*100, :precision => 2)
                 subject = {
@@ -500,36 +493,31 @@ class UsersController < ApplicationController
                             videoId:vdm.videoId,
                             videoTittle: vdm.videoTittle,
                             videoContent: vdm.videoContent,
-                            edition_dpt: vdm.production_dpt
+                            dpt: vdm.production_dpt.production_dpt_assignment
                         }
+                        total.push(v)
+                        total_videos += 1
                         if vdm.production_dpt.production_dpt_assignment.status == 'asignado'
                           assigned_vdms.push(v)
-                          total.push(v)
-                          total_videos += 1
                           assigned += 1
                         end
                         if vdm.production_dpt.production_dpt_assignment.status == 'rechazado'
                           returned_vdms.push(v)
-                          total.push(v)
-                          total_videos += 1
                           returned += 1
+                        end
+                        if vdm.production_dpt.production_dpt_assignment.status == 'aprobado'
+                          approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado edicion por Lider de produccion').first()
+                          if approved_record != nil
+                            approved_date = approved_record.created_at
+                            v['approved_date'] = approved_date
+                            if approved_date >= from && approved_date <= to
+                              approved_vdms.push(v)
+                              approved += 1
+                            end
+                          end
                         end
                       end
                     end
-                  end
-                  approved_vids = cp.vdms.joins(:vdm_changes, :production_dpt_assignment).where(vdm_changes: {changeDetail: ['aprobado edicion por Lider de produccion'], created_at: from..to}, production_dpt_assignments: {status: 'aprobado'}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
-                  approved_vids.each do |v|
-                    vid = {
-                        id:v.id,
-                        videoId:v.videoId,
-                        videoTittle: v.videoTittle,
-                        videoContent: v.videoContent,
-                        edition_dpt: v.production_dpt
-                    }
-                    approved_vdms.push(vid)
-                    total.push(vid)
-                    approved += 1
-                    total_videos += 1
                   end
                 end
                 effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
@@ -557,23 +545,47 @@ class UsersController < ApplicationController
               employees = User.joins(:roles).where(:roles => {:role => 'editor'})
               employees.each do |emp|
                 total_videos = 0
+                total = []
+                returned_vdms = []
+                approved_vdms = []
+                assigned_vdms = []
+                edited_vdms = []
                 returned = 0
                 approved = 0
                 assigned = 0
                 edited = 0
-                assignments = emp.production_dpt_assignments.where(:created_at => from..to)
+                assignments = Vdm.joins(:production_dpt_assignment).where(production_dpt_assignments: {created_at: from..to, user_id: emp.id})
                 assignments.each do |as|
-                  if as.status != nil && as.status != 'no asignado'
+                  if as.production_dpt_assignment.status != nil && as.status != 'no asignado'
+                    v = {
+                        id:as.id,
+                        videoId:as.videoId,
+                        videoTittle: as.videoTittle,
+                        videoContent: as.videoContent,
+                        dpt: as.production_dpt_assignment
+                    }
+                    total.push(v)
                     total_videos += 1
-                    case as.status
+                    case as.production_dpt_assignment.status
                       when 'rechazado'
+                        returned_vdms.push(v)
                         returned += 1
                       when 'asignado'
+                        assigned_vdms.push(v)
                         assigned += 1
                       when 'editado'
+                        edited_vdms.push(v)
                         edited += 1
                       when 'aprobado'
-                        approved += 1
+                        approved_record = as.vdm_changes.where(changeDetail: 'aprobado edicion por Lider de produccion').first()
+                        if approved_record != nil
+                          approved_date = approved_record.created_at
+                          v['approved_date'] = approved_date
+                          if approved_date >= from && approved_date <= to
+                            approved_vdms.push(v)
+                            approved += 1
+                          end
+                        end
                     end
                   end
                 end
@@ -581,6 +593,11 @@ class UsersController < ApplicationController
                 payload.push({
                      editor: emp.employee.firstName + ' ' + emp.employee.firstSurname,
                      totalVideos: total_videos,
+                     total: total,
+                     assigned_vdms: assigned_vdms,
+                     returned_vdms: returned_vdms,
+                     edited_vdms: edited_vdms,
+                     approved_vdms: approved_vdms,
                      assigned: assigned,
                      returned: returned,
                      edited: edited,
