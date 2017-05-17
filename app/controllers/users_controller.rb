@@ -329,10 +329,20 @@ class UsersController < ApplicationController
                 received = 0
                 not_received = 0
                 recorded = 0
+                total = []
+                processed_vdms = []
+                returned_vdms = []
+                received_vdms = []
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
-                  total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}.count
-                  not_received = not_received + cp.vdms.where(:status => 'no recibido').count
+                  total.push(*cp_videos) unless cp_videos.count < 1
+                  not_received_vdms = cp.vdms.where(:status => 'no recibido', created_at: from..to).reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}
+                  not_received = not_received + not_received_vdms.count
+                  total_videos = total_videos + (cp_videos.count + not_received_vdms.count)
+                  total.push(*not_received_vdms)
+                  processed_vdms.push(*cp_videos.select{|vdm| vdm.status == 'procesado' })
+                  returned_vdms.push(*cp_videos.select{|vdm| vdm.status == 'rechazado' })
+                  received_vdms.push(*cp_videos.select{|vdm| vdm.status == 'recibido' })
                   returned = returned + cp_videos.select{|vdm| vdm.status == 'rechazado' }.count
                   processed = processed + cp_videos.select{|vdm| vdm.status == 'procesado' }.count
                   received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
@@ -351,7 +361,10 @@ class UsersController < ApplicationController
                      processed: processed,
                      notReceived: not_received,
                      effectiveness: effectiveness,
-                     recorded: recorded
+                     total: total,
+                     received_vdms: received_vdms,
+                     returned_vdms: returned_vdms,
+                     processed_vdms: processed_vdms
                  })
               end
             else
@@ -366,12 +379,22 @@ class UsersController < ApplicationController
                 processed = 0
                 received = 0
                 not_received = 0
+                total = []
+                processed_vdms = []
+                returned_vdms = []
+                received_vdms = []
                 subject_plannings = emp.subject_planifications
                 subject_plannings.each do |sp|
                   sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                     cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
-                    total_videos = total_videos + cp.vdms.reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}.count
-                    not_received = not_received + cp.vdms.where(:status => 'no recibido').count
+                    total.push(*cp_videos) unless cp_videos.count < 1
+                    not_received_vdms = cp.vdms.where(:status => 'no recibido', created_at: from..to).reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}
+                    not_received = not_received + not_received_vdms.count
+                    total_videos = total_videos + (cp_videos.count + not_received_vdms.count)
+                    total.push(*not_received_vdms)
+                    processed_vdms.push(*cp_videos.select{|vdm| vdm.status == 'procesado' })
+                    returned_vdms.push(*cp_videos.select{|vdm| vdm.status == 'rechazado' })
+                    received_vdms.push(*cp_videos.select{|vdm| vdm.status == 'recibido' })
                     returned = returned + cp_videos.select{|vdm| vdm.status == 'rechazado' }.count
                     processed = processed + cp_videos.select{|vdm| vdm.status == 'procesado' }.count
                     received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
@@ -386,6 +409,10 @@ class UsersController < ApplicationController
                      processed: processed,
                      notReceived: not_received,
                      effectiveness: effectiveness,
+                     total: total,
+                     received_vdms: received_vdms,
+                     returned_vdms: returned_vdms,
+                     processed_vdms: processed_vdms
                  })
               end
             else
@@ -481,6 +508,8 @@ class UsersController < ApplicationController
                 returned_vdms = []
                 assigned_vdms = []
                 approved_vdms = []
+                edited_vdms = []
+                edited = 0
                 returned = 0
                 assigned = 0
                 approved = 0
@@ -504,6 +533,10 @@ class UsersController < ApplicationController
                         if vdm.production_dpt.production_dpt_assignment.status == 'rechazado'
                           returned_vdms.push(v)
                           returned += 1
+                        end
+                        if vdm.production_dpt.production_dpt_assignment.status == 'editado'
+                          edited_vdms.push(v)
+                          edited += 1
                         end
                         if vdm.production_dpt.production_dpt_assignment.status == 'aprobado'
                           approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado edicion por Lider de produccion').first()
@@ -531,10 +564,12 @@ class UsersController < ApplicationController
                      returned_vdms: returned_vdms,
                      assigned_vdms: assigned_vdms,
                      approved_vdms: approved_vdms,
+                     edited_vdms: edited_vdms,
                      returned: returned,
                      assigned: assigned,
                      approved: approved,
-                     effectiveness: effectiveness,
+                     edited: edited,
+                     effectiveness: effectiveness
                  })
               end
             else

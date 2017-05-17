@@ -19,6 +19,7 @@
         <tr>
             <th>Materia</th>
             <th>Asignado (Cantidad)</th>
+            <th>Editados (Cantidad)</th>
             <th>Devueltos (Cantidad)</th>
             <th>Aprobados (Cantidad)</th>
             <th>Total</th>
@@ -28,6 +29,7 @@
         <tr ng-repeat="row in data">
             <td>{{row.subject.name}}</td>
             <td>{{row.assigned}}</td>
+            <td>{{row.edited}}</td>
             <td>{{row.returned}}</td>
             <td>{{row.approved}}</td>
             <td>{{row.totalVideos}}</td>
