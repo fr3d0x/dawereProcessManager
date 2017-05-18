@@ -888,16 +888,22 @@ class UsersController < ApplicationController
                     case as.post_prod_dpt_assignment.status
                       when 'asignado'
                         if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          total.push(v)
+                          total_videos += 1
                           assigned_vdms.push(v)
                           assigned += 1
                         end
                       when 'terminado'
                         if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          total.push(v)
+                          total_videos += 1
                           finished_vdms.push(v)
                           finished += 1
                         end
                       when 'rechazado'
                         if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          total.push(v)
+                          total_videos += 1
                           returned_vdms.push(v)
                           returned += 1
                         end
