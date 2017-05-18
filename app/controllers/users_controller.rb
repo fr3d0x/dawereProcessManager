@@ -598,7 +598,7 @@ class UsersController < ApplicationController
                 edited = 0
                 assignments = Vdm.joins(:production_dpt_assignment).where(production_dpt_assignments: {created_at: from..to, user_id: emp.id})
                 assignments.each do |as|
-                  if as.production_dpt_assignment.status != nil && as.status != 'no asignado'
+                  if as.production_dpt_assignment.status != nil && as.production_dpt_assignment.status != 'no asignado'
                     v = {
                         id:as.id,
                         videoId:as.videoId,
@@ -659,19 +659,41 @@ class UsersController < ApplicationController
                 returned = 0
                 assigned = 0
                 approved = 0
+                approved_vdms = []
+                returned_vdms = []
+                assigned_vdms = []
+                total = []
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.design_dpt != nil && vdm.design_dpt.created_at >= from && vdm.design_dpt.created_at <= to
                       if vdm.design_dpt.status != nil && vdm.design_dpt.status != 'no asignado'
+                        v = {
+                            id:vdm.id,
+                            videoId:vdm.videoId,
+                            videoTittle: vdm.videoTittle,
+                            videoContent: vdm.videoContent,
+                            dpt: vdm.design_dpt
+                        }
+                        total.push(v)
                         total_videos += 1
                         if vdm.design_dpt.status == 'asignado'
+                          assigned_vdms.push(v)
                           assigned += 1
                         end
                         if vdm.design_dpt.status == 'rechazado'
+                          returned_vdms.push(v)
                           returned += 1
                         end
                         if vdm.design_dpt.status == 'aprobado'
-                          approved += 1
+                          approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado Diseño por Gerente de Producto').first()
+                          if approved_record != nil
+                            approved_date = approved_record.created_at
+                            v['approved_date'] = approved_date
+                            if approved_date >= from && approved_date <= to
+                              approved_vdms.push(v)
+                              approved += 1
+                            end
+                          end
                         end
                       end
                     end
@@ -688,6 +710,10 @@ class UsersController < ApplicationController
                      assigned: assigned,
                      approved: approved,
                      effectiveness: effectiveness,
+                     approved_vdms: approved_vdms,
+                     returned_vdms: returned_vdms,
+                     assigned_vdms: assigned_vdms,
+                     total: total
                  })
               end
             else
@@ -702,19 +728,43 @@ class UsersController < ApplicationController
                 approved = 0
                 assigned = 0
                 designed = 0
-                assignments = emp.design_assignments.where(:created_at => from..to)
+                approved_vdms = []
+                returned_vdms = []
+                assigned_vdms = []
+                designed_vdms = []
+                total = []
+                assignments = Vdm.joins(:design_assignment).where(design_assignments: {created_at: from..to, user_id: emp.id})
                 assignments.each do |as|
-                  if as.status != nil && as.status != 'no asignado'
+                  if as.design_assignment.status != nil && as.design_assignment.status != 'no asignado'
+                    v = {
+                        id:as.id,
+                        videoId:as.videoId,
+                        videoTittle: as.videoTittle,
+                        videoContent: as.videoContent,
+                        dpt: as.design_assignment
+                    }
+                    total.push(v)
                     total_videos += 1
-                    case as.status
+                    case as.design_assignment.status
                       when 'asignado'
+                        assigned_vdms.push(v)
                         assigned += 1
                       when 'diseñado'
+                        designed_vdms.push(v)
                         designed += 1
                       when 'rechazado'
+                        returned_vdms.push(v)
                         returned += 1
                       when 'aprobado'
-                        approved += 1
+                        approved_record = as.vdm_changes.where(changeDetail: 'aprobado Diseño por lider de diseño').first()
+                        if approved_record != nil
+                          approved_date = approved_record.created_at
+                          v['approved_date'] = approved_date
+                          if approved_date >= from && approved_date <= to
+                            approved_vdms.push(v)
+                            approved += 1
+                          end
+                        end
                     end
                   end
                 end
@@ -727,6 +777,11 @@ class UsersController < ApplicationController
                      designed: designed,
                      approved: approved,
                      effectiveness: effectiveness,
+                     assigned_vdms: assigned_vdms,
+                     designed_vdms: designed_vdms,
+                     returned_vdms: returned_vdms,
+                     approved_vdms: approved_vdms,
+                     total: total
                  })
               end
             else
@@ -741,19 +796,46 @@ class UsersController < ApplicationController
                 returned = 0
                 assigned = 0
                 approved = 0
+                returned_vdms = []
+                assigned_vdms = []
+                approved_vdms = []
+                total = []
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
-                    if vdm.post_prod_dpt != nil && vdm.post_prod_dpt.created_at >= from && vdm.post_prod_dpt.created_at <= to
+                    if vdm.post_prod_dpt != nil
                       if vdm.post_prod_dpt.status != nil && vdm.post_prod_dpt.status != 'no asignado'
-                        total_videos += 1
-                        if vdm.post_prod_dpt.status == 'asignado'
+                        v = {
+                            id:vdm.id,
+                            videoId:vdm.videoId,
+                            videoTittle: vdm.videoTittle,
+                            videoContent: vdm.videoContent,
+                            dpt: vdm.post_prod_dpt
+                        }
+
+                        if vdm.post_prod_dpt.status == 'asignado' && vdm.post_prod_dpt.created_at >= from && vdm.post_prod_dpt.created_at <= to
+                          total.push(v)
+                          total_videos += 1
+                          assigned_vdms.push(v)
                           assigned += 1
                         end
-                        if vdm.post_prod_dpt.status == 'rechazado'
+                        if vdm.post_prod_dpt.status == 'rechazado' && vdm.post_prod_dpt.created_at >= from && vdm.post_prod_dpt.created_at <= to
+                          total.push(v)
+                          total_videos += 1
+                          returned_vdms.push(v)
                           returned += 1
                         end
                         if vdm.post_prod_dpt.status == 'aprobado'
-                          approved += 1
+                          approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado Post-Produccion por Analista qa').first()
+                          if approved_record != nil
+                            approved_date = approved_record.created_at
+                            v['approved_date'] = approved_date
+                            if approved_date >= from && approved_date <= to
+                              approved_vdms.push(v)
+                              approved += 1
+                            end
+                            total.push(v)
+                            total_videos += 1
+                          end
                         end
                       end
                     end
@@ -770,6 +852,10 @@ class UsersController < ApplicationController
                    assigned: assigned,
                    approved: approved,
                    effectiveness: effectiveness,
+                   returned_vdms: returned_vdms,
+                   assigned_vdms: assigned_vdms,
+                   approved_vdms: approved_vdms,
+                   total: total
                })
               end
             else
@@ -784,19 +870,49 @@ class UsersController < ApplicationController
                 approved = 0
                 assigned = 0
                 finished = 0
-                assignments = emp.post_prod_dpt_assignments.where(:created_at => from..to)
+                returned_vdms = []
+                assigned_vdms = []
+                approved_vdms = []
+                finished_vdms = []
+                total = []
+                assignments = Vdm.joins(:post_prod_dpt_assignment).where(post_prod_dpt_assignments: {user_id: emp.id})
                 assignments.each do |as|
-                  if as.status != nil && as.status != 'no asignado'
-                    total_videos += 1
-                    case as.status
+                  if as.post_prod_dpt_assignment.status != nil && as.post_prod_dpt_assignment.status != 'no asignado'
+                    v = {
+                        id:as.id,
+                        videoId:as.videoId,
+                        videoTittle: as.videoTittle,
+                        videoContent: as.videoContent,
+                        dpt: as.post_prod_dpt_assignment
+                    }
+                    case as.post_prod_dpt_assignment.status
                       when 'asignado'
-                        assigned += 1
+                        if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          assigned_vdms.push(v)
+                          assigned += 1
+                        end
                       when 'terminado'
-                        finished += 1
+                        if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          finished_vdms.push(v)
+                          finished += 1
+                        end
                       when 'rechazado'
-                        returned += 1
+                        if as.post_prod_dpt_assignment.created_at >= from && as.post_prod_dpt.created_at <= to
+                          returned_vdms.push(v)
+                          returned += 1
+                        end
                       when 'aprobado'
-                        approved += 1
+                        approved_record = as.vdm_changes.where(changeDetail: 'aprobado Post-Produccion por Analista qa').first()
+                        if approved_record != nil
+                          approved_date = approved_record.created_at
+                          v['approved_date'] = approved_date
+                          if approved_date >= from && approved_date <= to
+                            approved_vdms.push(v)
+                            approved += 1
+                          end
+                          total.push(v)
+                          total_videos += 1
+                        end
                     end
                   end
                 end
@@ -809,6 +925,11 @@ class UsersController < ApplicationController
                      finished: finished,
                      approved: approved,
                      effectiveness: effectiveness,
+                     assigned_vdms: assigned_vdms,
+                     finished_vdms: finished_vdms,
+                     returned_vdms: returned_vdms,
+                     approved_vdms: approved_vdms,
+                     total: total
                  })
               end
             else
@@ -823,25 +944,49 @@ class UsersController < ApplicationController
                 returned = 0
                 assigned = 0
                 approved = 0
+                returned_vdms = []
+                assigned_vdms = []
+                approved_vdms = []
+                total = []
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
                     if vdm.qa_dpt != nil && vdm.qa_dpt.created_at >= from && vdm.qa_dpt.created_at <= to
                       if vdm.qa_dpt.status != nil && vdm.qa_dpt.status != 'no asignado'
-                        total_videos += 1
+                        v = {
+                            id:vdm.id,
+                            videoId:vdm.videoId,
+                            videoTittle: vdm.videoTittle,
+                            videoContent: vdm.videoContent,
+                            dpt: vdm.qa_dpt
+                        }
                         if vdm.qa_dpt.status == 'asignado'
+                          total.push(v)
+                          total_videos += 1
+                          assigned_vdms.push(v)
                           assigned += 1
                         end
                         if vdm.qa_dpt.status == 'rechazado'
+                          total.push(v)
+                          total_videos += 1
+                          returned_vdms.push(v)
                           returned += 1
                         end
                         if vdm.qa_dpt.status == 'aprobado'
-                          approved += 1
+                          approved_record = vdm.vdm_changes.where(changeDetail: 'aprobado Post-Produccion por Analista qa').last()
+                          if approved_record != nil
+                            approved_date = approved_record.created_at
+                            v['approved_date'] = approved_date
+                            approved_vdms.push(v)
+                            approved += 1
+                            total.push(v)
+                            total_videos += 1
+                          end
                         end
                       end
                     end
                   end
                 end
-                effectiveness = number_with_precision((approved.to_f/total_videos.to_f)*100, :precision => 2)
+                effectiveness = number_with_precision(((approved.to_f + returned.to_f)/total_videos.to_f)*100, :precision => 2)
                 subject = {
                     name: sp.subject.name + ' ' + sp.subject.grade.name
                 }
@@ -852,6 +997,10 @@ class UsersController < ApplicationController
                      assigned: assigned,
                      approved: approved,
                      effectiveness: effectiveness,
+                     rejected_vdms: returned_vdms,
+                     approved_vdms: approved_vdms,
+                     assigned_vdms: assigned_vdms,
+                     total: total
                  })
               end
             else
@@ -865,17 +1014,37 @@ class UsersController < ApplicationController
                 rejected = 0
                 approved = 0
                 assigned = 0
-                assignments = emp.qa_assignments.where(:created_at => from..to)
+                returned_vdms = []
+                assigned_vdms = []
+                approved_vdms = []
+                total = []
+                assignments = Vdm.joins(:qa_assignment).where(qa_assignments: {created_at: from..to, user_id: emp.id})
                 assignments.each do |as|
-                  if as.status != nil && as.status != 'no asignado'
+                  if as.qa_assignment.status != nil && as.qa_assignment.status != 'no asignado'
+                    v = {
+                        id:as.id,
+                        videoId:as.videoId,
+                        videoTittle: as.videoTittle,
+                        videoContent: as.videoContent,
+                        dpt: as.qa_assignment
+                    }
+                    total.push(v)
                     total_videos += 1
-                    case as.status
+                    case as.qa_assignment.status
                       when 'asignado'
+                        assigned_vdms.push(v)
                         assigned += 1
                       when 'rechazado'
+                        returned_vdms.push(v)
                         rejected += 1
                       when 'aprobado'
-                        approved += 1
+                        approved_record = as.vdm_changes.where(changeDetail: 'aprobado Post-Produccion por Analista qa').last()
+                        if approved_record != nil
+                          approved_date = approved_record.created_at
+                          v['approved_date'] = approved_date
+                          approved_vdms.push(v)
+                          approved += 1
+                        end
                     end
                   end
                 end
@@ -887,6 +1056,10 @@ class UsersController < ApplicationController
                    rejected: rejected,
                    approved: approved,
                    effectiveness: effectiveness,
+                   rejected_vdms: returned_vdms,
+                   approved_vdms: approved_vdms,
+                   assigned_vdms: assigned_vdms,
+                   total: total
                })
               end
             else

@@ -29,24 +29,27 @@ app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService
 
         $rootScope.printVdmsInfo = function(vdms, department, employee, vid_status, total, subject, from, to){
             var report_title = '';
-            var validDoc = false;
             var assigned_to = '';
             var dates = '';
-            if (department != null && employee == null) {
-                assigned_to = department
-            }else{
-                assigned_to = department + ' encargado: ' +employee + ', '
-            }
             if(from != null && to != null){
                 dates = 'desde ' + $filter('date')(from, 'short') + ' hasta ' + $filter('date')(to, 'short')
             }else{
                 dates = 'desde hace un mes'
             }
-            validDoc = true;
-            if (total){
-                report_title = 'Estado del total de videos de ' + subject + ' asignados a ' + assigned_to + ' ' + dates;
+            if (department != null && employee == null) {
+                assigned_to = department;
+                if (total){
+                    report_title = 'Estado del total de videos de ' + subject + ' asignados a ' + assigned_to + ' ' + dates;
+                }else{
+                    report_title = 'Videos ' + vid_status + ' de ' + subject + ' asignados a ' + assigned_to + ' ' + dates;
+                }
             }else{
-                report_title = 'Videos ' + vid_status + ' de ' + subject + ' asignados a ' + assigned_to + ' ' + dates;
+                assigned_to = department + ' encargado: ' +employee + ', ';
+                if (total){
+                    report_title = 'Estado del total de videos asignados a ' + assigned_to + ' ' + dates;
+                }else{
+                    report_title = 'Videos ' + vid_status + ' de ' + assigned_to + ' ' + dates;
+                }
             }
             var arr = [{ text: report_title, margin: [ 30, 2, 5, 25 ], fontSize: 24, bold: true }];
             angular.forEach(vdms, function(vdm){
@@ -55,7 +58,7 @@ app.controller("dashboardController",['$scope', 'ENV', 'dawProcessManagerService
                     if(vdm.dpt != null){
                         status = vdm.dpt.status;
                         if(status == 'aprobado'){
-                            status = status + ' el ' + $filter('date')(vdm.approved_date, 'short')
+                            status = status + ' el ' + $filter('date')(vdm.approved_date, 'dd/MM/yyyy')
                         }
                     }else{
                         status = 'no asignado'

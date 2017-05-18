@@ -28,11 +28,23 @@
 
         <tr ng-repeat="row in data">
             <td>{{row.designer}}</td>
-            <td>{{row.assigned}}</td>
-            <td>{{row.returned}}</td>
-            <td>{{row.designed}}</td>
-            <td>{{row.approved}}</td>
-            <td>{{row.totalVideos}}</td>
+            <td ng-if="row.assigned < 1">{{row.assigned}}</td>
+            <td ng-if="row.assigned >= 1"><a ng-click="printVdmsInfo(row.assigned_vdms, 'Diseño', row.designer, 'asignados', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.assigned}}</a></td>
+
+            <td ng-if="row.returned < 1">{{row.returned}}</td>
+            <td ng-if="row.returned >= 1"><a ng-click="printVdmsInfo(row.returned_vdms, 'Diseño', row.designer, 'rechazados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.returned}}</a></td>
+
+            <td ng-if="row.designed < 1">{{row.designed}}</td>
+            <td ng-if="row.designed >= 1"><a ng-click="printVdmsInfo(row.designed_vdms, 'Diseño', row.designer, 'diseñados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.designed}}</a></td>
+
+
+            <td ng-if="row.approved < 1">{{row.approved}}</td>
+            <td ng-if="row.approved >= 1"><a ng-click="printVdmsInfo(row.approved_vdms, 'Diseño', row.designer, 'aprobados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.approved}}</a></td>
+
+            <td ng-if="row.totalVideos < 1">{{row.totalVideos}}</td>
+            <td ng-if="row.totalVideos >= 1"><a ng-click="printVdmsInfo(row.total, 'Edicion', row.designer, null,true, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.totalVideos}}</a></td>
+
+
             <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
             <td ng-if="row.effectiveness == 'NaN'">0%</td>
 

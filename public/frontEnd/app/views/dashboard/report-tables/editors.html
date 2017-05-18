@@ -19,8 +19,8 @@
         <tr>
             <th>Editor</th>
             <th>Asignado (Cantidad)</th>
+            <th>Editados (Cantidad)</th>
             <th>Devueltos (Cantidad)</th>
-            <th>Editado (Cantidad)</th>
             <th>Aprobados (Cantidad)</th>
             <th>Total</th>
             <th>Efectividad</th>
@@ -28,11 +28,21 @@
 
         <tr ng-repeat="row in data">
             <td>{{row.editor}}</td>
-            <td>{{row.assigned}}</td>
-            <td>{{row.returned}}</td>
-            <td>{{row.edited}}</td>
-            <td>{{row.approved}}</td>
-            <td>{{row.totalVideos}}</td>
+            <td ng-if="row.assigned < 1">{{row.assigned}}</td>
+            <td ng-if="row.assigned >= 1"><a ng-click="printVdmsInfo(row.assigned_vdms, 'Edicion', row.editor, 'asignados', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.assigned}}</a></td>
+
+            <td ng-if="row.edited < 1">{{row.edited}}</td>
+            <td ng-if="row.edited >= 1"><a ng-click="printVdmsInfo(row.edited_vdms, 'Edicion', row.editor, 'editados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.edited}}</a></td>
+
+            <td ng-if="row.returned < 1">{{row.returned}}</td>
+            <td ng-if="row.returned >= 1"><a ng-click="printVdmsInfo(row.returned_vdms, 'Edicion', row.editor, 'rechazados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.returned}}</a></td>
+
+            <td ng-if="row.approved < 1">{{row.approved}}</td>
+            <td ng-if="row.approved >= 1"><a ng-click="printVdmsInfo(row.approved_vdms, 'Edicion', row.editor, 'aprobados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.approved}}</a></td>
+
+            <td ng-if="row.totalVideos < 1">{{row.totalVideos}}</td>
+            <td ng-if="row.totalVideos >= 1"><a ng-click="printVdmsInfo(row.total, 'Edicion', row.editor, null,true, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.totalVideos}}</a></td>
+
             <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
             <td ng-if="row.effectiveness == 'NaN'">0%</td>
 

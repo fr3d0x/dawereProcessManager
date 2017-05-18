@@ -27,10 +27,18 @@
 
         <tr ng-repeat="row in data">
             <td>{{row.subject.name}}</td>
-            <td>{{row.assigned}}</td>
-            <td>{{row.returned}}</td>
-            <td>{{row.approved}}</td>
-            <td>{{row.totalVideos}}</td>
+            <td ng-if="row.assigned < 1">{{row.assigned}}</td>
+            <td ng-if="row.assigned >= 1"><a ng-click="printVdmsInfo(row.assigned_vdms, 'Post-produccion', null, 'asignados', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.assigned}}</a></td>
+
+            <td ng-if="row.returned < 1">{{row.returned}}</td>
+            <td ng-if="row.returned >= 1"><a ng-click="printVdmsInfo(row.returned_vdms, 'Post-produccion', null, 'rechazados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.returned}}</a></td>
+
+            <td ng-if="row.approved < 1">{{row.approved}}</td>
+            <td ng-if="row.approved >= 1"><a ng-click="printVdmsInfo(row.approved_vdms, 'Post-produccion', null, 'aprobados',false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.approved}}</a></td>
+
+            <td ng-if="row.totalVideos < 1">{{row.totalVideos}}</td>
+            <td ng-if="row.totalVideos >= 1"><a ng-click="printVdmsInfo(row.total, 'Post-produccion', null, null,true, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.totalVideos}}</a></td>
+
             <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
             <td ng-if="row.effectiveness == 'NaN'">0%</td>
 
