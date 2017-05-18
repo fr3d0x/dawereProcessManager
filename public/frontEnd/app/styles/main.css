@@ -121,3 +121,14 @@ a:hover, a:focus {
     border-radius: 4px;
     color: black !important;
 }
+
+.tableLink{
+    color: #08c !important;
+}
+
+.tableLink:hover{
+    color: lightskyblue !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    cursor: pointer;
+}

@@ -333,13 +333,14 @@ class UsersController < ApplicationController
                 processed_vdms = []
                 returned_vdms = []
                 received_vdms = []
+                not_received_vdms = []
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
                   total.push(*cp_videos) unless cp_videos.count < 1
-                  not_received_vdms = cp.vdms.where(:status => 'no recibido', created_at: from..to).reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}
-                  not_received = not_received + not_received_vdms.count
-                  total_videos = total_videos + (cp_videos.count + not_received_vdms.count)
-                  total.push(*not_received_vdms)
+                  nr = cp.vdms.where(:status => 'no recibido', created_at: from..to).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
+                  not_received_vdms.push(*nr)
+                  not_received = not_received + nr.count
+                  total.push(*nr)
                   processed_vdms.push(*cp_videos.select{|vdm| vdm.status == 'procesado' })
                   returned_vdms.push(*cp_videos.select{|vdm| vdm.status == 'rechazado' })
                   received_vdms.push(*cp_videos.select{|vdm| vdm.status == 'recibido' })
@@ -347,7 +348,8 @@ class UsersController < ApplicationController
                   processed = processed + cp_videos.select{|vdm| vdm.status == 'procesado' }.count
                   received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
                 end
-
+                total = total.uniq{|u| u.id}
+                total_videos = total.count
                 effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
                 subject = {
                     name: sp.subject.name + ' ' + sp.subject.grade.name
@@ -364,7 +366,8 @@ class UsersController < ApplicationController
                      total: total,
                      received_vdms: received_vdms,
                      returned_vdms: returned_vdms,
-                     processed_vdms: processed_vdms
+                     processed_vdms: processed_vdms,
+                     not_received_vdms: not_received_vdms
                  })
               end
             else
@@ -383,15 +386,16 @@ class UsersController < ApplicationController
                 processed_vdms = []
                 returned_vdms = []
                 received_vdms = []
+                not_received_vdms = []
                 subject_plannings = emp.subject_planifications
                 subject_plannings.each do |sp|
                   sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                     cp_videos = cp.vdms.joins(:vdm_changes).where(vdm_changes: {changeDetail: ['Cambio de estado', 'Creacion'], changedFrom: ['no recibido', 'vacio', nil], changedTo: ['recibido', 'procesado', nil], created_at: from..to}).uniq{|u| u.id}.reject{|r| r.status == 'DESTROYED'}
                     total.push(*cp_videos) unless cp_videos.count < 1
-                    not_received_vdms = cp.vdms.where(:status => 'no recibido', created_at: from..to).reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}
-                    not_received = not_received + not_received_vdms.count
-                    total_videos = total_videos + (cp_videos.count + not_received_vdms.count)
-                    total.push(*not_received_vdms)
+                    nr = cp.vdms.where(:status => 'no recibido', created_at: from..to).reject{|r| r.status == 'DESTROYED'}.uniq{|u| u.id}
+                    not_received_vdms.push(*nr)
+                    not_received = not_received + nr.count
+                    total.push(*nr)
                     processed_vdms.push(*cp_videos.select{|vdm| vdm.status == 'procesado' })
                     returned_vdms.push(*cp_videos.select{|vdm| vdm.status == 'rechazado' })
                     received_vdms.push(*cp_videos.select{|vdm| vdm.status == 'recibido' })
@@ -400,6 +404,8 @@ class UsersController < ApplicationController
                     received = received + cp_videos.select{|vdm| vdm.status == 'recibido' }.count
                   end
                 end
+                total = total.uniq{|u| u.id}
+                total_videos = total.count
                 effectiveness = number_with_precision((processed.to_f/total_videos.to_f)*100, :precision => 2)
                 payload.push({
                      analyst: emp.employee.firstName + ' ' + emp.employee.firstSurname,
@@ -408,11 +414,12 @@ class UsersController < ApplicationController
                      returned: returned,
                      processed: processed,
                      notReceived: not_received,
-                     effectiveness: effectiveness,
-                     total: total,
                      received_vdms: received_vdms,
                      returned_vdms: returned_vdms,
-                     processed_vdms: processed_vdms
+                     processed_vdms: processed_vdms,
+                     effectiveness: effectiveness,
+                     total: total,
+                     not_received_vdms: not_received_vdms
                  })
               end
             else
@@ -426,13 +433,13 @@ class UsersController < ApplicationController
               subject_plannings.each do |sp|
                 total_videos = 0
                 total = []
-                returned_vdm = []
+                returned_vdms = []
                 returned = 0
-                recorded_vdm = []
+                recorded_vdms = []
                 recorded = 0
-                assigned_vdm = []
+                assigned_vdms = []
                 assigned = 0
-                approved_vdm = []
+                approved_vdms = []
                 approved = 0
                 sp.classes_planifications.reject{|r| r.status == 'DESTROYED'}.each do |cp|
                   cp.vdms.reject{|r| r.status == 'DESTROYED'}.each do |vdm|
@@ -448,15 +455,15 @@ class UsersController < ApplicationController
                         total.push(v)
                         total_videos += 1
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'rechazado'
-                          returned_vdm.push(v)
+                          returned_vdms.push(v)
                           returned += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'grabado'
-                          recorded_vdm.push(v)
+                          recorded_vdms.push(v)
                           recorded += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'asignado'
-                          assigned_vdm.push(v)
+                          assigned_vdms.push(v)
                           assigned += 1
                         end
                         if vdm.production_dpt != nil && vdm.production_dpt.status == 'aprobado'
@@ -467,7 +474,7 @@ class UsersController < ApplicationController
                           approved_date = approved_record.created_at
                           v['approved_date'] = approved_date
                           if approved_date >= from && approved_date <= to
-                            approved_vdm.push(v)
+                            approved_vdms.push(v)
                             approved += 1
                           end
                         end
@@ -483,10 +490,10 @@ class UsersController < ApplicationController
                     subject: subject,
                     teacher: sp.teacher,
                     totalVideos: total_videos,
-                    assigned_vdm: assigned_vdm,
-                    returned_vdm: returned_vdm,
-                    approved_vdm: approved_vdm,
-                    recorded_vdm: recorded_vdm,
+                    assigned_vdms: assigned_vdms,
+                    returned_vdms: returned_vdms,
+                    approved_vdms: approved_vdms,
+                    recorded_vdms: recorded_vdms,
                     returned: returned,
                     assigned: assigned,
                     approved: approved,

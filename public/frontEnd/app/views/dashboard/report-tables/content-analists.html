@@ -20,17 +20,28 @@
             <th>Analista</th>
             <th>No recibido (Cantidad)</th>
             <th>Recibido (Cantidad)</th>
-            <th>Procesado</th>
-            <th>Video Clases</th>
+            <th>Devuelto (Cantidad)</th>
+            <th>Procesado (Cantidad)</th>
+            <th>Total</th>
             <th>Efectividad</th>
         </tr>
 
         <tr ng-repeat="row in data">
             <td>{{row.analyst}}</td>
-            <td>{{row.notReceived}}</td>
-            <td>{{row.received}}</td>
-            <td>{{row.processed}}</td>
-            <td>{{row.totalVideos}}</td>
+            <td ng-if="row.notReceived < 1">{{row.notReceived}}</td>
+            <td ng-if="row.notReceived >= 1"><a ng-click="printVdmsInfo(row.not_received_vdms, 'Pre-produccion', row.analyst,'no recibidos', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.notReceived}}</a></td>
+
+            <td ng-if="row.received < 1">{{row.received}}</td>
+            <td ng-if="row.received >= 1"><a ng-click="printVdmsInfo(row.received_vdms, 'Pre-produccion', row.analyst,'recibidos', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.received}}</a></td>
+
+            <td ng-if="row.returned < 1">{{row.returned}}</td>
+            <td ng-if="row.returned >= 1"><a ng-click="printVdmsInfo(row.returned_vdms, 'Pre-produccion', row.analyst,'devueltos', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.returned}}</a></td>
+
+            <td ng-if="row.processed < 1">{{row.processed}}</td>
+            <td ng-if="row.processed >= 1"><a ng-click="printVdmsInfo(row.processed_vdms, 'Pre-produccion', row.analyst,'procesados', false, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.processed}}</a></td>
+
+            <td ng-if="row.totalVideos < 1">{{row.totalVideos}}</td>
+            <td ng-if="row.totalVideos >= 1"><a ng-click="printVdmsInfo(row.total, 'Pre-produccion', row.analyst, null, true, row.subject.name, date.from_date, date.to_date)" class="tableLink">{{row.totalVideos}}</a></td>
             <td ng-if="row.effectiveness != 'NaN'">{{row.effectiveness}}%</td>
             <td ng-if="row.effectiveness == 'NaN'">0%</td>
 
