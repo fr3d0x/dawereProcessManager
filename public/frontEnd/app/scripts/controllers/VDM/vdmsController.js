@@ -1756,6 +1756,70 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
+        $scope.resumableUpload = function(upload, vdm, file_type){
+            var valid = true;
+            var msg = '';
+            var baseUrl = ENV.baseUrl;
+            if(Upload.isResumeSupported()){
+                if(vdm.id != null) {
+                    if(valid){
+                        Upload.upload({
+                            url: baseUrl+'/api/vdms/upload_post_production_files?id='+vdm.id+'&file_type='+file_type,
+                            resumeSizeUrl: '/uploaded/size/url?file=' + file.name,
+                            resumeChunkSize: '10MB',// uploaded file size so far on the server.
+                            data: {upload: upload}
+                        }).then(function (resp) {
+                            if(resp.data != null){
+
+                                swal({
+                                    title: "Exitoso",
+                                    text: msg,
+                                    type: 'success',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightskyblue"
+                                });
+                            }else{
+                                swal({
+                                    title: "ERROR",
+                                    text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                    type: 'error',
+                                    confirmButtonText: "OK",
+                                    confirmButtonColor: "lightcoral"
+                                });
+                            }
+                            angular.element("input[type='file']").val(null);
+                            console.clear();
+                        }, function (error) {
+                            angular.element("input[type='file']").val(null);
+                            $rootScope.setLoader(false);
+                            console.log(error);
+                        }, function (evt) {
+                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                            console.log('progreso de subida: ' + progressPercentage + '% ');
+                        });
+                    }else{
+                        angular.element("input[type='file']").val(null);
+                        swal({
+                            title: "Aviso",
+                            text: msg,
+                            type: 'warning',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightcoral"
+                        });
+                    }
+                }
+            }else{
+                swal({
+                    title: "Aviso",
+                    text: "No se pueden subir este tipo de archivos desde este explorador intentelo con un explorador mas actualizado",
+                    type: 'warning',
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "lightcoral"
+                });
+            }
+
+        };
+
         $scope.$watch('localStorageService.get("currentRole")', function (newVal, oldVal) {
             if(newVal !== oldVal){
                 getVdms();

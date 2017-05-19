@@ -67,7 +67,6 @@ ActiveRecord::Schema.define(version: 20170512041110) do
     t.integer  "vdm_id",     limit: 4
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
-    t.string   "type",       limit: 255
   end
 
   add_index "design_dpts", ["vdm_id"], name: "index_design_dpts_on_vdm_id", using: :btree
@@ -131,19 +130,13 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   end
 
   create_table "post_prod_dpt_assignments", force: :cascade do |t|
-    t.string   "status",               limit: 255
-    t.string   "assignedName",         limit: 255
-    t.text     "comments",             limit: 16777215
-    t.integer  "user_id",              limit: 4
-    t.integer  "post_prod_dpt_id",     limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.string   "video",                limit: 255
-    t.string   "video_name",           limit: 255
-    t.string   "after_project",        limit: 255
-    t.string   "after_project_name",   limit: 255
-    t.string   "premier_project",      limit: 255
-    t.string   "premier_project_name", limit: 255
+    t.string   "status",           limit: 255
+    t.string   "assignedName",     limit: 255
+    t.text     "comments",         limit: 16777215
+    t.integer  "user_id",          limit: 4
+    t.integer  "post_prod_dpt_id", limit: 4
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
   end
 
   add_index "post_prod_dpt_assignments", ["post_prod_dpt_id"], name: "index_post_prod_dpt_assignments_on_post_prod_dpt_id", using: :btree
@@ -192,35 +185,28 @@ ActiveRecord::Schema.define(version: 20170512041110) do
   add_index "product_managements", ["vdm_id"], name: "index_product_managements_on_vdm_id", using: :btree
 
   create_table "production_dpt_assignments", force: :cascade do |t|
-    t.string   "status",               limit: 255
-    t.string   "assignedName",         limit: 255
-    t.text     "comments",             limit: 16777215
-    t.integer  "user_id",              limit: 4
-    t.integer  "production_dpt_id",    limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.string   "video_clip",           limit: 255
-    t.string   "premier_project",      limit: 255
-    t.string   "premier_project_name", limit: 255
-    t.string   "video_clip_name",      limit: 255
+    t.string   "status",            limit: 255
+    t.string   "assignedName",      limit: 255
+    t.text     "comments",          limit: 16777215
+    t.integer  "user_id",           limit: 4
+    t.integer  "production_dpt_id", limit: 4
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
   end
 
   add_index "production_dpt_assignments", ["production_dpt_id"], name: "index_production_dpt_assignments_on_production_dpt_id", using: :btree
   add_index "production_dpt_assignments", ["user_id"], name: "index_production_dpt_assignments_on_user_id", using: :btree
 
   create_table "production_dpts", force: :cascade do |t|
-    t.string   "status",           limit: 255
-    t.text     "script",           limit: 4294967295
-    t.text     "comments",         limit: 16777215
-    t.boolean  "intro",            limit: 1
-    t.boolean  "vidDev",           limit: 1
-    t.boolean  "conclu",           limit: 1
-    t.integer  "vdm_id",           limit: 4
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
-    t.string   "screen_play",      limit: 255
-    t.string   "screen_play_name", limit: 255
-    t.string   "script_name",      limit: 255
+    t.string   "status",     limit: 255
+    t.text     "script",     limit: 4294967295
+    t.text     "comments",   limit: 16777215
+    t.boolean  "intro",      limit: 1
+    t.boolean  "vidDev",     limit: 1
+    t.boolean  "conclu",     limit: 1
+    t.integer  "vdm_id",     limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
