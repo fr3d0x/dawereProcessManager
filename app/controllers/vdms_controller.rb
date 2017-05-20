@@ -2539,8 +2539,8 @@ class VdmsController < ApplicationController
   def resume_file
     if params[:file_name] != nil
       size = 0
-      FileUtils::mkdir_p "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
-      Dir.foreach("/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}") do |target|
+      FileUtils::mkdir_p "/mnt/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
+      Dir.foreach("/mnt/railsDpmUploads/big_files_tmp/#{params[:file_name]}") do |target|
         size += 1
       end
       size = size * params[:file_size].to_i
@@ -2553,8 +2553,8 @@ class VdmsController < ApplicationController
   def resumable_upload
 
     # chunk folder path based on the parameters
-    FileUtils::mkdir_p "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
-    dir = "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
+    FileUtils::mkdir_p "/mnt/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
+    dir = "/mnt/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
     # chunk path based on the parameters
     chunk = "#{dir}/#{params[:upload].original_filename}"
 
