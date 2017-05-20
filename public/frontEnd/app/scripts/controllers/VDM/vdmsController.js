@@ -1756,21 +1756,21 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
-        $scope.resumableUpload = function(upload, vdm, file_type){
+        $scope.resumableUpload = function(upload, vdm){
             var valid = true;
             var msg = '';
             var baseUrl = ENV.baseUrl;
             if(Upload.isResumeSupported()){
+                vdm.uploading_big_file = true;
                 if(vdm.id != null) {
                     if(valid){
                         Upload.upload({
-                            url: baseUrl+'/api/vdms/upload_post_production_files?id='+vdm.id+'&file_type='+file_type,
-                            resumeSizeUrl: '/uploaded/size/url?file=' + file.name,
-                            resumeChunkSize: '10MB',// uploaded file size so far on the server.
+                            url: baseUrl+'/api/vdms/resumable_upload',
+                            resumeSizeUrl: baseUrl+'/api/vdms/resume_file?file_name=' + upload.name +'&file_size='+upload.size,
                             data: {upload: upload}
                         }).then(function (resp) {
                             if(resp.data != null){
-
+                                vdm.uploading_big_file = false;
                                 swal({
                                     title: "Exitoso",
                                     text: msg,
@@ -1793,9 +1793,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             angular.element("input[type='file']").val(null);
                             $rootScope.setLoader(false);
                             console.log(error);
-                        }, function (evt) {
-                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                            console.log('progreso de subida: ' + progressPercentage + '% ');
                         });
                     }else{
                         angular.element("input[type='file']").val(null);

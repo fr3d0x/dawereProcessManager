@@ -318,6 +318,9 @@ class UsersController < ApplicationController
           from = params[:date_from].to_date
           to = params[:date_to].to_date
         end
+        if to == DateTime.now.to_date
+          to = DateTime.now.to_date + 1.day
+        end
         case params[:progress_type]
           when 'content_department'
             if params[:role] == 'contentLeader' || params[:role] == 'productManager'

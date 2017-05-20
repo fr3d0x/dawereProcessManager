@@ -1,5 +1,5 @@
 CarrierWave.configure do |config|
   #set carrierwave new root folder
-  config.root = '/mnt/hgfs/archivos_dpm'
-  config.cache_dir = '/mnt/hgfs/archivos_dpm/tmp/uploads'
+  config.root = '/Users/fr3d0/projects/uploads/railsDpmUploads/'
+  config.cache_dir = '/Users/fr3d0/projects/uploads/railsDpmUploads/tmp/uploads'
 end
