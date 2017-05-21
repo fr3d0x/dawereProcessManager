@@ -368,7 +368,11 @@ class VdmsController < ApplicationController
             script: vdm.production_dpt.script,
             script_name: vdm.production_dpt.script_name,
             screen_play: vdm.production_dpt.screen_play,
-            screen_play_name: vdm.production_dpt.screen_play_name
+            screen_play_name: vdm.production_dpt.screen_play_name,
+            master_planes: vdm.production_dpt.master_planes,
+            detail_planes: vdm.production_dpt.detail_planes,
+            wacom_vids: vdm.production_dpt.wacom_vids,
+            prod_audios: vdm.production_dpt.prod_audios,
         }
         if vdm.production_dpt.production_dpt_assignment != nil
           production_dpt['assignment'] = {
@@ -2543,7 +2547,7 @@ class VdmsController < ApplicationController
   def resume_file
     if params[:file_name] != nil
       size = 0
-      path = "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
+      path = "#{$big_files_tmp_route}/#{params[:file_name]}"
       FileUtils::mkdir_p path
       Dir.glob(File.join(path, '**', '*')) { |file| size+=File.size(file) }
       render :json => { data: {size: size}, status: 'SUCCESS'}, :status => 200
@@ -2551,20 +2555,16 @@ class VdmsController < ApplicationController
       render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
     end
   end
-  # POST /chunk
   def raw_material_upload
     size = 0
     payload = nil
-    # chunk folder path based on the parameters
-    FileUtils::mkdir_p "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
-    dir = "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
-    # chunk path based on the parameters
+    FileUtils::mkdir_p "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
+    dir = "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
     chunk = "#{dir}/#{params[:upload].original_filename}"
 
     # Move the uploaded chunk to the directory
     FileUtils.mv params[:upload].tempfile, chunk
 
-    # Concatenate all the partial files into the original file
     filesize = params[:file_size].to_i
     size = File.size("#{dir}/#{params[:upload].original_filename}")
 
@@ -2591,7 +2591,7 @@ class VdmsController < ApplicationController
             payload = {
                 files: vdm.production_dpt.detail_planes
             }
-          when 'wacom_vid'
+          when 'wacom_vids'
             rec = WacomVid.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = File.basename file
@@ -2600,7 +2600,7 @@ class VdmsController < ApplicationController
             payload = {
                 files: vdm.production_dpt.wacom_vids
             }
-          when 'prod_audio'
+          when 'prod_audios'
             rec = ProdAudio.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = File.basename file
@@ -2611,6 +2611,14 @@ class VdmsController < ApplicationController
             }
         end
         FileUtils.remove_dir "#{dir}", true
+        change = VdmChange.new
+        change.changeDetail = "Subida de meterial bruto #{params[:file_type]}"
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
+        change.department = 'produccion'
+        change.save!
       end
     end
     render :json => { data: payload, status: 'SUCCESS'}, :status => 200

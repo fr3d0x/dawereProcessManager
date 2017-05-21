@@ -1776,24 +1776,29 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 if(vdm.id != null) {
                     angular.forEach(upload, function(file){
                         var regex;
+                        var movRegex;
                         switch(type){
                             case 'master_planes':
                                 regex = new RegExp("(.*?)\.(mp4)$");
-                                if(!(regex.test(file.name.toLowerCase()))){
+                                movRegex = new RegExp("(.*?)\.(mov)$");
+                                if(regex.test(file.name.toLowerCase()) || movRegex.test(file.name.toLowerCase()) ){
+                                    vdm.uploading_master_plane = true;
+                                }else{
                                     msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
                                     valid = false;
                                 }
-                                vdm.uploading_master_plane = true;
                                 break;
                             case 'detail_planes':
-                                regex = new RegExp("(.*?)\.(mp4 | mov)$");
-                                if(!(regex.test(file.name.toLowerCase()))){
+                                regex = new RegExp("(.*?)\.(mp4)$");
+                                movRegex = new RegExp("(.*?)\.(mov)$");
+                                if(regex.test(file.name.toLowerCase()) || movRegex.test(file.name.toLowerCase()) ){
+                                    vdm.uploading_detail_plane = true;
+                                }else{
                                     msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
                                     valid = false;
                                 }
-                                vdm.uploading_detail_plane = true;
                                 break;
-                            case 'wacom_vid':
+                            case 'wacom_vids':
                                 regex = new RegExp("(.*?)\.(mp4)$");
                                 if(!(regex.test(file.name.toLowerCase()))){
                                     msg = "Estos archivos deben ser .mp4 para ser guardados";
@@ -1835,7 +1840,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                                 }
                                                 vdm.prodDept.detail_planes = resp.data.data.files;
                                                 break;
-                                            case 'wacom_vid':
+                                            case 'wacom_vids':
                                                 if(i == upload.length - 1){
                                                     vdm.uploading_wacom_vid = false;
                                                 }
@@ -1875,14 +1880,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         });
                     }else{
                         switch(type){
-                            case 'master_plane':
+                            case 'master_planes':
                                 vdm.uploading_master_plane = null;
                                 break;
-                            case 'detail_plane':
+                            case 'detail_planes':
                                 vdm.uploading_detail_plane = null;
 
                                 break;
-                            case 'wacom_vid':
+                            case 'wacom_vids':
                                 vdm.uploading_wacom_vid = null;
 
                                 break;
@@ -1902,14 +1907,14 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }
                 }else{
                     switch(type){
-                        case 'master_plane':
+                        case 'master_planes':
                             vdm.uploading_master_planes = null;
                             break;
-                        case 'detail_plane':
+                        case 'detail_planes':
                             vdm.uploading_detail_planes = null;
 
                             break;
-                        case 'wacom_vid':
+                        case 'wacom_vids':
                             vdm.uploading_wacom_vids = null;
 
                             break;
