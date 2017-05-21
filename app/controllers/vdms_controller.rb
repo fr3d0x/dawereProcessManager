@@ -183,7 +183,11 @@ class VdmsController < ApplicationController
                       conclu: vdm.production_dpt.conclu,
                       screen_play: vdm.production_dpt.screen_play,
                       script_name: vdm.production_dpt.script_name,
-                      screen_play_name: vdm.production_dpt.screen_play_name
+                      screen_play_name: vdm.production_dpt.screen_play_name,
+                      master_planes: vdm.production_dpt.master_planes,
+                      detail_planes: vdm.production_dpt.detail_planes,
+                      wacom_vids: vdm.production_dpt.wacom_vids,
+                      prod_audios: vdm.production_dpt.prod_audios,
                   }
                   if vdm.production_dpt.production_dpt_assignment != nil
                     responsable = vdm.production_dpt.production_dpt_assignment.assignedName
@@ -2539,19 +2543,18 @@ class VdmsController < ApplicationController
   def resume_file
     if params[:file_name] != nil
       size = 0
-      FileUtils::mkdir_p "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
-      Dir.foreach("/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}") do |target|
-        size += 1
-      end
-      size = size * params[:file_size].to_i
+      path = "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
+      FileUtils::mkdir_p path
+      Dir.glob(File.join(path, '**', '*')) { |file| size+=File.size(file) }
       render :json => { data: {size: size}, status: 'SUCCESS'}, :status => 200
     else
       render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
     end
   end
   # POST /chunk
-  def resumable_upload
-
+  def raw_material_upload
+    size = 0
+    payload = nil
     # chunk folder path based on the parameters
     FileUtils::mkdir_p "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
     dir = "/Users/fr3d0/projects/uploads/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
@@ -2562,9 +2565,55 @@ class VdmsController < ApplicationController
     FileUtils.mv params[:upload].tempfile, chunk
 
     # Concatenate all the partial files into the original file
-    filesize = params[:_totalSize].to_i
+    filesize = params[:file_size].to_i
+    size = File.size("#{dir}/#{params[:upload].original_filename}")
 
-    render :json => { data: 'success', status: 'SUCCESS'}, :status => 200
+    if size == filesize
+      vdm = Vdm.find(params[:vdm_id])
+      if vdm != nil && vdm.production_dpt != nil
+        file = File.open("#{dir}/#{params[:upload].original_filename}")
+        case params[:file_type]
+          when 'master_planes'
+            rec = MasterPlane.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.master_planes
+            }
+          when 'detail_planes'
+            rec = DetailPlane.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.detail_planes
+            }
+          when 'wacom_vid'
+            rec = WacomVid.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.wacom_vids
+            }
+          when 'prod_audio'
+            rec = ProdAudio.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.prod_audio
+            }
+        end
+        FileUtils.remove_dir "#{dir}", true
+      end
+    end
+    render :json => { data: payload, status: 'SUCCESS'}, :status => 200
   end
 
   private

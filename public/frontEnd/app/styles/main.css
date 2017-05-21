@@ -167,3 +167,10 @@ a:hover, a:focus {
     -o-animation: rotating 2s linear infinite;
     animation: rotating 2s linear infinite;
 }
+
+.top_right_corner {
+    color: lightskyblue;
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}
