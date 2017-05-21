@@ -4,6 +4,8 @@ class ApplicationController < ActionController::API
   require 'json'
   $secretKey = "d@w3r3's_$3cr3t_k3y"
   $drive_copy_route = '/mnt/railsDpmUploads/copies/'
+  $big_files_tmp_route = '/mnt/railsDpmUploads/big_files_tmp/'
+
   def authenticate
     token = request.headers['AUTHORIZATION']
     $currentPetitionUser = JWT.decode(token, $secretKey, true, { :algorithm => 'HS256' })[0]

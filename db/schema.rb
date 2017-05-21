@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170520034613) do
+ActiveRecord::Schema.define(version: 20170521023844) do
 
   create_table "classes_planifications", force: :cascade do |t|
     t.string   "meGeneralObjective",       limit: 255
@@ -102,6 +102,16 @@ ActiveRecord::Schema.define(version: 20170520034613) do
 
   add_index "design_jpgs", ["design_assignment_id"], name: "index_design_jpgs_on_design_assignment_id", using: :btree
 
+  create_table "detail_planes", force: :cascade do |t|
+    t.string   "file",              limit: 255
+    t.string   "file_name",         limit: 255
+    t.integer  "production_dpt_id", limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "detail_planes", ["production_dpt_id"], name: "index_detail_planes_on_production_dpt_id", using: :btree
+
   create_table "employees", force: :cascade do |t|
     t.string   "firstName",     limit: 255
     t.string   "middleName",    limit: 255
@@ -129,6 +139,16 @@ ActiveRecord::Schema.define(version: 20170520034613) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
   end
+
+  create_table "master_planes", force: :cascade do |t|
+    t.string   "file",              limit: 255
+    t.string   "file_name",         limit: 255
+    t.integer  "production_dpt_id", limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "master_planes", ["production_dpt_id"], name: "index_master_planes_on_production_dpt_id", using: :btree
 
   create_table "post_prod_dpt_assignments", force: :cascade do |t|
     t.string   "status",               limit: 255
@@ -179,6 +199,16 @@ ActiveRecord::Schema.define(version: 20170520034613) do
 
   add_index "post_prod_illustrators", ["post_prod_dpt_assignment_id"], name: "index_post_prod_illustrators_on_post_prod_dpt_assignment_id", using: :btree
 
+  create_table "prod_audios", force: :cascade do |t|
+    t.string   "file",              limit: 255
+    t.string   "file_name",         limit: 255
+    t.integer  "production_dpt_id", limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "prod_audios", ["production_dpt_id"], name: "index_prod_audios_on_production_dpt_id", using: :btree
+
   create_table "product_managements", force: :cascade do |t|
     t.string   "productionStatus",     limit: 255
     t.string   "editionStatus",        limit: 255
@@ -221,10 +251,6 @@ ActiveRecord::Schema.define(version: 20170520034613) do
     t.string   "screen_play",      limit: 255
     t.string   "screen_play_name", limit: 255
     t.string   "script_name",      limit: 255
-    t.string   "master_plane",     limit: 255
-    t.string   "detailed_plane",   limit: 255
-    t.string   "wacom_vid",        limit: 255
-    t.string   "prod_audio",       limit: 255
   end
 
   add_index "production_dpts", ["vdm_id"], name: "index_production_dpts_on_vdm_id", using: :btree
@@ -363,6 +389,16 @@ ActiveRecord::Schema.define(version: 20170520034613) do
 
   add_index "vdms", ["classes_planification_id"], name: "index_vdms_on_classes_planification_id", using: :btree
 
+  create_table "wacom_vids", force: :cascade do |t|
+    t.string   "file",              limit: 255
+    t.string   "file_name",         limit: 255
+    t.integer  "production_dpt_id", limit: 4
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  add_index "wacom_vids", ["production_dpt_id"], name: "index_wacom_vids_on_production_dpt_id", using: :btree
+
   add_foreign_key "classes_planifications", "subject_planifications", on_delete: :cascade
   add_foreign_key "cp_changes", "classes_planifications"
   add_foreign_key "cp_changes", "users"
@@ -372,11 +408,14 @@ ActiveRecord::Schema.define(version: 20170520034613) do
   add_foreign_key "design_elements", "design_assignments"
   add_foreign_key "design_ilustrators", "design_assignments"
   add_foreign_key "design_jpgs", "design_assignments"
+  add_foreign_key "detail_planes", "production_dpts"
+  add_foreign_key "master_planes", "production_dpts"
   add_foreign_key "post_prod_dpt_assignments", "post_prod_dpts"
   add_foreign_key "post_prod_dpt_assignments", "users"
   add_foreign_key "post_prod_dpts", "vdms"
   add_foreign_key "post_prod_elements", "post_prod_dpt_assignments"
   add_foreign_key "post_prod_illustrators", "post_prod_dpt_assignments"
+  add_foreign_key "prod_audios", "production_dpts"
   add_foreign_key "product_managements", "vdms"
   add_foreign_key "production_dpt_assignments", "production_dpts"
   add_foreign_key "production_dpt_assignments", "users"
@@ -395,4 +434,5 @@ ActiveRecord::Schema.define(version: 20170520034613) do
   add_foreign_key "vdm_changes", "users"
   add_foreign_key "vdm_changes", "vdms", on_delete: :cascade
   add_foreign_key "vdms", "classes_planifications", on_delete: :cascade
+  add_foreign_key "wacom_vids", "production_dpts"
 end

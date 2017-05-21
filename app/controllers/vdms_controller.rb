@@ -183,7 +183,11 @@ class VdmsController < ApplicationController
                       conclu: vdm.production_dpt.conclu,
                       screen_play: vdm.production_dpt.screen_play,
                       script_name: vdm.production_dpt.script_name,
-                      screen_play_name: vdm.production_dpt.screen_play_name
+                      screen_play_name: vdm.production_dpt.screen_play_name,
+                      master_planes: vdm.production_dpt.master_planes,
+                      detail_planes: vdm.production_dpt.detail_planes,
+                      wacom_vids: vdm.production_dpt.wacom_vids,
+                      prod_audios: vdm.production_dpt.prod_audios,
                   }
                   if vdm.production_dpt.production_dpt_assignment != nil
                     responsable = vdm.production_dpt.production_dpt_assignment.assignedName
@@ -364,7 +368,11 @@ class VdmsController < ApplicationController
             script: vdm.production_dpt.script,
             script_name: vdm.production_dpt.script_name,
             screen_play: vdm.production_dpt.screen_play,
-            screen_play_name: vdm.production_dpt.screen_play_name
+            screen_play_name: vdm.production_dpt.screen_play_name,
+            master_planes: vdm.production_dpt.master_planes,
+            detail_planes: vdm.production_dpt.detail_planes,
+            wacom_vids: vdm.production_dpt.wacom_vids,
+            prod_audios: vdm.production_dpt.prod_audios,
         }
         if vdm.production_dpt.production_dpt_assignment != nil
           production_dpt['assignment'] = {
@@ -2538,33 +2546,84 @@ class VdmsController < ApplicationController
 
   def resume_file
     if params[:file_name] != nil
-      size = 0
-      FileUtils::mkdir_p "/mnt/railsDpmUploads/big_files_tmp/#{params[:file_name]}"
-      Dir.foreach("/mnt/railsDpmUploads/big_files_tmp/#{params[:file_name]}") do |target|
-        size += 1
-      end
-      size = size * params[:file_size].to_i
+
+      path = "#{$big_files_tmp_route}/#{params[:file_name]}"
+      FileUtils::mkdir_p path
+      size = File.size("#{dir}/#{params[:upload].original_filename}")
+
       render :json => { data: {size: size}, status: 'SUCCESS'}, :status => 200
     else
       render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
     end
   end
-  # POST /chunk
-  def resumable_upload
 
-    # chunk folder path based on the parameters
-    FileUtils::mkdir_p "/mnt/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
-    dir = "/mnt/railsDpmUploads/big_files_tmp/#{params[:upload].original_filename}"
-    # chunk path based on the parameters
+  def raw_material_upload
+    size = 0
+    payload = nil
+    FileUtils::mkdir_p "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
+    dir = "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
     chunk = "#{dir}/#{params[:upload].original_filename}"
 
     # Move the uploaded chunk to the directory
     FileUtils.mv params[:upload].tempfile, chunk
 
-    # Concatenate all the partial files into the original file
-    filesize = params[:_totalSize].to_i
+    filesize = params[:file_size].to_i
+    size = File.size("#{dir}/#{params[:upload].original_filename}")
 
-    render :json => { data: 'success', status: 'SUCCESS'}, :status => 200
+    if size == filesize
+      vdm = Vdm.find(params[:vdm_id])
+      if vdm != nil && vdm.production_dpt != nil
+        file = File.open("#{dir}/#{params[:upload].original_filename}")
+        case params[:file_type]
+          when 'master_planes'
+            rec = MasterPlane.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.master_planes
+            }
+          when 'detail_planes'
+            rec = DetailPlane.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.detail_planes
+            }
+          when 'wacom_vids'
+            rec = WacomVid.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.wacom_vids
+            }
+          when 'prod_audios'
+            rec = ProdAudio.new
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = File.basename file
+            rec.file = file
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.prod_audio
+            }
+        end
+        FileUtils.remove_dir "#{dir}", true
+        change = VdmChange.new
+        change.changeDetail = "Subida de meterial bruto #{params[:file_type]}"
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
+        change.department = 'produccion'
+        change.save!
+      end
+    end
+    render :json => { data: payload, status: 'SUCCESS'}, :status => 200
   end
 
   private

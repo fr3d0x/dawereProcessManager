@@ -91,10 +91,10 @@
                     <div align="center" class="itemMissing" ng-if="vdm.production_dpt == null">
                         No Posee
                     </div>
-                    <div  align="center"class="itemMissing" ng-if="vdm.production_dpt.screen_play.url == null && vdm.production_dpt.script.url == null">
+                    <div  align="center"class="itemMissing" ng-if="vdm.production_dpt.screen_play.url == null && vdm.production_dpt.script.url == null && vdm.production_dpt.master_planes.length < 1 && vdm.production_dpt.detail_planes.length < 1 && vdm.production_dpt.wacom_vids.length < 1 && vdm.production_dpt.prod_audios.length < 1">
                         No Posee
                     </div>
-                    <div align="center" class="itemPresent" ng-if="vdm.production_dpt.screen_play.url != null || vdm.production_dpt.script.url != null">
+                    <div class="itemPresent" ng-if="vdm.production_dpt.screen_play.url != null || vdm.production_dpt.script.url != null || vdm.production_dpt.master_planes.length >= 1 || vdm.production_dpt.detail_planes.length >= 1 || vdm.production_dpt.wacom_vids.length >= 1 || vdm.production_dpt.prod_audios.length >= 1">
                         <div ng-if="vdm.production_dpt.screen_play.url != null">
                             <h4>Guion</h4>
                             <div>
@@ -106,6 +106,34 @@
                             <h4>Libreto</h4>
                             <div>
                                 <a ng-href="{{downloadRoot + vdm.production_dpt.script.url}}" download class="prettyLinkSmall">&#x25CF;{{vdm.production_dpt.script_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.master_planes.length >= 1">
+                            <h4>Plano master</h4>
+                            <div ng-repeat="file in vdm.production_dpt.master_planes">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.detail_planes.length >= 1">
+                            <h4>Plano detallado</h4>
+                            <div ng-repeat="file in vdm.production_dpt.detail_planes">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.wacom_vids.length >= 1">
+                            <h4>Videos wacom</h4>
+                            <div ng-repeat="file in vdm.production_dpt.wacom_vids">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                            </div>
+                            <br>
+                        </div>
+                        <div ng-if="vdm.production_dpt.prod_audios.length >= 1">
+                            <h4>Audios</h4>
+                            <div ng-repeat="file in vdm.production_dpt.prod_audios">
+                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div>
                             <br>
                         </div>

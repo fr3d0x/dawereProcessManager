@@ -11,7 +11,7 @@ class WacomVidUploader < CarrierWave::Uploader::Base
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
   def store_dir
-    "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
+    "#{model.production_dpt.vdm.classes_planification.subject_planification.subject.grade.name}/#{model.production_dpt.vdm.classes_planification.subject_planification.subject.name}/#{model.production_dpt.vdm.videoId}/wacom_vids"
   end
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -42,8 +42,8 @@ class WacomVidUploader < CarrierWave::Uploader::Base
 
   # Override the filename of the uploaded files:
   # Avoid using model.id or version_name here, see uploader/store.rb for details.
-  # def filename
-  #   "something.jpg" if original_filename
-  # end
+  def filename
+    "#{model.file_name}" if original_filename.present?
+  end
 
 end
