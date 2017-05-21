@@ -2549,7 +2549,7 @@ class VdmsController < ApplicationController
 
       path = "#{$big_files_tmp_route}/#{params[:file_name]}"
       FileUtils::mkdir_p path
-      size = File.size("#{dir}/#{params[:upload].original_filename}")
+      size = File.size("#{path}/#{params[:upload].original_filename}")
 
       render :json => { data: {size: size}, status: 'SUCCESS'}, :status => 200
     else
