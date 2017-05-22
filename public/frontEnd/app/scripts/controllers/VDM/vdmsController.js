@@ -387,11 +387,11 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
                     valid = false;
                 }
-                if(vdm.prodDept.master_plains == null || vdm.prodDept.master_plains.length < 1){
+                if(vdm.prodDept.master_planes == null || vdm.prodDept.master_planes.length < 1){
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un plano master";
                     valid = false;
                 }
-                if(vdm.prodDept.detail_plains == null || vdm.prodDept.detail_plains.length < 1){
+                if(vdm.prodDept.detail_planes == null || vdm.prodDept.detail_planes.length < 1){
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un plano detalle";
                     valid = false;
                 }
