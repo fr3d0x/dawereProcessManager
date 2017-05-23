@@ -1823,7 +1823,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             Upload.upload({
                                 url: baseUrl+'/api/vdms/raw_material_upload?vdm_id='+vdm.id+'&file_size='+file.size+'&file_type='+type,
                                 resumeSizeUrl: baseUrl+'/api/vdms/resume_file?file_name=' + file.name +'&file_size='+file.size,
-                                resumeChunkSize: '5MB',
+                                resumeChunkSize: '10MB',
                                 data: {upload: file}
                             }).then(function (resp) {
                                 if(resp.data != null && resp.data.data != null){
