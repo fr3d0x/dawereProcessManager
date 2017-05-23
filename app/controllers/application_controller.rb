@@ -3,8 +3,8 @@ class ApplicationController < ActionController::API
   require 'jwt'
   require 'json'
   $secretKey = "d@w3r3's_$3cr3t_k3y"
-  $drive_copy_route = '/mnt/hgfs/railsDpmUploads/NUBE DAWERE/'
-  $big_files_tmp_route = '/mnt/hgfs/railsDpmUploads/big_files_tmp'
+  $drive_copy_route = '/home/fr3d0/Desktop/uploads/rails/NUBE DAWERE/'
+  $big_files_tmp_route = '/home/fr3d0/Desktop/uploads/rails/big_files_tmp/'
 
   def authenticate
     token = request.headers['AUTHORIZATION']
