@@ -1826,7 +1826,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 resumeChunkSize: '5MB',
                                 data: {upload: file}
                             }).then(function (resp) {
-                                if(resp.data != null){
+                                if(resp.data != null && resp.data.data != null){
                                     if(vdm.prodDept != null){
                                         switch(type){
                                             case 'master_planes':
