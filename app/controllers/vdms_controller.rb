@@ -2549,9 +2549,9 @@ class VdmsController < ApplicationController
 
       path = "#{$big_files_tmp_route}/#{params[:file_name]}"
       FileUtils::mkdir_p path
-      size = File.size("#{path}/#{params[:file_name]}") unless !File.exist?("#{path}/#{params[:file_name]}")
+      size = Dir[File.join(path, '**', '*')].count { |file| File.file?(file) }
 
-      render :json => { data: {size: size}, status: 'SUCCESS'}, :status => 200
+      render :json => { size: size, status: 'SUCCESS'}, :status => 200
     else
       render :json => { data: nil, status: 'NOT FOUND'}, :status => 404
     end
@@ -2562,55 +2562,73 @@ class VdmsController < ApplicationController
     payload = nil
     FileUtils::mkdir_p "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
     dir = "#{$big_files_tmp_route}/#{params[:upload].original_filename}"
-    chunk = "#{dir}/#{params[:upload].original_filename}"
+    chunk = "#{dir}/#{params[:upload].original_filename}.part#{params[:_chunkNumber]}"
 
     # Move the uploaded chunk to the directory
     FileUtils.mv params[:upload].tempfile, chunk
 
     filesize = params[:file_size].to_i
-    size = File.size("#{dir}/#{params[:upload].original_filename}")
-
-    if size == filesize
+    if params[:_currentChunkSize].to_i <  filesize
+      current_size = params[:_chunkNumber].to_i * params[:_chunkSize].to_i
+    else
+      current_size = 0
+    end
+    if (current_size + params[:_currentChunkSize].to_i) >= filesize
       vdm = Vdm.find(params[:vdm_id])
       if vdm != nil && vdm.production_dpt != nil
-        file = File.open("#{dir}/#{params[:upload].original_filename}")
-        case params[:file_type]
-          when 'master_planes'
-            rec = MasterPlane.new
-            rec.production_dpt_id = vdm.production_dpt.id
-            rec.file_name = File.basename file
-            rec.file = file
-            rec.save!
-            payload = {
-                files: vdm.production_dpt.master_planes
-            }
-          when 'detail_planes'
-            rec = DetailPlane.new
-            rec.production_dpt_id = vdm.production_dpt.id
-            rec.file_name = File.basename file
-            rec.file = file
-            rec.save!
-            payload = {
-                files: vdm.production_dpt.detail_planes
-            }
-          when 'wacom_vids'
-            rec = WacomVid.new
-            rec.production_dpt_id = vdm.production_dpt.id
-            rec.file_name = File.basename file
-            rec.file = file
-            rec.save!
-            payload = {
-                files: vdm.production_dpt.wacom_vids
-            }
-          when 'prod_audios'
-            rec = ProdAudio.new
-            rec.production_dpt_id = vdm.production_dpt.id
-            rec.file_name = File.basename file
-            rec.file = file
-            rec.save!
-            payload = {
-                files: vdm.production_dpt.prod_audio
-            }
+        #Create a target file
+        File.open("#{dir}/#{params[:upload].original_filename}","a") do |target|
+          #Loop trough the chunks
+          for i in 0..params[:_chunkNumber].to_i
+            #Select the chunk
+            chunk = File.open("#{dir}/#{params[:upload].original_filename}.part#{i}", 'r').read
+
+            #Write chunk into target file
+            chunk.each_line do |line|
+              target << line
+            end
+
+            #Deleting chunk
+            FileUtils.rm "#{dir}/#{params[:upload].original_filename}.part#{i}", :force => true
+          end
+          case params[:file_type]
+            when 'master_planes'
+              rec = MasterPlane.new
+              rec.production_dpt_id = vdm.production_dpt.id
+              rec.file_name = params[:upload].original_filename
+              rec.file = target
+              rec.save!
+              payload = {
+                  files: vdm.production_dpt.master_planes
+              }
+            when 'detail_planes'
+              rec = DetailPlane.new
+              rec.production_dpt_id = vdm.production_dpt.id
+              rec.file_name = params[:upload].original_filename
+              rec.file = target
+              rec.save!
+              payload = {
+                  files: vdm.production_dpt.detail_planes
+              }
+            when 'wacom_vids'
+              rec = WacomVid.new
+              rec.production_dpt_id = vdm.production_dpt.id
+              rec.file_name = params[:upload].original_filename
+              rec.file = target
+              rec.save!
+              payload = {
+                  files: vdm.production_dpt.wacom_vids
+              }
+            when 'prod_audios'
+              rec = ProdAudio.new
+              rec.production_dpt_id = vdm.production_dpt.id
+              rec.file_name = params[:upload].original_filename
+              rec.file = target
+              rec.save!
+              payload = {
+                  files: vdm.production_dpt.prod_audios
+              }
+          end
         end
         FileUtils.remove_dir "#{dir}", true
         change = VdmChange.new
