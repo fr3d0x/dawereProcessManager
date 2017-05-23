@@ -1,4 +1,14 @@
+<style>
+    .titleCenter{
+        margin-top: 7%
+    }
+    @media screen and (max-width: 1365px) and (min-width: 1200px) {
+        .listItemDescription{
+            height: 220px;
+        }
+    }
 
+</style>
 <div class="container-fluid" >
 
     <div class="row col-md-10 col-md-offset-1">
@@ -16,7 +26,7 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="clearfix"></div>
             <div ng-repeat="subject in subjects" >
-                <div class="listItemDescription col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1col-md-10 col-md-offset-1 col-lg-5  row" style="margin-top: 20px;">
+                <div class="listItemDescription col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 col-md-10 col-md-offset-1 col-lg-5  row" style="margin-top: 20px;min-height: 170px;">
 
                     <div class="subjectOptions">
                         <span ng-if="currentRole == 'contentLeader' || currentRole == 'contentAnalist'">
@@ -35,7 +45,7 @@
                         <span ng-if="currentRole != 'contentLeader' && currentRole != 'contentAnalist'">
                              <div align="center">
                                  <div ng-if="subject.user != null" class="col-xs-12 col-sm-12 col-md-12 pull-right" align="right" style="font-size: 14px; font-weight: 400; text-decoration: none !important;">analista de contenido: {{subject.user.name}} </div>
-                                 <p class="col-xs-12 col-xs-offset-0 col-sm-12 col-md-12 ">{{subject.name}} </p>
+                                 <p class="col-xs-12 col-xs-offset-0 col-sm-12 col-md-12 " ng-class="{titleCenter: subject.user == null && currentRole != 'contentLeader'} ">{{subject.name}} </p>
                             </div>
                             <button class=" col-xs-6 col-xs-offset-3 col-sm-6 col-sm-offset-2 col-md-3 col-md-offset-4 col-lg-3 col-lg-offset-4 subjectButton" ui-sref="app.vdm.vdmList({id: subject.id})">MDT</button>
                         </span>
