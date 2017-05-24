@@ -2423,7 +2423,7 @@ class VdmsController < ApplicationController
           if assignments == nil
             assignments = u.design_assignments.where(:status => 'asignado').count
           else
-            if u.design_assignments.where(:status => 'asignado').count <= assignments || u.production_dpt_assignments == nil
+            if u.design_assignments.where(:status => 'asignado').count <= assignments || u.design_assignments == nil
               employee = u
             end
           end
@@ -2431,7 +2431,7 @@ class VdmsController < ApplicationController
           if assignments == nil
             assignments = u.post_prod_dpt_assignments.where(:status => 'asignado').count
           else
-            if u.post_prod_dpt_assignments.where(:status => 'asignado').count <= assignments || u.production_dpt_assignments == nil
+            if u.post_prod_dpt_assignments.where(:status => 'asignado').count <= assignments || u.post_prod_dpt_assignments == nil
               employee = u
             end
           end
@@ -2439,7 +2439,7 @@ class VdmsController < ApplicationController
           if assignments == nil
             assignments = u.qa_assignments.where(:status => 'asignado').count
           else
-            if u.qa_assignments.where(:status => 'asignado').count <= assignments
+            if u.qa_assignments.where(:status => 'asignado').count <= assignments || u.qa_assignments == nil
               employee = u
             end
           end
