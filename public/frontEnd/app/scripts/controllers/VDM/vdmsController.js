@@ -1821,7 +1821,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var i = 0;
                         angular.forEach(upload, function(file){
                             Upload.upload({
-                                url: baseUrl+'/upload_tmp?file_name='+file_name+'&file_type='+file_type+'&vdm_id='+vdm_id,
+                                url: baseUrl+'/upload_tmp?file_name='+file.name+'&file_type='+type+'&vdm_id='+vdm.id,
                                 method: 'POST',
                                 data: {body: file}
                             }).then(function (resp){
