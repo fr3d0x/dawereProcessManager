@@ -26,7 +26,7 @@ Rails.application.routes.draw do
         post :upload_design_files
         post :upload_production_files
         post :upload_post_production_files
-        post :raw_material_upload
+        get :finish_big_files_upload
         get :resume_file
       end
     end
