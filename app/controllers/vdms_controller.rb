@@ -2413,33 +2413,33 @@ class VdmsController < ApplicationController
       case department
         when 'editor'
           if assignments == nil
-            assignments = u.production_dpt_assignments.count
+            assignments = u.production_dpt_assignments.where(:status => 'asignado').count
           else
-            if u.production_dpt_assignments.count <= assignments || u.production_dpt_assignments == nil
+            if u.production_dpt_assignments.where(:status => 'asignado').count <= assignments || u.production_dpt_assignments == nil
               employee = u
             end
           end
         when 'designer'
           if assignments == nil
-            assignments = u.design_assignments.count
+            assignments = u.design_assignments.where(:status => 'asignado').count
           else
-            if u.design_assignments.count <= assignments
+            if u.design_assignments.where(:status => 'asignado').count <= assignments || u.design_assignments == nil
               employee = u
             end
           end
         when 'post-producer'
           if assignments == nil
-            assignments = u.post_prod_dpt_assignments.count
+            assignments = u.post_prod_dpt_assignments.where(:status => 'asignado').count
           else
-            if u.post_prod_dpt_assignments.count <= assignments
+            if u.post_prod_dpt_assignments.where(:status => 'asignado').count <= assignments || u.post_prod_dpt_assignments == nil
               employee = u
             end
           end
         when 'qa-analyst'
           if assignments == nil
-            assignments = u.qa_assignments
+            assignments = u.qa_assignments.where(:status => 'asignado').count
           else
-            if u.qa_assignments.count <= assignments
+            if u.qa_assignments.where(:status => 'asignado').count <= assignments || u.qa_assignments == nil
               employee = u
             end
           end
