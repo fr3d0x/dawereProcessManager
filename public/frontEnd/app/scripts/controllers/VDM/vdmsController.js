@@ -1823,6 +1823,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                             Upload.upload({
                                 url: baseUrl+'/upload_tmp?file_name='+file.name+'&file_type='+type+'&vdm_id='+vdm.id,
                                 method: 'POST',
+                                headers: {'file-name': file.name},
                                 data: {body: file}
                             }).then(function (resp){
                                 if(vdm.prodDept != null){

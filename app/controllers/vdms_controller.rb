@@ -2561,68 +2561,71 @@ class VdmsController < ApplicationController
     if params[:vdm_id] != nil
       vdm = Vdm.find(params[:vdm_id])
       route = ''
-      case params[:file_type]
-        when 'master_planes'
-          rec = MasterPlane.new
-          route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/"
-          FileUtils::mkdir_p route
-          FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
-          rec.production_dpt_id = vdm.production_dpt.id
-          rec.file_name = params[:file_name]
-          rec.file = "#{route}/#{params[:file_name]}"
-          rec.save!
-          payload = {
-              files: vdm.production_dpt.master_planes
-          }
-        when 'detail_planes'
-          rec = DetailPlane.new
-          route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detailed_planes/"
-          FileUtils::mkdir_p route
-          FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
-          rec.production_dpt_id = vdm.production_dpt.id
-          rec.file_name = params[:file_name]
-          rec.file = "#{route}/#{params[:file_name]}"
-          rec.save!
-          payload = {
-              files: vdm.production_dpt.detail_planes
-          }
-        when 'wacom_vids'
-          rec = WacomVid.new
-          route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
-          FileUtils::mkdir_p route
-          FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
-          rec.production_dpt_id = vdm.production_dpt.id
-          rec.file_name = params[:file_name]
-          rec.file = "#{route}/#{params[:file_name]}"
-          rec.save!
-          payload = {
-              files: vdm.production_dpt.wacom_vids
-          }
-        when 'prod_audios'
-          rec = ProdAudio.new
-          route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/"
-          FileUtils::mkdir_p route
-          FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
-          rec.production_dpt_id = vdm.production_dpt.id
-          rec.file_name = params[:file_name]
-          rec.file = "#{route}/#{params[:file_name]}"
-          rec.save!
-          payload = {
-              files: vdm.production_dpt.prod_audios
-          }
+      if File.exists?("#{$big_files_tmp_route}/#{params[:file_name]}")
+        case params[:file_type]
+          when 'master_planes'
+            rec = MasterPlane.new
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = params[:file_name]
+            rec.file = "#{route}/#{params[:file_name]}"
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.master_planes
+            }
+          when 'detail_planes'
+            rec = DetailPlane.new
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detailed_planes/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = params[:file_name]
+            rec.file = "#{route}/#{params[:file_name]}"
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.detail_planes
+            }
+          when 'wacom_vids'
+            rec = WacomVid.new
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = params[:file_name]
+            rec.file = "#{route}/#{params[:file_name]}"
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.wacom_vids
+            }
+          when 'prod_audios'
+            rec = ProdAudio.new
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            rec.production_dpt_id = vdm.production_dpt.id
+            rec.file_name = params[:file_name]
+            rec.file = "#{route}/#{params[:file_name]}"
+            rec.save!
+            payload = {
+                files: vdm.production_dpt.prod_audios
+            }
+        end
+        FileUtils.remove_dir "#{dir}", true
+        change = VdmChange.new
+        change.changeDetail = "Subida de meterial bruto #{params[:file_type]}"
+        change.vdm_id = vdm.id
+        change.user_id = $currentPetitionUser['id']
+        change.uname = $currentPetitionUser['username']
+        change.videoId = vdm.videoId
+        change.department = 'produccion'
+        change.save!
+        render :json => { data: payload, status: 'SUCCESS'}, :status => 200
+      else
+        render :json => { data: nil, status: 'NOT FOUND'}, :status => 200
       end
-
     end
-    FileUtils.remove_dir "#{dir}", true
-    change = VdmChange.new
-    change.changeDetail = "Subida de meterial bruto #{params[:file_type]}"
-    change.vdm_id = vdm.id
-    change.user_id = $currentPetitionUser['id']
-    change.uname = $currentPetitionUser['username']
-    change.videoId = vdm.videoId
-    change.department = 'produccion'
-    change.save!
-    render :json => { data: payload, status: 'SUCCESS'}, :status => 200
   end
 
   private
