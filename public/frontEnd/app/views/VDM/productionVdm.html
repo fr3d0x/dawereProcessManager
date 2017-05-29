@@ -279,7 +279,7 @@
                     </div>
                     <div align="center" ng-if="row.uploadFiles == false && row.upload_big_files == true">
                         <div>
-                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'master_planes')" multiple="multiple" name="illustrators" id="uploadMasterPlain" title="subir planos master">
+                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_files($files, row, 'master_planes')" multiple="multiple" name="illustrators" id="uploadMasterPlain" title="subir planos master">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_master_plane == true">
                             </i>
@@ -295,7 +295,7 @@
                             </i>
                         </div>
                         <div>
-                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'wacom_vids')" multiple="multiple" name="illustrators" id="uploadWacomVid" title="subir videos wacom">
+                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_files($files, row, 'wacom_vids')" multiple="multiple" name="illustrators" id="uploadWacomVid" title="subir videos wacom">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_wacom_vid == true">
                             </i>
