@@ -2557,7 +2557,7 @@ class VdmsController < ApplicationController
     end
   end
 
-  def finish_big_files_upload
+  def upload_tmp
     if params[:vdm_id] != nil
       vdm = Vdm.find(params[:vdm_id])
       route = ''

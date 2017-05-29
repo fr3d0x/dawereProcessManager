@@ -1821,44 +1821,41 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var i = 0;
                         angular.forEach(upload, function(file){
                             Upload.upload({
-                                url: baseUrl+'/upload_tmp',
+                                url: baseUrl+'/upload_tmp?file_name='+file_name+'&file_type='+file_type+'&vdm_id='+vdm_id,
                                 method: 'POST',
                                 data: {body: file}
-                            }).then(function (response){
-                                dawProcessManagerService.finish_big_file_upload(file.name, type, vdm.id, function(resp){
-                                    if(vdm.prodDept != null){
-                                        switch(type){
-                                            case 'master_planes':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_master_planes = false;
-                                                }
-                                                vdm.prodDept.master_planes = resp.data.data.files;
-                                                break;
-                                            case 'detail_planes':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_detail_plane = false;
-                                                }
-                                                vdm.prodDept.detail_planes = resp.data.data.files;
-                                                break;
-                                            case 'wacom_vids':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_wacom_vid = false;
-                                                }
-                                                vdm.prodDept.wacom_vids = resp.data.data.files;
+                            }).then(function (resp){
+                                if(vdm.prodDept != null){
+                                    switch(type){
+                                        case 'master_planes':
+                                            if(i == upload.length - 1){
+                                                vdm.uploading_master_planes = false;
+                                            }
+                                            vdm.prodDept.master_planes = resp.data.data.files;
+                                            break;
+                                        case 'detail_planes':
+                                            if(i == upload.length - 1){
+                                                vdm.uploading_detail_plane = false;
+                                            }
+                                            vdm.prodDept.detail_planes = resp.data.data.files;
+                                            break;
+                                        case 'wacom_vids':
+                                            if(i == upload.length - 1){
+                                                vdm.uploading_wacom_vid = false;
+                                            }
+                                            vdm.prodDept.wacom_vids = resp.data.data.files;
 
-                                                break;
-                                            case 'prod_audios':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_prod_audio = false;
-                                                }
-                                                vdm.prodDept.prod_audios = resp.data.data.files;
-                                                break;
-                                        }
-                                        i ++;
+                                            break;
+                                        case 'prod_audios':
+                                            if(i == upload.length - 1){
+                                                vdm.uploading_prod_audio = false;
+                                            }
+                                            vdm.prodDept.prod_audios = resp.data.data.files;
+                                            break;
                                     }
-                                }, function(error){
-                                    console.log(error);
-                                });
+                                    i ++;
+                                }
+
                                 angular.element("input[type='file']").val(null);
                                 /*console.clear();*/
                             }, function (error) {
