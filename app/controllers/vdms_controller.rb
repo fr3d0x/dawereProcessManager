@@ -2561,13 +2561,13 @@ class VdmsController < ApplicationController
     if params[:vdm_id] != nil
       vdm = Vdm.find(params[:vdm_id])
       route = ''
-      if File.exists?("#{$big_files_tmp_route}/#{params[:file_name]}")
+      if File.exists?("#{$big_files_tmp_route}/#{request.headers['X-FILE']}")
         case params[:file_type]
           when 'master_planes'
             rec = MasterPlane.new
             route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/"
             FileUtils::mkdir_p route
-            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            FileUtils.mv "#{$big_files_tmp_route}/#{request.headers['X-FILE']}", "#{route}/#{params[:file_name]}"
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:file_name]
             rec.file = "#{route}/#{params[:file_name]}"
@@ -2579,7 +2579,7 @@ class VdmsController < ApplicationController
             rec = DetailPlane.new
             route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detailed_planes/"
             FileUtils::mkdir_p route
-            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            FileUtils.mv "#{$big_files_tmp_route}/#{request.headers['X-FILE']}", "#{route}/#{params[:file_name]}"
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:file_name]
             rec.file = "#{route}/#{params[:file_name]}"
@@ -2591,7 +2591,7 @@ class VdmsController < ApplicationController
             rec = WacomVid.new
             route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
             FileUtils::mkdir_p route
-            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            FileUtils.mv "#{$big_files_tmp_route}/#{request.headers['X-FILE']}", "#{route}/#{params[:file_name]}"
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:file_name]
             rec.file = "#{route}/#{params[:file_name]}"
@@ -2603,7 +2603,7 @@ class VdmsController < ApplicationController
             rec = ProdAudio.new
             route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/"
             FileUtils::mkdir_p route
-            FileUtils.mv "#{$big_files_tmp_route}/#{params[:file_name]}", "#{route}/#{params[:file_name]}"
+            FileUtils.mv "#{$big_files_tmp_route}/#{request.headers['X-FILE']}", "#{route}/#{params[:file_name]}"
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:file_name]
             rec.file = "#{route}/#{params[:file_name]}"
@@ -2623,7 +2623,7 @@ class VdmsController < ApplicationController
         change.save!
         render :json => { data: payload, status: 'SUCCESS'}, :status => 200
       else
-        render :json => { data: nil, status: 'NOT FOUND'}, :status => 200
+        render :json => { data: request.headers['X-FILE'], status: 'NOT FOUND'}, :status => 200
       end
     end
   end
