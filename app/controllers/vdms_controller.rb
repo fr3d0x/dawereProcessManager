@@ -2561,7 +2561,7 @@ class VdmsController < ApplicationController
     if params[:vdm_id] != nil
       vdm = Vdm.find(params[:vdm_id])
       route = ''
-      if File.exists?("#{$big_files_tmp_route}/#{request.headers['X-FILE']}")
+      if File.exist?("#{$big_files_tmp_route}/#{request.headers['X-FILE']}")
         case params[:file_type]
           when 'master_planes'
             rec = MasterPlane.new
