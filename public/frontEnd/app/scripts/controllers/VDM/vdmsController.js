@@ -1908,8 +1908,8 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var i = 0;
                         angular.forEach(upload, function(file){
                             Upload.upload({
-                                url: baseUrl+'/api/vdms/raw_material_upload?vdm_id='+vdm.id+'&file_size='+file.size+'&file_type='+type,
-                                resumeSizeUrl: baseUrl+'/api/vdms/resume_file?file_name=' + file.name +'&file_size='+file.size,
+                                url: baseUrl+':8000/api/vdms/raw_material_upload?vdm_id='+vdm.id+'&file_size='+file.size+'&file_type='+type,
+                                resumeSizeUrl: baseUrl+':8000/api/vdms/resume_file?file_name=' + file.name +'&file_size='+file.size,
                                 resumeChunkSize: '50MB',
                                 data: {upload: file}
                             }).then(function (resp) {
