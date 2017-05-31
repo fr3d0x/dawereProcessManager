@@ -39,20 +39,20 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }else{
                 departments['pre-production'] = 'Contenido';
-                if (vdm.productionStatus != null){
+                if (vdm.productionStatus != 'no asignado'){
                     departments['production'] = 'Produccion';
                 }
-                if (vdm.editionStatus != null){
+                if (vdm.editionStatus != 'no asignado'){
                     departments['edition'] = 'Edicion'
                 }
-                if (vdm.designStatus != null){
+                if (vdm.designStatus != 'no asignado'){
                     departments['design'] = 'Diseño'
                 }
-                if (vdm.postProdStatus != null){
+                if (vdm.postProdStatus != 'no asignado'){
                     departments['postProduction'] = 'Post-Produccion'
                 }
             }
-            
+
             return departments
         };
         var getVdms = function(){
