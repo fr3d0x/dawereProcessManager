@@ -1617,7 +1617,6 @@ class VdmsController < ApplicationController
             vdm.production_dpt.vidDev = false
 
             vdm.production_dpt.conclu = false
-            vdm.production_dpt.status = 'no asignado'
             if vdm.production_dpt.production_dpt_assignment != nil
               vdm.production_dpt.production_dpt_assignment.status = 'no asignado'
               vdm.production_dpt.production_dpt_assignment.save!
@@ -1658,14 +1657,14 @@ class VdmsController < ApplicationController
             change.uname = $currentPetitionUser['username']
 
             if vdm.product_management != nil
-              vdm.product_management.productionStatus = 'rechazado'
+              vdm.product_management.productionStatus = nil
               vdm.product_management.editionStatus = nil
               vdm.product_management.designStatus = nil
               vdm.product_management.postProductionStatus = nil
               vdm.product_management.save!
             end
             change.save!
-            vdm.production_dpt.status = 'rechazado'
+            vdm.production_dpt.status = 'no asignado'
             vdm.production_dpt.save!
             UserNotifier.send_rejected_to_production(vdm).deliver
             if vdm.production_dpt != nil
@@ -1714,6 +1713,7 @@ class VdmsController < ApplicationController
                 postProdDept: postProdPayload,
                 qa: qa
             }
+            vdm.save!
           end
         when 'production'
           parts = ''
