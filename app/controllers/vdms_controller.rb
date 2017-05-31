@@ -2600,7 +2600,7 @@ class VdmsController < ApplicationController
             rec = MasterPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{route}/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.master_planes
@@ -2609,7 +2609,7 @@ class VdmsController < ApplicationController
             rec = DetailPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{route}/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.detail_planes
@@ -2618,7 +2618,7 @@ class VdmsController < ApplicationController
             rec = WacomVid.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{route}/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.wacom_vids
@@ -2627,7 +2627,7 @@ class VdmsController < ApplicationController
             rec = ProdAudio.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{route}/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.prod_audios
