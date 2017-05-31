@@ -207,28 +207,28 @@
                         <div ng-if="row.prodDept.master_planes.length >= 1">
                             <h4>Plano master</h4>
                             <div ng-repeat="file in row.prodDept.master_planes">
-                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.detail_planes.length >= 1">
                             <h4>Plano detallado</h4>
                             <div ng-repeat="file in row.prodDept.detail_planes">
-                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.wacom_vids.length >= 1">
                             <h4>Videos wacom</h4>
                             <div ng-repeat="file in row.prodDept.wacom_vids">
-                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div>
                             <br>
                         </div>
                         <div ng-if="row.prodDept.prod_audios.length >= 1">
                             <h4>Audios</h4>
                             <div ng-repeat="file in row.prodDept.prod_audios">
-                                <a ng-href="{{downloadRoot + file.file.url}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
+                                <a ng-href="{{downloadRoot + file.file}}" download class="prettyLinkSmall">&#x25CF;{{file.file_name}}</a>
                             </div>
                             <br>
                         </div>
@@ -279,7 +279,7 @@
                     </div>
                     <div align="center" ng-if="row.uploadFiles == false && row.upload_big_files == true">
                         <div>
-                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_files($files, row, 'master_planes')" multiple="multiple" name="illustrators" id="uploadMasterPlain" title="subir planos master">
+                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'master_planes')" multiple="multiple" name="master_planes" id="uploadMasterPlain" title="subir planos master">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_master_plane == true">
                             </i>
@@ -287,7 +287,7 @@
                             </i>
                         </div>
                         <div>
-                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'detail_planes')" multiple="multiple" name="illustrators" id="uploadDetailPlain" title="subir planos detallados">
+                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'detail_planes')" multiple="multiple" name="detail_planes" id="uploadDetailPlain" title="subir planos detallados">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_detail_plane == true">
                             </i>
@@ -295,7 +295,7 @@
                             </i>
                         </div>
                         <div>
-                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_files($files, row, 'wacom_vids')" multiple="multiple" name="illustrators" id="uploadWacomVid" title="subir videos wacom">
+                            <i class="fa fa-files-o uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'wacom_vids')" multiple="multiple" name="wacom_vids" id="uploadWacomVid" title="subir videos wacom">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_wacom_vid == true">
                             </i>
@@ -303,7 +303,7 @@
                             </i>
                         </div>
                         <div>
-                            <i class="fa fa-music uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'prod_audios')" multiple="multiple" name="illustrators" id="uploadProdAudio" title="subir audios">
+                            <i class="fa fa-music uploadBtn" aria-hidden="true" style="font-size: 15px" ngf-select="upload_big_file_arrays($files, row, 'prod_audios')" multiple="multiple" name="prod_audios" id="uploadProdAudio" title="subir audios">
                             </i>
                             <i class="fa fa-refresh rotate" aria-hidden="true" style="font-size: 10px; color: lightskyblue" ng-if="row.uploading_prod_audio == true">
                             </i>

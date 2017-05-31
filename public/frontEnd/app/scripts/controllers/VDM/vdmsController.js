@@ -1768,7 +1768,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                 }
             }
         };
-        $scope.upload_big_files = function(upload, vdm, type){
+        $scope.upload_big_file_arrays = function(upload, vdm, type){
             var valid = true;
             var msg = '';
             var baseUrl = ENV.baseUrl;
@@ -1821,44 +1821,57 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var i = 0;
                         angular.forEach(upload, function(file){
                             Upload.upload({
-                                url: baseUrl+'/upload_tmp?file_name='+file.name+'&file_type='+type+'&vdm_id='+vdm.id,
-                                method: 'POST',
-                                headers: {'file-name': file.name},
-                                data: {body: file}
-                            }).then(function (resp){
-                                if(vdm.prodDept != null){
-                                    switch(type){
-                                        case 'master_planes':
-                                            if(i == upload.length - 1){
-                                                vdm.uploading_master_planes = false;
-                                            }
-                                            vdm.prodDept.master_planes = resp.data.data.files;
-                                            break;
-                                        case 'detail_planes':
-                                            if(i == upload.length - 1){
-                                                vdm.uploading_detail_plane = false;
-                                            }
-                                            vdm.prodDept.detail_planes = resp.data.data.files;
-                                            break;
-                                        case 'wacom_vids':
-                                            if(i == upload.length - 1){
-                                                vdm.uploading_wacom_vid = false;
-                                            }
-                                            vdm.prodDept.wacom_vids = resp.data.data.files;
+                                url: baseUrl+'/api/vdms/raw_material_upload?vdm_id='+vdm.id+'&file_size='+file.size+'&file_type='+type,
+                                resumeSizeUrl: baseUrl+'/api/vdms/resume_file?file_name=' + file.name +'&file_size='+file.size,
+                                resumeChunkSize: '8MB',
+                                data: {upload: file}
+                            }).then(function (resp) {
+                                if(resp.data != null && resp.data.data != null){
+                                    if(vdm.prodDept != null){
+                                        switch(type){
+                                            case 'master_planes':
+                                                if(i == upload.length - 1){
+                                                    vdm.uploading_master_plane = false;
+                                                }
+                                                vdm.prodDept.master_planes = resp.data.data.files;
+                                                break;
+                                            case 'detail_planes':
+                                                if(i == upload.length - 1){
+                                                    vdm.uploading_detail_plane = false;
+                                                }
+                                                vdm.prodDept.detail_planes = resp.data.data.files;
+                                                break;
+                                            case 'wacom_vids':
+                                                if(i == upload.length - 1){
+                                                    vdm.uploading_wacom_vid = false;
+                                                }
+                                                vdm.prodDept.wacom_vids = resp.data.data.files;
 
-                                            break;
-                                        case 'prod_audios':
-                                            if(i == upload.length - 1){
-                                                vdm.uploading_prod_audio = false;
-                                            }
-                                            vdm.prodDept.prod_audios = resp.data.data.files;
-                                            break;
+                                                break;
+                                            case 'prod_audios':
+                                                if(i == upload.length - 1){
+                                                    vdm.uploading_prod_audio = false;
+                                                }
+                                                vdm.prodDept.prod_audios = resp.data.data.files;
+                                                break;
+                                        }
                                     }
                                     i ++;
+                                }else{
+                                    vdm.uploading_master_plane = null;
+                                    vdm.uploading_detail_plane = null;
+                                    vdm.uploading_wacom_vid = null;
+                                    vdm.uploading_prod_audio = null;
+                                    swal({
+                                        title: "ERROR",
+                                        text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                                        type: 'error',
+                                        confirmButtonText: "OK",
+                                        confirmButtonColor: "lightcoral"
+                                    });
                                 }
-
                                 angular.element("input[type='file']").val(null);
-                                /*console.clear();*/
+                                console.clear();
                             }, function (error) {
                                 angular.element("input[type='file']").val(null);
                                 $rootScope.setLoader(false);
@@ -1880,6 +1893,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 break;
                             case 'prod_audios':
                                 vdm.uploading_prod_audio = null;
+
                                 break;
                         }
                         angular.element("input[type='file']").val(null);

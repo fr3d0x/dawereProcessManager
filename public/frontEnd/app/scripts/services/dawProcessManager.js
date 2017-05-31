@@ -125,9 +125,4 @@ app.service('dawProcessManagerService',['$http', 'localStorageService','ENV', fu
         $http.post(baseUrl + '/api/subjects/assignSubject', subject).success(success).error(error);
 
     };
-
-    this.finish_big_file_upload = function (file_name, file_type, vdm_id, success, error) {
-        $http.get(baseUrl + '/api/vdms/finish_big_files_upload?file_name='+file_name+'&file_type='+file_type+'&vdm_id='+vdm_id).success(success).error(error);
-
-    };
 }]);

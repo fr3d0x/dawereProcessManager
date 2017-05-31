@@ -4,7 +4,7 @@ class ApplicationController < ActionController::API
   require 'json'
   $secretKey = "d@w3r3's_$3cr3t_k3y"
   $drive_copy_route = '/mnt/hgfs/railsDpmUploads/NUBE DAWERE/'
-  $big_files_tmp_route = '/home/fr3d0/projects/big_files_tmp/'
+  $big_files_tmp_route = '/mnt/hgfs/railsDpmUploads/big_files_tmp/'
   $files_root = '/mnt/hgfs/railsDpmUploads/'
   def authenticate
     token = request.headers['AUTHORIZATION']
@@ -31,9 +31,7 @@ class ApplicationController < ActionController::API
           end
         end
       end
-      if !roleFound
-        raise Exceptions::InvalidRoleException
-      end
+      raise Exceptions::InvalidRoleException unless roleFound
     else
       raise Exceptions::InvalidRoleException
     end
