@@ -1609,12 +1609,13 @@ class VdmsController < ApplicationController
       case params['rejection']
         when 'pre-production'
           parts = ''
+          vdm.status = 'rechazado'
           if vdm.production_dpt != nil
-            
+
             vdm.production_dpt.intro = false
-            
+
             vdm.production_dpt.vidDev = false
-            
+
             vdm.production_dpt.conclu = false
             vdm.production_dpt.status = 'no asignado'
             if vdm.production_dpt.production_dpt_assignment != nil
@@ -1655,7 +1656,7 @@ class VdmsController < ApplicationController
             change.changedTo = 'rechazado'
             change.videoId = vdm.videoId
             change.uname = $currentPetitionUser['username']
-           
+
             if vdm.product_management != nil
               vdm.product_management.productionStatus = 'rechazado'
               vdm.product_management.editionStatus = nil
