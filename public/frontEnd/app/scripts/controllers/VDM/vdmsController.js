@@ -919,6 +919,78 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     }).then(function(result) {
                         if(result != null){
                             switch  (result){
+                                case 'pre-production':
+                                    swal({
+                                        title: 'Justificar rechazo',
+                                        input: 'textarea',
+                                        type: 'question',
+                                        showCancelButton: true
+                                    }).then(function(text){
+                                        $rootScope.setLoader(true);
+                                        var request = {};
+                                        request.rejection = 'pre-production';
+                                        request.justification = text;
+                                        request.vdmId = vdm.id;
+                                        request.rejectedFrom = department;
+                                        request.role = localStorageService.get('currentRole');
+                                        dawProcessManagerService.rejectVdm(request, function (response) {
+                                            swal({
+                                                title: "Exitoso",
+                                                text: "Se ha rechazado el MDT del video " + vdm.videoId+" y ha sido devuelto a contenido",
+                                                type: 'success',
+                                                confirmButtonText: "OK",
+                                                confirmButtonColor: "lightskyblue"
+                                            });
+                                            if (vdm.prodDept != null){
+                                                if (response.data.prodDept){
+                                                    vdm.prodDept.intro = response.data.prodDept.intro;
+                                                    vdm.intro = vdm.prodDept.intro;
+                                                    vdm.prodDept.conclu = response.data.prodDept.conclu;
+                                                    vdm.conclu = vdm.prodDept.conclu;
+                                                    vdm.prodDept.vidDev = response.data.prodDept.vidDev;
+                                                    vdm.vidDev = vdm.prodDept.vidDev;
+                                                    vdm.prodDept.status = response.data.prodDept.status;
+                                                    if(response.data.prodDept.assignment != null){
+                                                        if (vdm.prodDept.assignment){
+                                                            vdm.prodDept.assignment.assignedName = response.data.prodDept.assignment.assignedName;
+                                                            vdm.prodDept.assignment.id = response.data.prodDept.assignment.id;
+                                                            vdm.prodDept.assignment.status = response.data.prodDept.assignment.status;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if(vdm.productManagement != null){
+                                                if (response.data.productManagement != null){
+                                                    vdm.productManagement = response.data.productManagement;
+                                                }
+                                            }
+                                            if (vdm.designDept != null){
+                                                if(response.data.designDept != null){
+                                                    vdm.designDept = response.data.designDept;
+                                                }
+                                            }
+                                            if(vdm.postProdDept != null){
+                                                if(response.data.postProdDept != null){
+                                                    vdm.postProdDept = response.data.postProdDept;
+                                                }
+                                            }
+                                            if (vdm.qa != null){
+                                                if(response.data.qa != null){
+                                                    vdm.qa = response.data.qa
+                                                }
+                                            }
+                                            $rootScope.setLoader(false);
+                                            $scope.disableSave = false;
+                                        }, function(error){
+                                            $rootScope.setLoader(false);
+                                            $scope.disableSave = false;
+                                            console.log(error)
+                                        });
+                                    }, function(){
+                                        $rootScope.setLoader(false);
+                                        $scope.disableSave = false;
+                                    });
+                                    break;
                                 case 'production':
                                     swal({
                                         title: 'seleccione que desea devolver y justifique',
