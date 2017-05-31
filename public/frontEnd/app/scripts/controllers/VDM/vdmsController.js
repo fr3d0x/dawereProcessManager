@@ -16,26 +16,43 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
         };
         var getDepartmentsToReturn = function (vdm) {
             var departments = {};
-            if (vdm.productionStatus != null){
-                if (vdm.productionStatus == 'grabado' || vdm.productionStatus == 'aprobado' || vdm.productionStatus == 'por aprobar'){
+            if(vdm.role != 'productManager'){
+                if (vdm.productionStatus != null){
+                    if (vdm.productionStatus == 'grabado' || vdm.productionStatus == 'aprobado' || vdm.productionStatus == 'por aprobar'){
+                        departments['production'] = 'Produccion';
+                    }
+                }
+                if (vdm.editionStatus != null){
+                    if (vdm.editionStatus == 'editado' || vdm.editionStatus == 'aprobado' || vdm.editionStatus == 'por aprobar'){
+                        departments['edition'] = 'Edicion'
+                    }
+                }
+                if (vdm.designStatus != null){
+                    if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'por aprobar'|| vdm.designStatus == 'aprobado'){
+                        departments['design'] = 'Diseño'
+                    }
+                }
+                if (vdm.postProdStatus != null){
+                    if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'por aprobar' || 'por aprobar qa'){
+                        departments['postProduction'] = 'Post-Produccion'
+                    }
+                }
+            }else{
+                departments['pre-production'] = 'Contenido';
+                if (vdm.productionStatus != null){
                     departments['production'] = 'Produccion';
                 }
-            }
-            if (vdm.editionStatus != null){
-                if (vdm.editionStatus == 'editado' || vdm.editionStatus == 'aprobado' || vdm.editionStatus == 'por aprobar'){
+                if (vdm.editionStatus != null){
                     departments['edition'] = 'Edicion'
                 }
-            }
-            if (vdm.designStatus != null){
-                if (vdm.designStatus == 'diseñado' || vdm.designStatus == 'por aprobar'|| vdm.designStatus == 'aprobado'){
+                if (vdm.designStatus != null){
                     departments['design'] = 'Diseño'
                 }
-            }
-            if (vdm.postProdStatus != null){
-                if (vdm.postProdStatus == 'terminado' || vdm.postProdStatus == 'por aprobar' || 'por aprobar qa'){
+                if (vdm.postProdStatus != null){
                     departments['postProduction'] = 'Post-Produccion'
                 }
             }
+            
             return departments
         };
         var getVdms = function(){
@@ -1780,8 +1797,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         switch(type){
                             case 'master_planes':
                                 regex = new RegExp("(.*?)\.(zip)$");
-                                movRegex = new RegExp("(.*?)\.(mov)$");
-                                if(regex.test(file.name.toLowerCase()) || movRegex.test(file.name.toLowerCase()) ){
+                                if(regex.test(file.name.toLowerCase())){
                                     vdm.uploading_master_plane = true;
                                 }else{
                                     msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
@@ -1790,8 +1806,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 break;
                             case 'detail_planes':
                                 regex = new RegExp("(.*?)\.(zip)$");
-                                movRegex = new RegExp("(.*?)\.(mov)$");
-                                if(regex.test(file.name.toLowerCase()) || movRegex.test(file.name.toLowerCase()) ){
+                                if(regex.test(file.name.toLowerCase())){
                                     vdm.uploading_detail_plane = true;
                                 }else{
                                     msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
@@ -1800,7 +1815,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 break;
                             case 'wacom_vids':
                                 regex = new RegExp("(.*?)\.(zip)$");
-                                if(!(regex.test(file.name.toLowerCase()))){
+                                if(!regex.test(file.name.toLowerCase())){
                                     msg = "Estos archivos deben ser .mp4 para ser guardados";
                                     valid = false;
                                 }
@@ -1808,7 +1823,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 break;
                             case 'prod_audios':
                                 regex = new RegExp("(.*?)\.(zip)$");
-                                if(!(regex.test(file.name.toLowerCase()))){
+                                if(!regex.test(file.name.toLowerCase())){
                                     msg = "Estos archivos deben ser .wav para ser guardados";
                                     valid = false;
                                 }

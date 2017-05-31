@@ -1607,6 +1607,113 @@ class VdmsController < ApplicationController
       qa = {}
       vdm = Vdm.find(params['vdmId'])
       case params['rejection']
+        when 'pre-production'
+          parts = ''
+          if vdm.production_dpt != nil
+            
+            vdm.production_dpt.intro = false
+            
+            vdm.production_dpt.vidDev = false
+            
+            vdm.production_dpt.conclu = false
+            vdm.production_dpt.status = 'no asignado'
+            if vdm.production_dpt.production_dpt_assignment != nil
+              vdm.production_dpt.production_dpt_assignment.status = 'no asignado'
+              vdm.production_dpt.production_dpt_assignment.save!
+            end
+            if vdm.design_dpt != nil
+              vdm.design_dpt.status = 'no asignado'
+              vdm.design_dpt.save!
+              if vdm.design_dpt.design_assignment != nil
+                vdm.design_dpt.design_assignment.status = 'no asignado'
+                vdm.design_dpt.design_assignment.save!
+              end
+            end
+            if vdm.post_prod_dpt != nil
+              vdm.post_prod_dpt.status = 'no asignado'
+              vdm.post_prod_dpt.save!
+              if vdm.post_prod_dpt.post_prod_dpt_assignment != nil
+                vdm.post_prod_dpt.post_prod_dpt_assignment.status = 'no asignado'
+                vdm.post_prod_dpt.post_prod_dpt_assignment.save!
+              end
+            end
+            if vdm.qa_dpt
+              vdm.qa_dpt.status = 'no asignado'
+              vdm.qa_dpt.save!
+              if vdm.qa_dpt.qa_assignment
+                vdm.qa_dpt.qa_assignment.status = 'no asignado'
+                vdm.qa_dpt.qa_assignment.save!
+              end
+            end
+            change = VdmChange.new
+            change.changeDetail = 'rechazado por '+request['rejectedFrom']
+            change.changeDate = Time.now
+            change.user_id = $currentPetitionUser['id']
+            change.vdm_id = vdm.id
+            change.department = 'pre-produccion'
+            change.changedFrom = vdm.production_dpt.status
+            change.changedTo = 'rechazado'
+            change.videoId = vdm.videoId
+            change.uname = $currentPetitionUser['username']
+           
+            if vdm.product_management != nil
+              vdm.product_management.productionStatus = 'rechazado'
+              vdm.product_management.editionStatus = nil
+              vdm.product_management.designStatus = nil
+              vdm.product_management.postProductionStatus = nil
+              vdm.product_management.save!
+            end
+            change.save!
+            vdm.production_dpt.status = 'rechazado'
+            vdm.production_dpt.save!
+            UserNotifier.send_rejected_to_production(vdm).deliver
+            if vdm.production_dpt != nil
+              prdPayload = {
+                  status: vdm.production_dpt.status,
+                  comments: vdm.production_dpt.comments,
+                  intro: vdm.production_dpt.intro,
+                  conclu: vdm.production_dpt.conclu,
+                  vidDev: vdm.production_dpt.vidDev,
+                  assignment: vdm.production_dpt.production_dpt_assignment
+              }
+            end
+
+            if vdm.design_dpt != nil
+              designPayload = {
+                  status: vdm.design_dpt.status,
+                  comments: vdm.design_dpt.comments,
+                  assignment: vdm.design_dpt.design_assignment
+              }
+            end
+
+            if vdm.post_prod_dpt != nil
+              postProdPayload = {
+                  status: vdm.post_prod_dpt.status,
+                  comments: vdm.post_prod_dpt.comments,
+                  assignment: vdm.post_prod_dpt.post_prod_dpt_assignment
+              }
+            end
+            if vdm.qa_dpt != nil
+              qa = {
+                  status: vdm.qa_dpt.status,
+                  comments: vdm.qa_dpt.comments,
+                  assignment: vdm.qa_dpt.qa_assignment
+              }
+            end
+            payload = {
+                cp: vdm.classes_planification,
+                videoId: vdm.videoId,
+                videoTittle: vdm.videoTittle,
+                videoContent: vdm.videoContent,
+                status: vdm.status,
+                comments: vdm.comments,
+                prodDept: prdPayload,
+                productManagement: vdm.product_management,
+                designDept: designPayload,
+                postProdDept: postProdPayload,
+                qa: qa
+            }
+          end
         when 'production'
           parts = ''
           if vdm.production_dpt != nil
@@ -2600,7 +2707,7 @@ class VdmsController < ApplicationController
             rec = MasterPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.master_planes
@@ -2609,7 +2716,7 @@ class VdmsController < ApplicationController
             rec = DetailPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detail_planes/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.detail_planes
@@ -2627,7 +2734,7 @@ class VdmsController < ApplicationController
             rec = ProdAudio.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
+            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.prod_audios

@@ -77,7 +77,7 @@
                 <td data-title="'Acciones'" ng-if="row.writable != true" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 row" style="vertical-align:middle">
                     <div align="center">
 
-                        <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.productManagement.productionStatus == 'por aprobar' || row.productManagement.editionStatus == 'por aprobar' || row.productManagement.designStatus == 'por aprobar' || row.productManagement.postProductionStatus == 'por aprobar'">
+                        <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.productManagement != null">
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
                         </a><span style="font-size: 20px" ng-if="row.productManagement.productionStatus == 'por aprobar' || row.productManagement.editionStatus == 'por aprobar' || row.productManagement.designStatus == 'por aprobar' || row.productManagement.postProductionStatus == 'por aprobar'">|</span>
 
