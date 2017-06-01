@@ -79,7 +79,7 @@
 
                         <a ng-click="reject(row, 'production')" title='rechazar' ng-if="row.productManagement != null">
                             <i class="fa fa-undo returnBtn" style="font-size: 15px"></i>
-                        </a><span style="font-size: 20px" ng-if="row.productManagement.productionStatus == 'por aprobar' || row.productManagement.editionStatus == 'por aprobar' || row.productManagement.designStatus == 'por aprobar' || row.productManagement.postProductionStatus == 'por aprobar'">|</span>
+                        </a><span style="font-size: 20px" ng-if="row.productManagement != null">|</span>
 
                         <a ui-sref="app.vdm.showVdm({id:row.id})" title='ver detalle'>
                             <i class="fa fa-eye showBtn" aria-hidden="true" style="font-size: 15px"></i>
