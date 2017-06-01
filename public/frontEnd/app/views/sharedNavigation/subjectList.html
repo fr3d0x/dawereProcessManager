@@ -2,11 +2,11 @@
     .titleCenter{
         margin-top: 7%
     }
-  /*  @media screen and (max-width: 1365px) and (min-width: 1200px) {
-        .listItemDescription{
+    @media screen and (max-width: 1365px) and (min-width: 1200px) {
+        .listItemDescriptionSmall{
             height: 220px;
         }
-    }*/
+    }
 
 </style>
 <div class="container-fluid" >
@@ -26,7 +26,7 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="clearfix"></div>
             <div ng-repeat="subject in subjects" >
-                <div class="listItemDescription col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 col-md-10 col-md-offset-1 col-lg-5  row" style="margin-top: 20px;min-height: 170px;">
+                <div class="listItemDescription col-sm-10 col-sm-offset-1 col-xs-10 col-xs-offset-1 col-md-10 col-md-offset-1 col-lg-5  row" style="margin-top: 20px;min-height: 170px;" ng-class="{listItemDescriptionSmall: currentRole == 'contentAnalist' || currentRole == 'contentLeader'}">
 
                     <div class="subjectOptions">
                         <span ng-if="currentRole == 'contentLeader' || currentRole == 'contentAnalist'">
