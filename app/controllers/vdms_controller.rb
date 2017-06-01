@@ -2683,8 +2683,6 @@ class VdmsController < ApplicationController
     end
     if (current_size + params[:_currentChunkSize].to_i) >= filesize
       vdm = Vdm.find(params[:vdm_id])
-      route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
-      FileUtils::mkdir_p route
       if vdm != nil && vdm.production_dpt != nil
         #Create a target file
         File.open("#{dir}/#{params[:upload].original_filename}","a") do |target|
@@ -2702,9 +2700,11 @@ class VdmsController < ApplicationController
             FileUtils.rm "#{dir}/#{params[:upload].original_filename}.part#{i}", :force => true
           end
         end
-        FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
         case params[:file_type]
           when 'master_planes'
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = MasterPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
@@ -2714,6 +2714,9 @@ class VdmsController < ApplicationController
                 files: vdm.production_dpt.master_planes
             }
           when 'detail_planes'
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detail_planes/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = DetailPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
@@ -2723,6 +2726,9 @@ class VdmsController < ApplicationController
                 files: vdm.production_dpt.detail_planes
             }
           when 'wacom_vids'
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = WacomVid.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
@@ -2732,6 +2738,9 @@ class VdmsController < ApplicationController
                 files: vdm.production_dpt.wacom_vids
             }
           when 'prod_audios'
+            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/"
+            FileUtils::mkdir_p route
+            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = ProdAudio.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
@@ -2741,7 +2750,6 @@ class VdmsController < ApplicationController
                 files: vdm.production_dpt.prod_audios
             }
         end
-        FileUtils.remove_dir dir, true
         change = VdmChange.new
         change.changeDetail = "Subida de meterial bruto #{params[:file_type]}"
         change.vdm_id = vdm.id
@@ -2750,6 +2758,7 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.department = 'produccion'
         change.save!
+        FileUtils.remove_dir dir, true
       end
     end
     render :json => { data: payload, status: 'SUCCESS'}, :status => 200
