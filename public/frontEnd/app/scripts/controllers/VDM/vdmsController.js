@@ -1868,7 +1868,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                         var movRegex;
                         switch(type){
                             case 'master_planes':
-                                regex = new RegExp("(.*?)\.(zip)$");
+                                regex = new RegExp("(.*?)\.(mp4|mov)$");
                                 if(regex.test(file.name.toLowerCase())){
                                     vdm.uploading_master_plane = true;
                                 }else{
@@ -1877,7 +1877,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 }
                                 break;
                             case 'detail_planes':
-                                regex = new RegExp("(.*?)\.(zip)$");
+                                regex = new RegExp("(.*?)\.(mp4|mov)$");
                                 if(regex.test(file.name.toLowerCase())){
                                     vdm.uploading_detail_plane = true;
                                 }else{
@@ -1886,7 +1886,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 }
                                 break;
                             case 'wacom_vids':
-                                regex = new RegExp("(.*?)\.(zip)$");
+                                regex = new RegExp("(.*?)\.(mp4)$");
                                 if(!regex.test(file.name.toLowerCase())){
                                     msg = "Estos archivos deben ser .mp4 para ser guardados";
                                     valid = false;
@@ -1894,7 +1894,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                 vdm.uploading_wacom_vid = true;
                                 break;
                             case 'prod_audios':
-                                regex = new RegExp("(.*?)\.(zip)$");
+                                regex = new RegExp("(.*?)\.(wav)$");
                                 if(!regex.test(file.name.toLowerCase())){
                                     msg = "Estos archivos deben ser .wav para ser guardados";
                                     valid = false;
