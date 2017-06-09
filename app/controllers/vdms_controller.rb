@@ -2747,7 +2747,7 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.department = 'produccion'
         change.save!
-        FileUtils.remove_dir dir, true
+        FileUtils.remove_dir dir, force: true
       end
     end
     render :json => { data: payload, status: 'SUCCESS'}, :status => 200
