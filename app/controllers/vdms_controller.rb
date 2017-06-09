@@ -2675,17 +2675,18 @@ class VdmsController < ApplicationController
     # Move the uploaded chunk to the directory
     FileUtils.mv params[:upload].tempfile, chunk
 
-    filesize = params[:file_size].to_i
-    if params[:_currentChunkSize].to_i <  filesize
-      current_size = params[:_chunkNumber].to_i * params[:_chunkSize].to_i
-    else
-      current_size = 0
-    end
+    filesize = params[:_totalSize].to_i
+    current_size = params[:_chunkNumber].to_i * params[:_chunkSize].to_i
+
     if (current_size + params[:_currentChunkSize].to_i) >= filesize
       vdm = Vdm.find(params[:vdm_id])
+      absolute_route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/#{params[:file_type]}/"
+      relative_route = "/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/#{params[:file_type]}"
+      FileUtils::mkdir_p absolute_route
+
       if vdm != nil && vdm.production_dpt != nil
         #Create a target file
-        File.open("#{dir}/#{params[:upload].original_filename}","a") do |target|
+        File.open("#{absolute_route}/#{params[:upload].original_filename}","a") do |target|
           #Loop trough the chunks
           for i in 0..params[:_chunkNumber].to_i
             #Select the chunk
@@ -2702,49 +2703,37 @@ class VdmsController < ApplicationController
         end
         case params[:file_type]
           when 'master_planes'
-            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/"
-            FileUtils::mkdir_p route
-            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = MasterPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/master_planes/#{params[:upload].original_filename}"
+            rec.file = "#{relative_route}/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.master_planes
             }
           when 'detail_planes'
-            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detail_planes/"
-            FileUtils::mkdir_p route
-            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = DetailPlane.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/detail_planes/#{params[:upload].original_filename}"
+            rec.file = "#{relative_route}/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.detail_planes
             }
           when 'wacom_vids'
-            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/"
-            FileUtils::mkdir_p route
-            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = WacomVid.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/wacom_vids/#{params[:upload].original_filename}"
+            rec.file = "#{relative_route}/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.wacom_vids
             }
           when 'prod_audios'
-            route = "#{$files_root}/#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/"
-            FileUtils::mkdir_p route
-            FileUtils.mv "#{dir}/#{params[:upload].original_filename}", route
             rec = ProdAudio.new
             rec.production_dpt_id = vdm.production_dpt.id
             rec.file_name = params[:upload].original_filename
-            rec.file = "#{vdm.classes_planification.subject_planification.subject.grade.name}/#{vdm.classes_planification.subject_planification.subject.name}/#{vdm.videoId}/raw_material/prod_audios/#{params[:upload].original_filename}"
+            rec.file = "#{relative_route}/#{params[:upload].original_filename}"
             rec.save!
             payload = {
                 files: vdm.production_dpt.prod_audios

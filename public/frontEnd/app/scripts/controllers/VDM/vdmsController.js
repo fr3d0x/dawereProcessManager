@@ -5,6 +5,7 @@
 app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'localStorageService', '$location', '$base64','$window','$state','$stateParams', 'responseHandlingService', 'NgTableParams', '$filter','$rootScope', 'Upload',
     function ($scope, ENV, dawProcessManagerService, localStorageService, $location, $base64, $window,$state,$stateParams, responseHandlingService, NgTableParams, $filter, $rootScope, Upload){
         $scope.assignmentStatus = null;
+        $scope.max_file_upload = 0;
         var getEditorsJson = function (employees) {
             var editors = $filter('roles')(employees, ['editor']);
             var editorsJson = {};
@@ -1861,167 +1862,194 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var valid = true;
             var msg = '';
             var baseUrl = ENV.baseUrl;
-            if(Upload.isResumeSupported()){
-                if(vdm.id != null) {
-                    angular.forEach(upload, function(file){
-                        var regex;
-                        var movRegex;
-                        switch(type){
-                            case 'master_planes':
-                                regex = new RegExp("(.*?)\.(mp4|mov)$");
-                                if(regex.test(file.name.toLowerCase())){
-                                    vdm.uploading_master_plane = true;
-                                }else{
-                                    msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
-                                    valid = false;
-                                }
-                                break;
-                            case 'detail_planes':
-                                regex = new RegExp("(.*?)\.(mp4|mov)$");
-                                if(regex.test(file.name.toLowerCase())){
-                                    vdm.uploading_detail_plane = true;
-                                }else{
-                                    msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
-                                    valid = false;
-                                }
-                                break;
-                            case 'wacom_vids':
-                                regex = new RegExp("(.*?)\.(mp4)$");
-                                if(!regex.test(file.name.toLowerCase())){
-                                    msg = "Estos archivos deben ser .mp4 para ser guardados";
-                                    valid = false;
-                                }
-                                vdm.uploading_wacom_vid = true;
-                                break;
-                            case 'prod_audios':
-                                regex = new RegExp("(.*?)\.(wav)$");
-                                if(!regex.test(file.name.toLowerCase())){
-                                    msg = "Estos archivos deben ser .wav para ser guardados";
-                                    valid = false;
-                                }
-                                vdm.uploading_prod_audio = true;
-                                break;
-                        }
-                    });
-
-                    if(valid){
-                        var i = 0;
+            $scope.max_file_upload += 1;
+            if ($scope.max_file_upload <= 4){
+                if(Upload.isResumeSupported()){
+                    if(vdm.id != null) {
                         angular.forEach(upload, function(file){
-                            Upload.upload({
-                                url: 'http://localhost:8000/api/upload_big_files?vdm_id='+vdm.id+'&file_name='+file.name+'&file_type='+type,
-                                resumeSizeUrl: 'http://localhost:8000/api/resume_upload?file_name=' + file.name +'&file_size='+file.size,
-                                resumeChunkSize: '50MB',
-                                data: {upload: file}
-                            }).then(function (resp) {
-                                if(resp.data != null && resp.data.data != null){
-                                    if(vdm.prodDept != null){
-                                        switch(type){
-                                            case 'master_planes':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_master_plane = false;
-                                                }
-                                                vdm.prodDept.master_planes = resp.data.data.files;
-                                                break;
-                                            case 'detail_planes':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_detail_plane = false;
-                                                }
-                                                vdm.prodDept.detail_planes = resp.data.data.files;
-                                                break;
-                                            case 'wacom_vids':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_wacom_vid = false;
-                                                }
-                                                vdm.prodDept.wacom_vids = resp.data.data.files;
-
-                                                break;
-                                            case 'prod_audios':
-                                                if(i == upload.length - 1){
-                                                    vdm.uploading_prod_audio = false;
-                                                }
-                                                vdm.prodDept.prod_audios = resp.data.data.files;
-                                                break;
-                                        }
+                            var regex;
+                            var movRegex;
+                            switch(type){
+                                case 'master_planes':
+                                    regex = new RegExp("(.*?)\.(mp4|mov)$");
+                                    if(regex.test(file.name.toLowerCase())){
+                                        vdm.uploading_master_plane = true;
+                                    }else{
+                                        msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
+                                        valid = false;
                                     }
-                                    i ++;
-                                }else{
-                                    vdm.uploading_master_plane = null;
-                                    vdm.uploading_detail_plane = null;
-                                    vdm.uploading_wacom_vid = null;
-                                    vdm.uploading_prod_audio = null;
-                                    swal({
-                                        title: "ERROR",
-                                        text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
-                                        type: 'error',
-                                        confirmButtonText: "OK",
-                                        confirmButtonColor: "lightcoral"
-                                    });
-                                }
-                                angular.element("input[type='file']").val(null);
-                                console.clear();
-                            }, function (error) {
-                                angular.element("input[type='file']").val(null);
-                                $rootScope.setLoader(false);
-                                console.log(error);
-                            });
+                                    break;
+                                case 'detail_planes':
+                                    regex = new RegExp("(.*?)\.(mp4|mov)$");
+                                    if(regex.test(file.name.toLowerCase())){
+                                        vdm.uploading_detail_plane = true;
+                                    }else{
+                                        msg = "Estos archivos deben ser .mp4 o .mov para ser guardados";
+                                        valid = false;
+                                    }
+                                    break;
+                                case 'wacom_vids':
+                                    regex = new RegExp("(.*?)\.(mp4)$");
+                                    if(!regex.test(file.name.toLowerCase())){
+                                        msg = "Estos archivos deben ser .mp4 para ser guardados";
+                                        valid = false;
+                                    }
+                                    vdm.uploading_wacom_vid = true;
+                                    break;
+                                case 'prod_audios':
+                                    regex = new RegExp("(.*?)\.(wav)$");
+                                    if(!regex.test(file.name.toLowerCase())){
+                                        msg = "Estos archivos deben ser .wav para ser guardados";
+                                        valid = false;
+                                    }
+                                    vdm.uploading_prod_audio = true;
+                                    break;
+                            }
                         });
+
+                        if(valid){
+                            var i = 0;
+                            upload_big_files(upload, vdm, type, baseUrl, i);
+                        }else{
+                            switch(type){
+                                case 'master_planes':
+                                    vdm.uploading_master_plane = null;
+                                    break;
+                                case 'detail_planes':
+                                    vdm.uploading_detail_plane = null;
+
+                                    break;
+                                case 'wacom_vids':
+                                    vdm.uploading_wacom_vid = null;
+
+                                    break;
+                                case 'prod_audios':
+                                    vdm.uploading_prod_audio = null;
+
+                                    break;
+                            }
+                            angular.element("input[type='file']").val(null);
+                            swal({
+                                title: "Aviso",
+                                text: msg,
+                                type: 'warning',
+                                confirmButtonText: "OK",
+                                confirmButtonColor: "lightcoral"
+                            });
+                        }
                     }else{
                         switch(type){
                             case 'master_planes':
-                                vdm.uploading_master_plane = null;
+                                vdm.uploading_master_planes = null;
                                 break;
                             case 'detail_planes':
-                                vdm.uploading_detail_plane = null;
+                                vdm.uploading_detail_planes = null;
 
                                 break;
                             case 'wacom_vids':
-                                vdm.uploading_wacom_vid = null;
+                                vdm.uploading_wacom_vids = null;
 
                                 break;
                             case 'prod_audios':
-                                vdm.uploading_prod_audio = null;
+                                vdm.uploading_prod_audios = null;
 
                                 break;
                         }
-                        angular.element("input[type='file']").val(null);
-                        swal({
-                            title: "Aviso",
-                            text: msg,
-                            type: 'warning',
-                            confirmButtonText: "OK",
-                            confirmButtonColor: "lightcoral"
-                        });
                     }
                 }else{
-                    switch(type){
-                        case 'master_planes':
-                            vdm.uploading_master_planes = null;
-                            break;
-                        case 'detail_planes':
-                            vdm.uploading_detail_planes = null;
-
-                            break;
-                        case 'wacom_vids':
-                            vdm.uploading_wacom_vids = null;
-
-                            break;
-                        case 'prod_audios':
-                            vdm.uploading_prod_audios = null;
-
-                            break;
-                    }
+                    swal({
+                        title: "Aviso",
+                        text: "No se pueden subir este tipo de archivos desde este explorador intentelo con un explorador mas actualizado",
+                        type: 'warning',
+                        confirmButtonText: "OK",
+                        confirmButtonColor: "lightcoral"
+                    });
                 }
             }else{
                 swal({
                     title: "Aviso",
-                    text: "No se pueden subir este tipo de archivos desde este explorador intentelo con un explorador mas actualizado",
+                    text: "No se pueden mas de 4 paquetes de archivos al mismo tiempo, por favor espera a que al menos uno de los paquetes haya sido guardado",
                     type: 'warning',
                     confirmButtonText: "OK",
                     confirmButtonColor: "lightcoral"
                 });
             }
-
         };
+
+        function upload_big_files(files, vdm, type, url, index){
+            if(index < files.length){
+                return Upload.upload({
+                    url: url+'/api/vdms/raw_material_upload?vdm_id='+vdm.id+'&file_name='+files[index].name+'&file_type='+type,
+                    resumeSizeUrl: url+'/api/vdms/resume_file?file_name=' + files[index].name +'&file_size='+files[index].size,
+                    resumeChunkSize: '20MB',
+                    data: {upload: files[index]}
+                }).then(function (resp) {
+                    if(resp.data != null && resp.data.data != null){
+                        if(vdm.prodDept != null){
+                            switch(type){
+                                case 'master_planes':
+                                    if(index == files.length - 1){
+                                        $scope.max_file_upload -= 1;
+                                        vdm.uploading_master_plane = false;
+                                    }
+                                    vdm.prodDept.master_planes = resp.data.data.files;
+                                    break;
+                                case 'detail_planes':
+                                    if(index == files.length - 1){
+                                        $scope.max_file_upload -= 1;
+                                        vdm.uploading_detail_plane = false;
+                                    }
+                                    vdm.prodDept.detail_planes = resp.data.data.files;
+                                    break;
+                                case 'wacom_vids':
+                                    if(index == files.length - 1){
+                                        $scope.max_file_upload -= 1;
+                                        vdm.uploading_wacom_vid = false;
+                                    }
+                                    vdm.prodDept.wacom_vids = resp.data.data.files;
+
+                                    break;
+                                case 'prod_audios':
+                                    if(index == files.length - 1){
+                                        $scope.max_file_upload -= 1;
+                                        vdm.uploading_prod_audio = false;
+                                    }
+                                    vdm.prodDept.prod_audios = resp.data.data.files;
+                                    break;
+                                default:
+                                    if(index == files.length - 1){
+                                        $scope.max_file_upload -= 1;
+                                    }
+                            }
+                        }
+                    }else{
+                        if(index == files.length - 1){
+                            $scope.max_file_upload -= 1;
+                            vdm.uploading_master_plane = null;
+                            vdm.uploading_detail_plane = null;
+                            vdm.uploading_wacom_vid = null;
+                            vdm.uploading_prod_audio = null;
+                        }
+                        swal({
+                            title: "ERROR",
+                            text: "Ha ocurrido un error al momento de subir los archivos por favor intentelo de nuevo mas tarde",
+                            type: 'error',
+                            confirmButtonText: "OK",
+                            confirmButtonColor: "lightcoral"
+                        });
+                    }
+                    angular.element("input[type='file']").val(null);
+                    console.clear();
+                }, function (error) {
+                    angular.element("input[type='file']").val(null);
+                    $rootScope.setLoader(false);
+                    console.log(error);
+                }).then(function(){
+                    return upload_big_files(files, vdm, type, url,  index += 1)
+                });
+
+            }
+        }
 
         $scope.$watch('localStorageService.get("currentRole")', function (newVal, oldVal) {
             if(newVal !== oldVal){
