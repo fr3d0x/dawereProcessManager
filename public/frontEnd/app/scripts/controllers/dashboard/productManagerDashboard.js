@@ -221,4 +221,5 @@ app.controller("productManagerDashboard",['$scope', 'ENV', 'dawProcessManagerSer
           }
         };
         $scope.activateContentProgress();
+
     }]);

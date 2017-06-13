@@ -2574,6 +2574,30 @@ class VdmsController < ApplicationController
                 FileUtils::mkdir_p $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'
                 FileUtils.cp(vdm.production_dpt.screen_play.path, $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/GUION/'+vdm.production_dpt.screen_play_name)
               end
+              if vdm.production_dpt.master_planes != nil && vdm.production_dpt.master_planes.count >= 1
+                FileUtils::mkdir_p  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/PLANOS_MASTER/'
+                vdm.production_dpt.master_planes.each do |file|
+                  FileUtils.cp($files_root+file.file,  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/PLANOS_MASTER/'+file.file_name)
+                end
+              end
+              if vdm.production_dpt.detail_planes != nil && vdm.production_dpt.detail_planes.count >= 1
+                FileUtils::mkdir_p  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/PLANOS_DETALLE/'
+                vdm.production_dpt.detail_planes.each do |file|
+                  FileUtils.cp($files_root+file.file,  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/PLANOS_DETALLE/'+file.file_name)
+                end
+              end
+              if vdm.production_dpt.wacom_vids != nil && vdm.production_dpt.wacom_vids.count >= 1
+                FileUtils::mkdir_p  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/VIDEOS_WACOM/'
+                vdm.production_dpt.wacom_vids.each do |file|
+                  FileUtils.cp($files_root+file.file,  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/VIDEOS_WACOM/'+file.file_name)
+                end
+              end
+              if vdm.production_dpt.prod_audios != nil && vdm.production_dpt.prod_audios.count >= 1
+                FileUtils::mkdir_p  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/AUDIOS/'
+                vdm.production_dpt.prod_audios.each do |file|
+                  FileUtils.cp($files_root+file.file,  $drive_copy_route+vdm.classes_planification.subject_planification.subject.grade.name+'/'+vdm.classes_planification.subject_planification.subject.name+'/'+vdm.videoId+'/PRODUCCION/MATERIAL_BRUTO/AUDIOS/'+file.file_name)
+                end
+              end
             end
           when 'edition'
             if vdm.production_dpt != nil

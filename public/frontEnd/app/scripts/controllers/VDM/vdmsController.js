@@ -1863,7 +1863,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
             var msg = '';
             var baseUrl = ENV.baseUrl;
             $scope.max_file_upload += 1;
-            if ($scope.max_file_upload <= 4){
+            if ($scope.max_file_upload < 5){
                 if(Upload.isResumeSupported()){
                     if(vdm.id != null) {
                         angular.forEach(upload, function(file){
