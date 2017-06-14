@@ -405,10 +405,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un plano detalle";
                     valid = false;
                 }
-                /*if(vdm.prodDept.prod_audios == null || vdm.prodDept.prod_audios.length < 1){
+                if(vdm.prodDept.prod_audios == null || vdm.prodDept.prod_audios.length < 1){
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un audio";
                     valid = false;
-                }*/
+                }
 
 
 
