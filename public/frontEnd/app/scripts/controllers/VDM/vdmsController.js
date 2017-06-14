@@ -393,14 +393,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                 }
 
-
-                if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == '' || vdm.prodDept.screen_play.url == null || vdm.prodDept.screen_play.url == undefined || vdm.prodDept.screen_play.url == '') {
-                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                    valid = false;
-                }
-
-
-
                 if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == '' ||vdm.prodDept.script.url == null || vdm.prodDept.script.url == undefined || vdm.prodDept.script.url == ''){
                     mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
                     valid = false;
@@ -413,10 +405,10 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un plano detalle";
                     valid = false;
                 }
-                if(vdm.prodDept.prod_audios == null || vdm.prodDept.prod_audios.length < 1){
+                /*if(vdm.prodDept.prod_audios == null || vdm.prodDept.prod_audios.length < 1){
                     mesage = "No puede empezar una grabacion sin primero haber guardado al menos un audio";
                     valid = false;
-                }
+                }*/
 
 
 

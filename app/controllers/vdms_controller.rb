@@ -970,7 +970,13 @@ class VdmsController < ApplicationController
         intro: vdm.production_dpt.intro,
         conclu: vdm.production_dpt.conclu,
         vidDev: vdm.production_dpt.vidDev,
-        assignment: assignment
+        assignment: assignment,
+        master_planes: vdm.production_dpt.master_planes,
+        master_planes: vdm.production_dpt.detail_planes,
+        master_planes: vdm.production_dpt.wacom_vids,
+        master_planes: vdm.production_dpt.master_planes,
+
+
     }
     return prd_payload
   end
