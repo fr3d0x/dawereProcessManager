@@ -2680,6 +2680,10 @@ class VdmsController < ApplicationController
     if params[:file_name] != nil
 
       path = "#{$big_files_tmp_route}/#{params[:file_name]}"
+      if File.exists?(path) && File.directory?(path)
+        FileUtils.rm_rf(path)
+      end
+
       FileUtils::mkdir_p path
       size = Dir[File.join(path, '**', '*')].count { |file| File.file?(file) }
 
@@ -2771,7 +2775,7 @@ class VdmsController < ApplicationController
         change.videoId = vdm.videoId
         change.department = 'produccion'
         change.save!
-        FileUtils.remove_dir dir, force: true
+        FileUtils.rm_rf(dir)
       end
     end
     render :json => { data: payload, status: 'SUCCESS'}, :status => 200
