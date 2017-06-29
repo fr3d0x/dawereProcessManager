@@ -393,12 +393,6 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
 
                 }
 
-
-                if(vdm.prodDept.screen_play == null || vdm.prodDept.screen_play == undefined || vdm.prodDept.screen_play == '' || vdm.prodDept.screen_play.url == null || vdm.prodDept.screen_play.url == undefined || vdm.prodDept.screen_play.url == '') {
-                    mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
-                    valid = false;
-                }
-
                 if(vdm.prodDept.script == null || vdm.prodDept.script == undefined || vdm.prodDept.script == '' ||vdm.prodDept.script.url == null || vdm.prodDept.script.url == undefined || vdm.prodDept.script.url == ''){
                     mesage = "No puede empezar una grabacion sin primero haber guardado un libreto y un guion";
                     valid = false;
@@ -1860,10 +1854,9 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                     if(vdm.id != null) {
                         angular.forEach(upload, function(file){
                             var regex;
-                            var movRegex;
                             switch(type){
                                 case 'master_planes':
-                                    regex = new RegExp("(.*?)\.(mp4|mov)$");
+                                    regex = new RegExp("(.*?)\.(mp4|mov|avi|wmv|mpeg|flv)$");
                                     if(regex.test(file.name.toLowerCase())){
                                         vdm.uploading_master_plane = true;
                                     }else{
@@ -1872,7 +1865,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     }
                                     break;
                                 case 'detail_planes':
-                                    regex = new RegExp("(.*?)\.(mp4|mov)$");
+                                    regex = new RegExp("(.*?)\.(mp4|mov|avi|wmv|mpeg|flv)$");
                                     if(regex.test(file.name.toLowerCase())){
                                         vdm.uploading_detail_plane = true;
                                     }else{
@@ -1881,7 +1874,7 @@ app.controller("vdmsController",['$scope', 'ENV', 'dawProcessManagerService', 'l
                                     }
                                     break;
                                 case 'wacom_vids':
-                                    regex = new RegExp("(.*?)\.(mp4)$");
+                                    regex = new RegExp("(.*?)\.(mp4|mov|avi|wmv|mpeg|flv)$");
                                     if(!regex.test(file.name.toLowerCase())){
                                         msg = "Estos archivos deben ser .mp4 para ser guardados";
                                         valid = false;
