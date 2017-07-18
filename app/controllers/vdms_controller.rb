@@ -2400,7 +2400,7 @@ class VdmsController < ApplicationController
               change.changeDate = Time.now
               change.department = 'post-produccion'
               vdm.post_prod_dpt.post_prod_dpt_assignment.video = params[:upload] #create a document associated with the item that has just been created end
-              vdm.post_prod_dpt.post_prod_dpt_assignment.video_name = params[:upload].original_filename
+              vdm.post_prod_dpt.post_prod_dpt_assignment.video_name = vdm.videoId
               change.changedTo = vdm.post_prod_dpt.post_prod_dpt_assignment.video.url
               changes.push(change)
               response = {
